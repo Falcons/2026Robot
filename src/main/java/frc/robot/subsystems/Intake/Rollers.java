@@ -17,8 +17,6 @@ import frc.robot.Constants.IntakeConstants.RollersConstants;
 public class Rollers extends SubsystemBase {
   private final SparkMax roller;
   private SparkMaxConfig rollerConfig = new SparkMaxConfig();
-  private Alert rollerFaultAlert = new Alert("Falts", "", AlertType.kError);
-  private Alert rollerWarningAlert = new Alert("Warnings", "", AlertType.kWarning);
   /** Creates a new Rollers. */
   public Rollers() {
     this.roller = new SparkMax(RollersConstants.motorCANID, MotorType.kBrushless);
@@ -29,8 +27,6 @@ public class Rollers extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Roller encoder", roller.getEncoder().getVelocity());
-    rollerFaultAlert.setText("roller: " + roller.getFaults().toString()); rollerFaultAlert.set(roller.hasActiveFault());
-    rollerWarningAlert.setText("roller: " + roller.getWarnings().toString()); rollerWarningAlert.set(roller.hasActiveWarning());
   }
 
   public void set(double roll) {
