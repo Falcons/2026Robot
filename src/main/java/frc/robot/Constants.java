@@ -33,7 +33,7 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final class RollersConstants {
-            public static final int motorCANID = 14;
+            public static final int rollerCANID = -1;
             public static final int shooterPriority = 2;
             public static final double rollerSpeed = 1;
         }
