@@ -4,9 +4,14 @@
 
 package frc.robot.subsystems.Turret;
 
+import com.revrobotics.spark.SparkMax;
+
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Shooter extends SubsystemBase {
+
+  private final SparkMax leftShooter = new SparkMax(0, null);
+
   /** Creates a new Shooter. */
   public Shooter() {}
 
