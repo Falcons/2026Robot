@@ -7,18 +7,17 @@ package frc.robot.commands;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.subsystems.Intake.Rollers;
 
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class IntakeRoller extends Command {
-  DoubleSupplier speed;
   Rollers rollers;
   
   /** Creates a new IntakeRoller. */
-  public IntakeRoller(Rollers rollers, DoubleSupplier speed) {
+  public IntakeRoller(Rollers rollers) {
     this.rollers = rollers;
-    this.speed = speed;
     addRequirements(rollers);
   
     // Use addRequirements() here to declare subsystem dependencies.
@@ -31,7 +30,7 @@ public class IntakeRoller extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    
+    rollers.set(RollersConstants.rollerSpeed);
   }
 
   // Called once the command ends or is interrupted.
