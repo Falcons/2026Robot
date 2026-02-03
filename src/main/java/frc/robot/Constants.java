@@ -24,6 +24,8 @@ public final class Constants {
         public static final class MovementConstants {
 
             public static final int pivotCANID = -1;
+            public static final int leftHoodActuatorPWM = 1006; //TODO: set PWM channel
+            public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
             
             public static final Translation2d goalPos = new Translation2d(1, 4);
             public static final double maxRotationRad = Math.toRadians(270);
