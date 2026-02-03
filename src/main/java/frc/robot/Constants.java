@@ -42,18 +42,18 @@ public final class Constants {
             public static final double minRotationRad = Math.toRadians(90);
         }
         public static final class ShooterConstants {
-            public static final int leftShooter = 1001; // TODO: canid
-            public static final int rightShooter = 1002; // TODO: canid
-            public static final int transfer = 1004; // TODO: canid
-            public static final int kicker = 1005; // TODO: canid
-            
+            public static final int leftShooterCANID = 1001; // TODO: canid
+            public static final int rightShooterCANID = 1002; // TODO: canid
+            public static final int transferCANID = 1004; // TODO: canid
+            public static final int kickerCANID = 1005; // TODO: canid
+
+            public static final double maxShooterSpeed = 1;
         }
     }
 
     public static final class IntakeConstants {
         public static final class RollersConstants {
-            public static final int rollerCANID = -1;
-            public static final int shooterPriority = 2;
+            public static final int rollerCANID = 1008; // TODO: canid
             public static final double rollerSpeed = 1;
         }
     }

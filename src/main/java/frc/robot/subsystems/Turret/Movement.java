@@ -61,4 +61,12 @@ public class Movement extends SubsystemBase {
     
     return targetAngle;
   }
+
+  /**
+   * checks if the turret is in range
+   * @return a bool, true if in range
+   */
+  public boolean inRange() {
+    return false;
+  }
 }
