@@ -17,7 +17,7 @@ import frc.robot.Constants.IntakeConstants.RollersConstants;
 public class Rollers extends SubsystemBase {
   private final SparkMax roller;
   private SparkMaxConfig rollerConfig = new SparkMaxConfig();
-  private Alert rollerFaultAlert = new Alert("Falts", "", AlertType.kError);
+  private Alert rollerFaultAlert = new Alert("Faults", "", AlertType.kError);
   private Alert rollerWarningAlert = new Alert("Warnings", "", AlertType.kWarning);
   /** Creates a new Rollers. */
   public Rollers() {
