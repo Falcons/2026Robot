@@ -24,11 +24,11 @@ public class Rollers extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Roller encoder", roller.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Intake/Roller/Encoder", roller.getEncoder().getVelocity());
   }
 
   public void set(double roll) {
-    SmartDashboard.putNumber("Roller speed", roll);
+    SmartDashboard.putNumber("Intake/Roller/Speed", roll);
     roller.set(roll);
   }
 
