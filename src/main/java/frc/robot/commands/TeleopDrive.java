@@ -10,18 +10,18 @@ import java.util.function.DoubleSupplier;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.SwerveSubsystem;
+import frc.robot.subsystems.Swerve.Swerve;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class TeleopDrive extends Command {
   /** Creates a new TeleopDrivee. */
-  private final SwerveSubsystem swerve;
+  private final Swerve swerve;
   private final DoubleSupplier  controlX, controlY, rot;
   private final SlewRateLimiter xSlewLimiter = new SlewRateLimiter(0.5);
   private final SlewRateLimiter ySlewLimiter = new SlewRateLimiter(0.5);
   private final BooleanSupplier fieldRelative;
 
-  public TeleopDrive(SwerveSubsystem swerve, DoubleSupplier controlX, DoubleSupplier controlY, DoubleSupplier rot, BooleanSupplier fieldRelative) {
+  public TeleopDrive(Swerve swerve, DoubleSupplier controlX, DoubleSupplier controlY, DoubleSupplier rot, BooleanSupplier fieldRelative) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.swerve = swerve;
     this.controlX = controlX;

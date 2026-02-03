@@ -13,13 +13,12 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.TeleopDrive;
 import frc.robot.commands.zeroGyro;
-import frc.robot.subsystems.SwerveSubsystem;
-// import swervelib.SwerveInputStream;
+import frc.robot.subsystems.Swerve.Swerve;
 
 public class RobotContainer {
 
   // initialize robot's subsystems
-  private final SwerveSubsystem swerve = new SwerveSubsystem();
+  private final Swerve swerve = new Swerve();
 
   private final CommandXboxController driver = new CommandXboxController(0);
 

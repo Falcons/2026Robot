@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems;
+package frc.robot.subsystems.Swerve;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -23,13 +23,13 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
 
-public class SwerveSubsystem extends SubsystemBase {
+public class Swerve extends SubsystemBase {
   /** Creates a new SwerveSubsystem. */
 
   File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
   SwerveDrive  swerveDrive;
 
-  public SwerveSubsystem() {
+  public Swerve() {
 
     try {
       // try to create a new swerve drive
