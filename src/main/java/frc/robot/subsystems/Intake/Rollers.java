@@ -4,14 +4,45 @@
 
 package frc.robot.subsystems.Intake;
 
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.config.SparkMaxConfig;
+
+import edu.wpi.first.wpilibj.Alert;
+import edu.wpi.first.wpilibj.Alert.AlertType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants.RollersConstants;
 
 public class Rollers extends SubsystemBase {
+  private final SparkMax roller;
+  private SparkMaxConfig rollerConfig = new SparkMaxConfig();
+  private Alert rollerFaultAlert = new Alert("Falts", "", AlertType.kError);
+  private Alert rollerWarningAlert = new Alert("Warnings", "", AlertType.kWarning);
   /** Creates a new Rollers. */
-  public Rollers() {}
+  public Rollers() {
+    this.roller = new SparkMax(RollersConstants.motorCANID, MotorType.kBrushless);
+    rollerConfig.smartCurrentLimit(20);
+    roller.configure(rollerConfig, com.revrobotics.ResetMode.kResetSafeParameters,  com.revrobotics.PersistMode.kNoPersistParameters);
+  }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    SmartDashboard.putNumber("Roller encoder", roller.getEncoder().getVelocity());
+    rollerFaultAlert.setText("roller: " + roller.getFaults().toString()); rollerFaultAlert.set(roller.hasActiveFault());
+    rollerWarningAlert.setText("roller: " + roller.getWarnings().toString()); rollerWarningAlert.set(roller.hasActiveWarning());
+  }
+
+  public void set(double roll) {
+    SmartDashboard.putNumber("Roller speed", roll);
+    roller.set(roll);
+  }
+
+  public void stop() {
+    roller.stopMotor();
+  }
+
+  public double getRollerVelocity() {
+    return roller.getEncoder().getVelocity()/3.0;
   }
 }
