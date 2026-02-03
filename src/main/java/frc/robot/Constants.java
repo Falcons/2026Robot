@@ -33,12 +33,9 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final class RollersConstants {
-            public static final int motorCANID = 14;
+            public static final int rollerCANID = -1;
             public static final int shooterPriority = 2;
-            public static final double L1LeftSpeed = -0.03;
-            public static final double L1RightSpeed = -0.18;
-            public static final double L4Speed = -0.30;
-            public static final double ShootSpeed = -0.23;
+            public static final double rollerSpeed = 1;
         }
     }
 }
