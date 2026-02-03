@@ -27,7 +27,7 @@ public class Swerve extends SubsystemBase {
   /** Creates a new SwerveSubsystem. */
 
   File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
-  SwerveDrive  swerveDrive;
+  SwerveDrive swerveDrive;
 
   public Swerve() {
 

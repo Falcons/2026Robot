@@ -19,4 +19,15 @@ public final class Constants {
     public static final class ControllerConstants {
         public static final double deadBand = 0.05;
     }
+
+    public static final class TurretConstants {
+        public static final class MovementConstants {
+
+            public static final int pivotCANID = -1;
+            
+            public static final Translation2d goalPos = new Translation2d(1, 4);
+            public static final double maxRotationRad = Math.toRadians(270);
+            public static final double minRotationRad = Math.toRadians(90);
+        }
+    }
 }
