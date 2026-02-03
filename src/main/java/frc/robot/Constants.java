@@ -11,6 +11,16 @@ public final class Constants {
         // max speed MPS TODO: change max speed MPS
         public static final double maxSpeedMPS = 5;
 
+        public static final int intakePivotRatio = 48;
+        public static final double intakeRollersRatio = 3.2;
+        public static final int transferRatio = 4;
+        public static final int singlizerRatio = 4;
+        public static final int kickerPivotRatio = 4;
+        public static final int turretRatio = 48;
+        public static final int hoodtRatio = 100;
+        public static final double driveRatio = 6.75;
+        public static final double driveSteeringRatio = 150/7;
+
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
             Meter.of(1),Meter.of(4)),Rotation2d.fromDegrees(0));
@@ -40,7 +50,9 @@ public final class Constants {
 
     public static final class IntakeConstants {
         public static final class RollersConstants {
-            public static final int rollerCANID = 1003; 
+            public static final int rollerCANID = -1;
+            public static final int shooterPriority = 2;
+            public static final double rollerSpeed = 1;
         }
     }
 }
