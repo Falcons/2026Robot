@@ -11,6 +11,16 @@ public final class Constants {
         // max speed MPS TODO: change max speed MPS
         public static final double maxSpeedMPS = 5;
 
+        public static final int intakePivotRatio = 48;
+        public static final double intakeRollersRatio = 3.2;
+        public static final int transferRatio = 4;
+        public static final int singlizerRatio = 4;
+        public static final int kickerPivotRatio = 4;
+        public static final int turretRatio = 48;
+        public static final int hoodtRatio = 100;
+        public static final double driveRatio = 6.75;
+        public static final double driveSteeringRatio = 150/7;
+
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
             Meter.of(1),Meter.of(4)),Rotation2d.fromDegrees(0));
@@ -23,6 +33,7 @@ public final class Constants {
     public static final class TurretConstants {
         public static final class MovementConstants {
 
+            public static final int pivotCANID = 1000; // TODO: canid
             public static final int pivotCANID = -1;
             public static final int leftHoodActuatorPWM = 1006; //TODO: set PWM channel
             public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
@@ -31,16 +42,20 @@ public final class Constants {
             public static final double maxRotationRad = Math.toRadians(270);
             public static final double minRotationRad = Math.toRadians(90);
         }
+        public static final class ShooterConstants {
+            public static final int leftShooter = 1001; // TODO: canid
+            public static final int rightShooter = 1002; // TODO: canid
+            public static final int transfer = 1004; // TODO: canid
+            public static final int kicker = 1005; // TODO: canid
+            
+        }
     }
 
     public static final class IntakeConstants {
         public static final class RollersConstants {
-            public static final int motorCANID = 14;
+            public static final int rollerCANID = -1;
             public static final int shooterPriority = 2;
-            public static final double L1LeftSpeed = -0.03;
-            public static final double L1RightSpeed = -0.18;
-            public static final double L4Speed = -0.30;
-            public static final double ShootSpeed = -0.23;
+            public static final double rollerSpeed = 1;
         }
     }
 }
