@@ -34,7 +34,6 @@ public final class Constants {
         public static final class MovementConstants {
 
             public static final int pivotCANID = 1000; // TODO: canid
-            public static final int pivotCANID = -1;
             public static final int leftHoodActuatorPWM = 1006; //TODO: set PWM channel
             public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
             
