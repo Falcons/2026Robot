@@ -12,7 +12,6 @@ import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -38,8 +37,10 @@ public class Movement extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Turret/Pivot/Speed", pivot.get());
-    SmartDashboard.putNumber("Turret/Pivot/Absolute Encoder", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Turret/Movmement/Pivot/Speed", pivot.get());
+    SmartDashboard.putNumber("Turret/Movmement/Pivot/Absolute Encoder", pivotEncoder.getPosition());
+    SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuators.get());
+    SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuators.get());
   }
 
   //TODO: add turn direction to comment
@@ -48,6 +49,10 @@ public class Movement extends SubsystemBase {
    */
   public void movePivot(double speed) {
     pivot.set(speed);
+  }
+
+  public void moveHood(){
+    
   }
 
   /**
