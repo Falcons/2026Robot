@@ -6,8 +6,6 @@ package frc.robot.subsystems.Turret;
 
 import com.revrobotics.spark.SparkMax;
 
-import java.lang.module.ModuleDescriptor.Requires;
-
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
