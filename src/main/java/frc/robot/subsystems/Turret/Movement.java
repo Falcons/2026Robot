@@ -11,11 +11,13 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 
@@ -58,8 +60,21 @@ public class Movement extends SubsystemBase {
       pivot.set(speed);
     }
   }
+
+  /**
+   * auto aims the 
+   */
   public void autoAim() {
-    
+    // clamp speed
+    double setpoint = MathUtil.clamp(getRelativeAngle(), PivotConstants.pivotMin, PivotConstants.pivotMax);
+    // calc pid
+    double pid = pivotPID.calculate(pivot.getAbsoluteEncoder().getPosition(), setpoint);
+    // clamp setpoint 
+    pid = MathUtil.clamp(pid, -0.5, 0.5);
+
+    // move motor
+    pivot.set(pid);
+    pivotPID.reset();
   }
 
   public void moveHood(){
@@ -76,6 +91,13 @@ public class Movement extends SubsystemBase {
     double targetAngle = Math.atan2(distanceToGoal.getY(), distanceToGoal.getX()); 
     
     return targetAngle;
+  }
+
+  /**
+   * @return the relative abgle the shooter should point at in radians
+   */
+  public double getRelativeAngle() {
+    return swerve.getHeading().getRadians() - getGlobalAngle();
   }
 
   /**
