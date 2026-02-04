@@ -5,7 +5,11 @@
 package frc.robot.subsystems.Turret;
 
 import com.revrobotics.spark.SparkMax;
-
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.Follower;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -18,15 +22,15 @@ import frc.robot.Constants.TurretConstants.ShooterConstants;
 public class Shooter extends SubsystemBase {
   
   // once shooters AND transfer are max speed than kicker
-  private final SparkMax leftShooter = new SparkMax(ShooterConstants.leftShooterCANID, MotorType.kBrushless);
-  private final SparkMax rightShooter = new SparkMax(ShooterConstants.rightShooterCANID, MotorType.kBrushless);
+  private final TalonFX leftShooter = new TalonFX(ShooterConstants.leftShooterCANID);
+  private final TalonFX rightShooter = new TalonFX(ShooterConstants.leftShooterCANID);
   private final SparkMax kicker = new SparkMax(ShooterConstants.kickerCANID, MotorType.kBrushless);
 
   private final SparkMax transfer = new SparkMax(ShooterConstants.transferCANID, MotorType.kBrushless);
 
   // configs
-  private final SparkMaxConfig leftShooterConfig = new SparkMaxConfig();
-  private final SparkMaxConfig rightShooterConfig = new SparkMaxConfig();
+  private final TalonFXConfiguration leftShooterConfig = new TalonFXConfiguration();
+  private final TalonFXConfiguration rightShooterConfig = new TalonFXConfiguration();
   private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
 
   private final SparkMaxConfig transferConfig = new SparkMaxConfig();
@@ -40,14 +44,13 @@ public class Shooter extends SubsystemBase {
     this.aimer = aimer;
 
     // follow right shooter
-    leftShooterConfig
-      .inverted(true) // left motor is inverted
-      .follow(ShooterConstants.rightShooterCANID);
-    kickerConfig.follow(ShooterConstants.rightShooterCANID);
+    leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    leftShooter.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Opposed));
+    kickerConfig.follow(ShooterConstants.rightShooterCANID); //TODO: spark max may not follow the talon
 
     // apply configs
-    leftShooter.configure(leftShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    rightShooter.configure(rightShooterConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    leftShooter.getConfigurator().apply(leftShooterConfig);
+    rightShooter.getConfigurator().apply(rightShooterConfig);
     transfer.configure(transferConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
@@ -61,7 +64,7 @@ public class Shooter extends SubsystemBase {
 
     rightShooter.set(ShooterConstants.maxShooterSpeed);
     // wait until shooter is max speed than rotate transfer
-    if (rightShooter.getEncoder().getVelocity() >= ShooterConstants.maxShooterSpeed) {
+    if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterSpeed) {
       transfer.set(ShooterConstants.maxShooterSpeed);
     }
   }
@@ -73,6 +76,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/transferSpeed", transfer.get());
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
 
-    SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getEncoder().getVelocity());
+    SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getVelocity().getValueAsDouble());
   }
 }

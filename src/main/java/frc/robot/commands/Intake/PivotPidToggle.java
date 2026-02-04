@@ -12,7 +12,7 @@ import frc.robot.subsystems.Intake.Pivot;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PivotPidToggle extends Command {
   Pivot pivot;
-  boolean home;
+  double pivotPosition;
   /** Creates a new PivotPidToggle. */
   public PivotPidToggle(Pivot pivot) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,15 +24,15 @@ public class PivotPidToggle extends Command {
   @Override
   public void initialize() {
     System.out.println(this.getName() + " start");
-    home = pivot.getDegrees() >= PivotConstants.pivotMax - 10;
+    pivotPosition = PivotConstants.pivotMin;
+    if (pivot.getDegrees() >= PivotConstants.pivotMax - 10){pivotPosition = PivotConstants.pivotMax;}
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    SmartDashboard.putBoolean("Pivot/home", home);
-    if(home) pivot.setPivotPid(PivotConstants.pivotAngleUp);
-    else pivot.setPivotPid(PivotConstants.pivotAngleDown);
+    SmartDashboard.putNumber("Pivot/home", pivotPosition);
+    pivot.setPivotPid(PivotConstants.pivotMax);
   }
 
   // Called once the command ends or is interrupted.
