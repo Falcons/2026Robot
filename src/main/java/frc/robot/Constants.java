@@ -69,6 +69,8 @@ public final class Constants {
         public static final class PivotConstants {
             public static final double pivotMin = 0;
             public static final double pivotMax = 180;
+            public static final double pivotAngleUp = 60;
+            public static final double pivotAngleDown = 0;
         }
     }
 }
