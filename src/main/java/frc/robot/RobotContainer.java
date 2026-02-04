@@ -54,24 +54,39 @@ public class RobotContainer {
 }
 
 
+/* 
+Austin
+TODO: Turret movement
 
-// Austin
-//TODO: Turret movement
+========================
+Riyan
+TODO: Turret shooter
 
-// Riyan
-//TODO: Turret shooter
+========================
+Likith
+TODO: pathplanner
 
-// Likith
-//TODO: Intake rollers
+Intake rollers
 
-// Justin
-//TODO: Intake rollers
+========================
+Justin
+TODO: intake pivot
 
-// Abid
-//TODO: Intake rollers
+Intake rollers
 
-// Reena
-//TODO: Climb
+========================
+Abid
+TODO: 
 
-// May
-//TODO: Climb
+Intake rollers
+
+========================
+Reena
+TODO: Climb
+
+
+========================
+May
+TODO: Climb
+
+*/
