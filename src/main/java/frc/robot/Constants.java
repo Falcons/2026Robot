@@ -61,8 +61,14 @@ public final class Constants {
         public static final int transferRatio = 4;
 
         public static final class RollersConstants {
-            public static final int rollerCANID = 1008; // TODO: canid
+            public static final double intakeRollersRatio = 3.2;
+            public static final int rollerCANID = 8087; // TODO: canid
             public static final double rollerSpeed = 1;
+        }
+
+        public static final class PivotConstants {
+            public static final double pivotMin = 180;
+            public static final double pivotMax = 180;
         }
     }
 }
