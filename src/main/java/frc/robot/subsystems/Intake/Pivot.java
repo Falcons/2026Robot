@@ -85,7 +85,9 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
     setPivot(pid);
   }
-
+  public double getDegrees() {
+    return pivot.getAbsoluteEncoder().getPosition();
+  }
   public double getCurrent() {
     return pivot.getOutputCurrent();
   }
