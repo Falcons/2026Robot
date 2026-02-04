@@ -11,6 +11,7 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -21,11 +22,15 @@ import frc.robot.subsystems.Swerve.Swerve;
 public class Movement extends SubsystemBase {
 
   private final Swerve swerve;
+
   private final SparkMax pivot = new SparkMax(MovementConstants.pivotCANID, MotorType.kBrushless);
   private final AbsoluteEncoder pivotEncoder = pivot.getAbsoluteEncoder();
   private final SparkMaxConfig pivotConfig = new SparkMaxConfig();
+
   private final Servo leftHoodActuators = new Servo(MovementConstants.leftHoodActuatorPWM);
   private final Servo rightHoodActuators = new Servo(MovementConstants.rightHoodActuatorPWM);
+
+  private final PIDController pivotPID = new PIDController(0.05, 0, 0);
 
   /** Creates a new Movement. */
   public Movement(Swerve swerve) {
@@ -48,7 +53,13 @@ public class Movement extends SubsystemBase {
    * @param speed speed to turn the pivot
    */
   public void movePivot(double speed) {
-    pivot.set(speed);
+    // make sure the pivot is in range before rotating
+    if (pivotEncoder.getPosition() > MovementConstants.pivotMin && pivotEncoder.getPosition() < MovementConstants.pivotMax){
+      pivot.set(speed);
+    }
+  }
+  public void autoAim() {
+    
   }
 
   public void moveHood(){

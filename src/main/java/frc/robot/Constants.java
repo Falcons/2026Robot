@@ -38,6 +38,9 @@ public final class Constants {
             public static final Translation2d goalPos = new Translation2d(1, 4);
             public static final double maxRotationRad = Math.toRadians(270);
             public static final double minRotationRad = Math.toRadians(90);
+
+            public static final double pivotMin = 0; // TODO: change min and max
+            public static final double pivotMax = 180;
         }
         public static final class ShooterConstants {
             public static final double kickerPivotRatio = 4;

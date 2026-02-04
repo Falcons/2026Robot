@@ -24,14 +24,12 @@ public class Shooter extends SubsystemBase {
 
   private final SparkMax transfer = new SparkMax(ShooterConstants.transferCANID, MotorType.kBrushless);
 
-  
-
   // configs
   private final SparkMaxConfig leftShooterConfig = new SparkMaxConfig();
   private final SparkMaxConfig rightShooterConfig = new SparkMaxConfig();
-  private final SparkMaxConfig transferConfig = new SparkMaxConfig();
-
   private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
+
+  private final SparkMaxConfig transferConfig = new SparkMaxConfig();
 
   // need to connect to movement to see if its aligned
   private final Movement aimer;
@@ -54,6 +52,9 @@ public class Shooter extends SubsystemBase {
     kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
+  /**
+   * turns on transfer motor when the shooter reaches max speed
+   */
   public void shootWhenMaxSpeed() {
     // dont run if not in range
     if (!aimer.inRange()){return;}
