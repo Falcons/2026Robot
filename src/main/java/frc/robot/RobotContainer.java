@@ -12,7 +12,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.zeroGyro;
+import frc.robot.commands.ZeroGyro;
 import frc.robot.subsystems.Swerve.Swerve;
 
 public class RobotContainer {
@@ -45,7 +45,7 @@ public class RobotContainer {
   }
   
   private void configureBindings() {
-    driver.b().onTrue(new zeroGyro(swerve));
+    driver.b().onTrue(new ZeroGyro(swerve));
   }
 
   public Command getAutonomousCommand() {

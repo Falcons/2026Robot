@@ -10,9 +10,9 @@ import frc.robot.subsystems.Swerve.Swerve;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class zeroGyro extends InstantCommand {
+public class ZeroGyro extends InstantCommand {
   Swerve swerve;
-  public zeroGyro(Swerve swerve) {
+  public ZeroGyro(Swerve swerve) {
     this.swerve = swerve;
     addRequirements(swerve);
   }

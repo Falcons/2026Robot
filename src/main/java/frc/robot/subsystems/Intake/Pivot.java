@@ -11,29 +11,28 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
-import frc.robot.subsystems.Turret.Movement;
 
 public class Pivot extends SubsystemBase {
   private final SparkMax pivot;
-  private SparkMaxConfig pivotConfig;
+  private final SparkMaxConfig pivotConfig;
   PIDController pivotPid = new PIDController(0.3, 0, 0);
 
-  double previousCurrent = 0;
-  public boolean atMin, atMax, cancelPID;
+  private boolean atMin, atMax;
   /** Creates a new Pivot. */
   public Pivot() {
     this.pivot = new SparkMax(MovementConstants.pivotCANID, MotorType.kBrushless);
     pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(IdleMode.kBrake);
+
     pivotConfig.encoder.positionConversionFactor(RollersConstants.intakeRollersRatio / 360); // 1 rotation = 360 degrees
-    pivotConfig.encoder.positionConversionFactor(RollersConstants.intakeRollersRatio / 360); // 1 rotation = 360 degrees
-    pivotConfig.smartCurrentLimit(30);
+
     pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 
     pivotPid.enableContinuousInput(-180, 180);
@@ -47,44 +46,42 @@ public class Pivot extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Pivot/PID/error", pivotPid.getError());
-    SmartDashboard.putNumber("Pivot/PID/setpoint", pivotPid.getSetpoint());
-    SmartDashboard.putNumber("Pivot/Abs Encoder", getAbsolute());
-    SmartDashboard.putNumber("Pivot/Abs Encoder deg", getAbsEncoderDeg());
-    SmartDashboard.putNumber("Pivot/current", getCurrent());
-    SmartDashboard.putNumber("Pivot/Bus Voltage", getBusVoltage());
-    SmartDashboard.putBoolean("Pivot/at max", atMax);
-    SmartDashboard.putBoolean("Pivot/at min", atMin);
+    SmartDashboard.putNumber("Intake/Pivot/PID/error", pivotPid.getError());
+    SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", pivotPid.getSetpoint());
+    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", pivot.getAbsoluteEncoder().getPosition());
+    SmartDashboard.putNumber("Intake/Pivot/current", getCurrent());
+    SmartDashboard.putNumber("Intake/Pivot/Bus Voltage", getBusVoltage());
+    SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
+    SmartDashboard.putBoolean("Intake/Pivot/at min", atMin);
     pidReset();
   }
 
   public void pidReset() {
     pivotPid.reset();
   }
+  
   public void setPivot(double speed) { 
+    // clamp
+    if (atMax && speed > 0) {
+      speed = 0; stopPivot();
+    } 
+    if (atMin && speed < 0) {
+      speed = 0; stopPivot();
+    }
+  }
 
-    if (atMax && speed > 0){speed = 0; stopPivot();} // clamp
-    if (atMin && speed < 0){speed = 0; stopPivot();} // clamp
-  }
+  /**
+   * @param setpoint the angle to set the pivot
+   */
   public void setPivotPid(double setpoint) {
-    double pid = pivotPid.calculate(getAbsolute(), setpoint);
-    if(setpoint > PivotConstants.pivotMax) setpoint = PivotConstants.pivotMax;
-    if(setpoint < PivotConstants.pivotMin) setpoint = PivotConstants.pivotMin;
-    if(pid > 0.5) pid = 0.5;
-    if(pid < -0.5) pid = -0.5;
-    SmartDashboard.putNumber("Pivot/PID/error", pivotPid.getError());
-    SmartDashboard.putNumber("Pivot/PID/setpoint", setpoint);
-    SmartDashboard.putNumber("Pivot/PID/calc", pid);
+    double pid = pivotPid.calculate(pivot.getAbsoluteEncoder().getPosition(), setpoint);
+    // check if above setpoint clamp, and clamp pid speed
+    setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotMin, PivotConstants.pivotMax);
+    pid = MathUtil.clamp(pid, -0.5, 0.5);
+
+    SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
+    SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
     setPivot(pid);
-  }
-  public double getReletive() {
-    return pivot.getEncoder().getPosition();
-  }
-  public double getAbsolute(){
-    return pivot.getAbsoluteEncoder().getPosition()*2 * Math.PI - 2.431;
-  }
-  public double getAbsEncoderDeg(){
-    return getAbsolute()*180.0/Math.PI;
   }
   public double getCurrent() {
     return pivot.getOutputCurrent();
