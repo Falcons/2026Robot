@@ -77,7 +77,7 @@ public class Pivot extends SubsystemBase {
   public void setPivotPid(double setpoint) {
     double pid = pivotPid.calculate(pivot.getAbsoluteEncoder().getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
-    setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotMin, PivotConstants.pivotMax);
+    setpoint = MathUtil.clamp(setpoint, MovementConstants.pivotMin, PivotConstants.pivotMax);
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
@@ -90,9 +90,11 @@ public class Pivot extends SubsystemBase {
   public double getCurrent() {
     return pivot.getOutputCurrent();
   }
+
   public double getBusVoltage(){
     return pivot.getBusVoltage();
   }
+
   public boolean atSetpoint(){
     return pivotPid.atSetpoint();
   }
