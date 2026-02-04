@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj2.command.Command;
 // import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
-import frc.robot.commands.TeleopDrive;
-import frc.robot.commands.ZeroGyro;
+import frc.robot.commands.Drive.TeleopDrive;
+import frc.robot.commands.Drive.ZeroGyro;
 import frc.robot.subsystems.Swerve.Swerve;
 
 public class RobotContainer {

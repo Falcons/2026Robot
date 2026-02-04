@@ -94,7 +94,7 @@ public class Pivot extends SubsystemBase {
     return pivotPid.atSetpoint();
   }
 
-  public void set(double piv) {
-    pivot.set(piv);
+  public void set(double speed) {
+    pivot.set(speed);
   }
 }
