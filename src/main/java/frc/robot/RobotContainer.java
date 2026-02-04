@@ -70,8 +70,9 @@ Intake rollers
 
 ========================
 Justin
-TODO: intake pivot
+TODO: 
 
+intake pivot
 Intake rollers
 
 ========================

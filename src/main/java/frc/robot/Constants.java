@@ -41,9 +41,13 @@ public final class Constants {
 
             public static final double pivotMin = 0; // TODO: change min and max
             public static final double pivotMax = 180;
+
+            public static final double pivotError = 5;
         }
         public static final class ShooterConstants {
-            public static final double kickerPivotRatio = 4;
+            public static final double kickerRatio = 4;
+            public static final int transferRatio = 4;
+
             public static final int leftShooterCANID = 1001; // TODO: canid
             public static final int rightShooterCANID = 1002; // TODO: canid
             public static final int transferCANID = 1004; // TODO: canid
@@ -56,10 +60,6 @@ public final class Constants {
 
     public static final class IntakeConstants {
 
-        public static final int intakePivotRatio = 48;
-        public static final int singlizerRatio = 4;
-        public static final int transferRatio = 4;
-
         public static final class RollersConstants {
             public static final double intakeRollersRatio = 3.2;
             public static final int rollerCANID = 8087; // TODO: canid
@@ -69,6 +69,9 @@ public final class Constants {
         public static final class PivotConstants {
             public static final double pivotMin = 0;
             public static final double pivotMax = 180;
+
+            public static final int intakePivotRatio = 48;
+            public static final int singlizerRatio = 4;
         }
     }
 }

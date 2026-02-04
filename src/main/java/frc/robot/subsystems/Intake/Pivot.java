@@ -69,6 +69,7 @@ public class Pivot extends SubsystemBase {
     if (atMin && speed < 0) {
       speed = 0; stopPivot();
     }
+    set(speed);
   }
 
   /**

@@ -34,6 +34,8 @@ public class Movement extends SubsystemBase {
 
   private final PIDController pivotPID = new PIDController(0.05, 0, 0);
 
+  private boolean atMax, atMin;
+
   /** Creates a new Movement. */
   public Movement(Swerve swerve) {
     this.swerve = swerve;
@@ -48,13 +50,17 @@ public class Movement extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Movmement/Pivot/Absolute Encoder", pivotEncoder.getPosition());
     SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuators.get());
     SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuators.get());
+
+    // check if max or min
+    atMax = pivot.get() >= MovementConstants.pivotMax;
+    atMin = pivot.get() <= MovementConstants.pivotMin;
   }
 
   //TODO: add turn direction to comment
   /**
    * @param speed speed to turn the pivot
    */
-  public void movePivot(double speed) {
+  public void setPivot(double speed) {
     // make sure the pivot is in range before rotating
     if (pivotEncoder.getPosition() > MovementConstants.pivotMin && pivotEncoder.getPosition() < MovementConstants.pivotMax){
       pivot.set(speed);
@@ -62,7 +68,7 @@ public class Movement extends SubsystemBase {
   }
 
   /**
-   * auto aims the 
+   * call this to actually auto aim to the goal
    */
   public void autoAim() {
     // clamp speed
@@ -73,8 +79,22 @@ public class Movement extends SubsystemBase {
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     // move motor
-    pivot.set(pid);
+    setPivotPID(pid);
     pivotPID.reset();
+  }
+
+  /*
+   * run pivot pid with a clamp
+   */
+  public void setPivotPID(double speed) { 
+    // clamp
+    if (atMax && speed > 0) {
+      speed = 0; pivot.stopMotor();
+    } 
+    if (atMin && speed < 0) {
+      speed = 0; pivot.stopMotor();
+    }
+    setPivot(speed);
   }
 
   public void moveHood(){
@@ -101,10 +121,24 @@ public class Movement extends SubsystemBase {
   }
 
   /**
+   * @return true if pivot is in range
+   */
+  public boolean pivotInRange() {
+    return getGlobalAngle() - getRelativeAngle() < MovementConstants.pivotError;
+  }
+
+  /**
+   * @return true if hood is in range
+   */
+  public boolean hoodInRange() {
+    return false;
+  }
+
+  /**
    * checks if the turret is in range
    * @return a bool, true if in range
    */
   public boolean inRange() {
-    return false;
+    return pivotInRange() && hoodInRange();
   }
 }

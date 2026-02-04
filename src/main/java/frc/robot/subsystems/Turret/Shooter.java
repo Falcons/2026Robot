@@ -61,7 +61,7 @@ public class Shooter extends SubsystemBase {
 
     rightShooter.set(ShooterConstants.maxShooterSpeed);
     // wait until shooter is max speed than rotate transfer
-    if (rightShooter.get() == ShooterConstants.maxShooterSpeed) {
+    if (rightShooter.getEncoder().getVelocity() >= ShooterConstants.maxShooterSpeed) {
       transfer.set(ShooterConstants.maxShooterSpeed);
     }
   }
@@ -72,5 +72,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/transferSpeed", transfer.get());
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
+
+    SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getEncoder().getVelocity());
   }
 }
