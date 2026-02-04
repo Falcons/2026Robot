@@ -25,24 +25,23 @@ public final class Constants {
 
     public static final class TurretConstants {
 
-        public static final int turretRatio = 48;
-
         public static final class MovementConstants {
 
+            public static final int turretRatio = 48;
             public static final int hoodRatio = 100;
 
-            public static final int pivotCANID = 1000; // TODO: canid
+            public static final int turretCANID = 1000; // TODO: canid
             public static final int leftHoodActuatorPWM = 1006; //TODO: set PWM channel
             public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
             
-            public static final Translation2d goalPos = new Translation2d(1, 4);
+            public static final Translation2d goalPos = new Translation2d(1, 4); // TODO: goal pos and turret range
             public static final double maxRotationRad = Math.toRadians(270);
             public static final double minRotationRad = Math.toRadians(90);
 
-            public static final double pivotMin = 0; // TODO: change min and max
-            public static final double pivotMax = 180;
+            public static final double turretMin = 0; // TODO: change min and max
+            public static final double turretMax = 180;
 
-            public static final double pivotError = 5;
+            public static final double turretError = 5;
         }
         public static final class ShooterConstants {
             public static final double kickerRatio = 4;
@@ -67,7 +66,10 @@ public final class Constants {
         }
 
         public static final class PivotConstants {
-            public static final double pivotMin = 0;
+            public static final int pivotCANID = 1050; // TODO: canid
+
+            public static final double pivotMin = 0; // TODO: pivot setpoints
+            public static final double pivotShake = 90;
             public static final double pivotMax = 180;
 
             public static final int intakePivotRatio = 48;

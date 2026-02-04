@@ -25,7 +25,7 @@ public class Movement extends SubsystemBase {
 
   private final Swerve swerve;
 
-  private final SparkMax pivot = new SparkMax(MovementConstants.pivotCANID, MotorType.kBrushless);
+  private final SparkMax pivot = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
   private final AbsoluteEncoder pivotEncoder = pivot.getAbsoluteEncoder();
   private final SparkMaxConfig pivotConfig = new SparkMaxConfig();
 
@@ -52,8 +52,8 @@ public class Movement extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuators.get());
 
     // check if max or min
-    atMax = pivot.get() >= MovementConstants.pivotMax;
-    atMin = pivot.get() <= MovementConstants.pivotMin;
+    atMax = pivot.get() >= MovementConstants.turretMin;
+    atMin = pivot.get() <= MovementConstants.turretMax;
   }
 
   //TODO: add turn direction to comment
@@ -62,7 +62,7 @@ public class Movement extends SubsystemBase {
    */
   public void setPivot(double speed) {
     // make sure the pivot is in range before rotating
-    if (pivotEncoder.getPosition() > MovementConstants.pivotMin && pivotEncoder.getPosition() < MovementConstants.pivotMax){
+    if (pivotEncoder.getPosition() > MovementConstants.turretMin && pivotEncoder.getPosition() < MovementConstants.turretMax){
       pivot.set(speed);
     }
   }
@@ -124,7 +124,7 @@ public class Movement extends SubsystemBase {
    * @return true if pivot is in range
    */
   public boolean pivotInRange() {
-    return getGlobalAngle() - getRelativeAngle() < MovementConstants.pivotError;
+    return getGlobalAngle() - getRelativeAngle() < MovementConstants.turretError;
   }
 
   /**

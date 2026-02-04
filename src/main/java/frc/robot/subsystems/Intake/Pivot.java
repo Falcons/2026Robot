@@ -17,7 +17,6 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
-import frc.robot.Constants.TurretConstants.MovementConstants;
 
 public class Pivot extends SubsystemBase {
   private final SparkMax pivot;
@@ -27,7 +26,7 @@ public class Pivot extends SubsystemBase {
   private boolean atMin, atMax;
   /** Creates a new Pivot. */
   public Pivot() {
-    this.pivot = new SparkMax(MovementConstants.pivotCANID, MotorType.kBrushless);
+    this.pivot = new SparkMax(PivotConstants.pivotCANID, MotorType.kBrushless);
     pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(IdleMode.kBrake);
 
@@ -78,7 +77,7 @@ public class Pivot extends SubsystemBase {
   public void setPivotPid(double setpoint) {
     double pid = pivotPid.calculate(pivot.getAbsoluteEncoder().getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
-    setpoint = MathUtil.clamp(setpoint, MovementConstants.pivotMin, PivotConstants.pivotMax);
+    setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotMin, PivotConstants.pivotMax);
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
