@@ -63,6 +63,14 @@ public class Movement extends SubsystemBase {
    * call this to actually auto aim to the goal
    */
   public void autoAim() {
+    
+  }
+
+
+  /**
+   * Aim with botpose
+   */
+  public void autoAimBotPos() {
     // clamp speed
     double setpoint = MathUtil.clamp(getRelativeRad(), PivotConstants.pivotMin, PivotConstants.pivotMax);
     // calc pid
