@@ -74,4 +74,8 @@ public final class Constants {
             public static final int singlizerRatio = 4;
         }
     }
+
+    public static final class ClimbConstants {
+        public static final int climbCANID = 1432;
+    }
 }
