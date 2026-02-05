@@ -1,15 +1,16 @@
 package frc.robot.commands.Climb;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants.ClimbConstants;
 import frc.robot.subsystems.Climb.Climb;
 
 public class ClimbCommand extends Command {
   private final Climb climb;
+  private double speed;
   
   /** Creates a new Climb. */
-  public ClimbCommand(Climb climb) {
+  public ClimbCommand(Climb climb, double speed) {
     this.climb = climb;
+    this.speed = speed;
     addRequirements(climb);
   
     // Use addRequirements() here to declare subsystem dependencies.
@@ -24,7 +25,7 @@ public class ClimbCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    climb.setClimb(ClimbConstants.maxClimbSpeed);
+    climb.setClimb(speed);
   }
 
   // Called once the command ends or is interrupted.

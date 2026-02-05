@@ -77,6 +77,5 @@ public final class Constants {
 
     public static final class ClimbConstants {
         public static final int climbCANID = 1432;
-        public static final int maxClimbSpeed = 1;
     }
 }
