@@ -22,7 +22,6 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class PivotSim extends SubsystemBase {
 
-  private final Pivot pivot;
   private final Field2d field = new Field2d();
 
   // Simulated motor
@@ -41,8 +40,7 @@ public class PivotSim extends SubsystemBase {
   private Pose2d pivotPose = new Pose2d();
 
   /** Creates a new PivotSim. */
-  public PivotSim(Pivot pivot) {
-    this.pivot = pivot;
+  public PivotSim() {
     SmartDashboard.putData("Field", field);
     pivotPID.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -52,7 +50,7 @@ public class PivotSim extends SubsystemBase {
     // This method will be called once per scheduler run
     pivotDir = new Rotation2d(pivotEncoderSim.getPosition());
     pivotPose = new Pose2d(new Translation2d(0, 0), pivotDir);
-    field.getObject("Intake/Pivot").setPose(pivotPose);
+    field.getObject("IntakePivot").setPose(pivotPose);
 
     SmartDashboard.putNumber("Pivot/MovementSim/Angle", pivotDir.getDegrees());
   }
