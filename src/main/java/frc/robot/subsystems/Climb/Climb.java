@@ -4,50 +4,35 @@
 
 package frc.robot.subsystems.Climb;
 
-import com.revrobotics.RelativeEncoder;
+import com.revrobotics.PersistMode;
+// import com.revrobotics.RelativeEncoder;
+import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
-
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ClimbConstants;
 
 
 
 public class Climb extends SubsystemBase {
 
-  private final SparkMax climb = new SparkMax(ClimbConstants.climbID, MotorType.kBrushless);
+  private final SparkMax climb = new SparkMax(ClimbConstants.climbCANID, MotorType.kBrushless);
+  private final SparkMaxConfig climbConfig = new SparkMaxConfig();
   
-  private final RelativeEncoder liftEncoder = climb.getEncoder();
-
-  
+  // private final RelativeEncoder climbEncoder = climb.getEncoder();
 
   /** Creates a new Climb. */
-  public Climb() 
-  {
-  
+  public Climb() {
+    climb.configure(climbConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
   }
 
-  public void setClimb(double climbSpeed)
-  {
+  public void setClimb(double climbSpeed) {
     climb.set(climbSpeed);
-  
   }
 
-  public void setLeftClimb(double speed)
-  {
-    climb.set(speed);
-  }
-
-  public void setBrakeMode()
-  {
-    climb.setIdleMode(IdleMode.kBrake);
-  }
-
-  public void stopClimb() 
-  {
+  public void stopClimb() {
     climb.stopMotor();
   }
 
