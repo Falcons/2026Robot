@@ -13,6 +13,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.ZeroGyro;
 import frc.robot.commands.Turret.AutoAimSim;
+import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.MovementSim;
 
@@ -23,6 +24,7 @@ public class RobotContainer {
 
   // simulated classes
   private final MovementSim movementSim = new MovementSim(swerve);
+  private final PivotSim pivotSim = new PivotSim();
 
 
   private final CommandXboxController driver = new CommandXboxController(0);

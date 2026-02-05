@@ -64,7 +64,7 @@ public class MovementSim extends SubsystemBase {
     // for sim make a direction and a pose, add robot radians becuase turret rotates with bot
     turretDir = new Rotation2d(turretPivotEncoderSim.getPosition() + swerve.getPose().getRotation().getRadians());
     turretPose = new Pose2d(swerve.getPose().getTranslation(), turretDir);
-    field.getObject("Systems/Turret/turretPivot").setPose(turretPose);
+    field.getObject("TurretPivot").setPose(turretPose);
 
     SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
     SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
