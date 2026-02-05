@@ -17,6 +17,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 
@@ -62,16 +64,27 @@ public class Movement extends SubsystemBase {
    * call this to actually auto aim to the goal
    */
   public void autoAim() {
-    
+    double setpoint;
+    boolean correctTag = false;
+    for (int tagID : MovementConstants.hubTagIDs) {
+      correctTag = LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID;
+    }
+    // if the april tag id is in the hub tags than use april tag with tx
+    if (correctTag) {
+      setpoint = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[0];
+    } else { 
+      // if there is no april tag use bot position, 
+      setpoint = getRelativeRad();
+    }
+    aimToSetpoint(setpoint);
   }
-
 
   /**
    * Aim with botpose
    */
-  public void autoAimBotPos() {
-    // clamp speed
-    double setpoint = MathUtil.clamp(getRelativeRad(), MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
+  public void aimToSetpoint(double setpoint) {
+    // clamp setpoint
+    setpoint = MathUtil.clamp(setpoint, MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
     // calc pid
     double pid = turretPID.calculate(turretEncoder.getPosition(), -setpoint);
     // clamp setpoint 

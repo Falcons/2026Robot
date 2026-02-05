@@ -2,6 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meter;
 
+
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -17,6 +18,10 @@ public final class Constants {
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
             Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(-90));
+    }
+
+    public static final class LimelightConstants {
+        public static final String turretLimelight = "limelight-turret";
     }
 
     public static final class ControllerConstants {
@@ -35,10 +40,12 @@ public final class Constants {
             public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
             
             public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
-            public static final double turretMinRad = Math.toRadians(0); // TODO: change min and max
-            public static final double turretMaxRad = Math.toRadians(180);
+            public static final double turretMinRad = Math.toRadians(-45); // TODO: change min and max
+            public static final double turretMaxRad = Math.toRadians(45);
 
             public static final double turretError = Math.toRadians(3);
+
+            public static final int hubTagIDs[] = {0};
         }
         public static final class ShooterConstants {
 
