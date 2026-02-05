@@ -4,65 +4,78 @@
 
 package frc.robot.subsystems.Turret;
 
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
+
+import com.revrobotics.sim.SparkAbsoluteEncoderSim;
+import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj.Servo;
+import edu.wpi.first.math.system.plant.DCMotor;
+import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+// import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 
-public class Movement extends SubsystemBase {
+public class MovementSim extends SubsystemBase {
 
   private final Swerve swerve;
+  private final Field2d field = new Field2d();
 
+  // simulated motor
   private final SparkMax turretPivot = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
-  private final AbsoluteEncoder turretPivotEncoder = turretPivot.getAbsoluteEncoder();
-  private final SparkMaxConfig turretPivotConfig = new SparkMaxConfig();
+  private final SparkMaxSim turretPivotSim = new SparkMaxSim(turretPivot, DCMotor.getNEO(1));
 
-  private final Servo leftHoodActuators = new Servo(MovementConstants.leftHoodActuatorPWM);
-  private final Servo rightHoodActuators = new Servo(MovementConstants.rightHoodActuatorPWM);
+  // sim encoder
+  private final SparkAbsoluteEncoderSim turretPivotEncoderSim = turretPivotSim.getAbsoluteEncoderSim();
+
+  // private final Servo leftHoodActuators = new Servo(MovementConstants.leftHoodActuatorPWM);
+  // private final Servo rightHoodActuators = new Servo(MovementConstants.rightHoodActuatorPWM);
 
   private final PIDController pivotPID = new PIDController(0.05, 0, 0);
 
-  private boolean atMax, atMin;
+  private boolean atMax = false, atMin = false;
+
+  // simulated variables
+  private Rotation2d turretDir = new Rotation2d();
+  private Pose2d turretPose = new Pose2d();
 
   /** Creates a new Movement. */
-  public Movement(Swerve swerve) {
+  public MovementSim(Swerve swerve) {
     this.swerve = swerve;
-
-    turretPivotConfig.encoder.positionConversionFactor(360 / MovementConstants.turretRatio); // 1 rotation = 360 degrees
-    turretPivot.configure(turretPivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    SmartDashboard.putData("Field", field);
   }
 
   @Override
   public void periodic() {
-    // check if max or min;
-    atMax = turretPivotEncoder.getPosition() >= MovementConstants.turretMaxRad;
-    atMin = turretPivotEncoder.getPosition() <= MovementConstants.turretMinRad;
+    // check if max or min
+    // atMax = turretPivotEncoderSim.getPosition() >= MovementConstants.turretMaxRad;
+    // atMin = turretPivotEncoderSim.getPosition() <= MovementConstants.turretMinRad;
 
-    // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Turret/Movmement/Pivot/Speed", turretPivot.get());
-    SmartDashboard.putNumber("Turret/Movmement/Pivot/Absolute Encoder", turretPivotEncoder.getPosition());
-    SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuators.get());
-    SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuators.get());
+    // for sim make a direction and a pose, add robot radians becuase turret rotates with bot
+    turretDir = new Rotation2d(turretPivotEncoderSim.getPosition() + swerve.getPose().getRotation().getRadians());
+    turretPose = new Pose2d(swerve.getPose().getTranslation(), turretDir);
+    field.getObject("Systems/Turret/turretPivot").setPose(turretPose);
+
+    SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
+    SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
+    SmartDashboard.putNumber("Turret/MovementSim/robotAngle", swerve.getPose().getRotation().getDegrees());
   }
 
   /**
    * call this to actually auto aim to the goal
    */
   public void autoAim() {
-    // clamp speed
+    // clamp setpoint
     double setpoint = MathUtil.clamp(getRelativeRad(), PivotConstants.pivotMin, PivotConstants.pivotMax);
+    setpoint = getRelativeRad();
     // calc pid
     double pid = pivotPID.calculate(turretPivot.getAbsoluteEncoder().getPosition(), -setpoint);
     // clamp setpoint 
@@ -85,7 +98,8 @@ public class Movement extends SubsystemBase {
     if (atMin && speed < 0) {
       speed = 0; turretPivot.stopMotor();
     }
-    turretPivot.set(speed);
+    turretPivotSim.setAppliedOutput(speed);
+    turretPivotEncoderSim.setPosition(turretPivotEncoderSim.getPosition() + speed);
   }
 
   public void moveHood(){
@@ -93,7 +107,7 @@ public class Movement extends SubsystemBase {
   }
 
   /**
-   * @return the angle in which the shooter should be aiming at towards the goal in radians
+   * @return the angle in which the shooter should be aiming at towards the goal in radians -pi to pi
    */
   public double getGlobalRad() {
     // Translation2d distanceToGoal = swerve.getPose().getTranslation().minus(AimerConstants.goalPos);
@@ -105,7 +119,7 @@ public class Movement extends SubsystemBase {
   }
 
   /**
-   * @return the relative abgle the shooter should point at in radians
+   * @return the relative abgle the shooter should point at in radians -pi to pi
    */
   public double getRelativeRad() {
     return MathUtil.angleModulus(swerve.getHeading().getRadians() - getGlobalRad());

@@ -12,12 +12,18 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.ZeroGyro;
+import frc.robot.commands.Turret.AutoAimSim;
 import frc.robot.subsystems.Swerve.Swerve;
+import frc.robot.subsystems.Turret.MovementSim;
 
 public class RobotContainer {
 
   // initialize robot's subsystems
   private final Swerve swerve = new Swerve();
+
+  // simulated classes
+  private final MovementSim movementSim = new MovementSim(swerve);
+
 
   private final CommandXboxController driver = new CommandXboxController(0);
 
@@ -38,6 +44,8 @@ public class RobotContainer {
       () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), 
       () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
       () -> !driver.getHID().getLeftBumper()));
+    
+    movementSim.setDefaultCommand(new AutoAimSim(movementSim));
 
     // Configure the button bindings
     configureBindings();

@@ -40,10 +40,10 @@ public class TeleopDrive extends Command {
   public void execute() {
 
     double limitedXControl = xSlewLimiter.calculate(controlX.getAsDouble());
-    double limitedYcontrol = ySlewLimiter.calculate(controlY.getAsDouble());
+    double limitedYControl = ySlewLimiter.calculate(controlY.getAsDouble());
     swerve.drive(new Translation2d(
-      limitedXControl  * swerve.getMaximumVelocity(),
-      limitedYcontrol  * swerve.getMaximumVelocity()),
+      limitedYControl  * swerve.getMaximumVelocity(),
+      limitedXControl  * swerve.getMaximumVelocity()),
       rot.getAsDouble() * swerve.getMaximumAngularVelocity(),
       fieldRelative.getAsBoolean());
   }

@@ -30,7 +30,7 @@ public class Pivot extends SubsystemBase {
     pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(IdleMode.kBrake);
 
-    pivotConfig.encoder.positionConversionFactor(RollersConstants.intakeRollersRatio / 360); // 1 rotation = 360 degrees
+    pivotConfig.encoder.positionConversionFactor(360 / RollersConstants.intakeRollersRatio); // 1 rotation = 360 degrees
 
     pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
 

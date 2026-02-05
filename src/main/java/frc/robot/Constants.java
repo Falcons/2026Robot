@@ -16,7 +16,7 @@ public final class Constants {
 
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
-            Meter.of(1),Meter.of(4)),Rotation2d.fromDegrees(0));
+            Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(-90));
     }
 
     public static final class ControllerConstants {
@@ -34,16 +34,14 @@ public final class Constants {
             public static final int leftHoodActuatorPWM = 1006; //TODO: set PWM channel
             public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
             
-            public static final Translation2d goalPos = new Translation2d(1, 4); // TODO: goal pos and turret range
-            public static final double maxRotationRad = Math.toRadians(270);
-            public static final double minRotationRad = Math.toRadians(90);
+            public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
+            public static final double turretMinRad = Math.toRadians(0); // TODO: change min and max
+            public static final double turretMaxRad = Math.toRadians(180);
 
-            public static final double turretMin = 0; // TODO: change min and max
-            public static final double turretMax = 180;
-
-            public static final double turretError = 5;
+            public static final double turretError = Math.toRadians(5);
         }
         public static final class ShooterConstants {
+
             public static final double kickerRatio = 4;
             public static final int transferRatio = 4;
 
