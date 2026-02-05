@@ -4,12 +4,17 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.Test;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.ZeroGyro;
 import frc.robot.subsystems.Swerve.Swerve;
@@ -41,6 +46,12 @@ public class RobotContainer {
     
     // Configure the button bindings
     configureBindings();
+
+    // make commands for auto
+    NamedCommands.registerCommand("Test", new Test());
+
+    autoChooser.setDefaultOption("Test Auto", new PathPlannerAuto("Test Auto"));
+    SmartDashboard.putData("Choose Auto: ", autoChooser);
   }
   
   private void configureBindings() {
