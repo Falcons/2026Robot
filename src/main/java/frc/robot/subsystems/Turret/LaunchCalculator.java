@@ -1,5 +1,5 @@
 // Copyright (c) 2025-2026 Littleton Robotics
-// http://github.com/Mechanical-Advantage < yes i stole this :)
+// https://github.com/Mechanical-Advantage/RobotCode2026Public < go here to steal yummy code
 //
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file at
