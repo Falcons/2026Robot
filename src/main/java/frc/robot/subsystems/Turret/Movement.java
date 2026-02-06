@@ -41,8 +41,8 @@ public class Movement extends SubsystemBase {
   public Movement(Swerve swerve) {
     this.swerve = swerve;
 
-    // turret configs
-    turretConfig.encoder.positionConversionFactor(Math.PI * 2 / MovementConstants.turretRatio); // 1 rotation = 2 pi
+    // turret configs 2048 ticks per revolution, convert to radians, divide by gear ratio
+    turretConfig.encoder.positionConversionFactor(2048 / Math.PI * 2 / MovementConstants.turretRatio); // 1 rotation = 2 pi
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // turretPID.enableContinuousInput(-Math.PI, Math.PI);

@@ -34,16 +34,16 @@ public final class Constants {
 
         public static final class MovementConstants {
 
-            public static final int turretRatio = 48;
+            public static final int turretRatio = 48; //48 motor rotations per 1 turret rotation
             public static final int hoodRatio = 100;
 
-            public static final int turretCANID = 1000; // TODO: canid
+            public static final int turretCANID = 1000; // TODO: canids
             public static final int leftHoodActuatorPWM = 1006; //TODO: set PWM channel
             public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
             
             public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
-            public static final double turretMinRad = Math.toRadians(-80); // TODO: change min and max
-            public static final double turretMaxRad = Math.toRadians(80);
+            public static final double turretMinRad = Math.toRadians(-180); // TODO: change min and max
+            public static final double turretMaxRad = Math.toRadians(180);
 
             public static final double turretError = Math.toRadians(3); //TODO: turret error
 
@@ -59,8 +59,9 @@ public final class Constants {
             public static final int transferCANID = 1004; // TODO: canid
             public static final int kickerCANID = 1005; // TODO: canid
 
-            public static final double maxShooterSpeed = 300;
-            
+            public static final double maxShooterRPS = 80;
+            public static final double maxShooterSpeed = 1;
+            public static final double maxTransferSpeed = 1;
         }
     }
 
@@ -79,8 +80,7 @@ public final class Constants {
             public static final double pivotShake = Math.toRadians(45);
             public static final double pivotIn = Math.toRadians(90); // in is higher, out is lower
 
-            public static final int intakePivotRatio = 48;
-            public static final int singlizerRatio = 4;
+            public static final int intakePivotRatio = 48; // 48 motor rotations per 1 pivot rotation
         }
     }
 

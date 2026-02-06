@@ -65,8 +65,8 @@ public class Shooter extends SubsystemBase {
     rightShooter.set(ShooterConstants.maxShooterSpeed);
     kicker.set(ShooterConstants.maxShooterSpeed);
     // wait until shooter is max speed than rotate transfer
-    if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterSpeed) {
-      transfer.set(ShooterConstants.maxShooterSpeed);
+    if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
+      transfer.set(ShooterConstants.maxTransferSpeed);
     }
   }
 

@@ -17,7 +17,6 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
-import frc.robot.Constants.IntakeConstants.RollersConstants;
 
 public class Pivot extends SubsystemBase {
   // pivot motor, encoder and config
@@ -34,13 +33,13 @@ public class Pivot extends SubsystemBase {
     pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(IdleMode.kBrake);
 
-    // convert to radians
-    pivotConfig.encoder.positionConversionFactor((2 * Math.PI) / RollersConstants.intakeRollersRatio); // 1 rotation = 2 pi
+    // convert to radians, 2048 ticks per full revolution, convert to radians divide by gear ratio
+    pivotConfig.encoder.positionConversionFactor(2048 / (2 * Math.PI) / PivotConstants.intakePivotRatio); // 1 rotation = 2 pi
 
     pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // pid limits
-    pivotPid.enableContinuousInput(-Math.PI, Math.PI);
+    // pivotPid.enableContinuousInput(-Math.PI, Math.PI);
     pivotPid.setTolerance(0.05);
     pivotPid.setIntegratorRange(-0.01, 0.01);
   }
