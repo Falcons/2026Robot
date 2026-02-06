@@ -8,7 +8,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
-    public static final double loopPeriodSecs = 0.02; // delta time
+    public static final double deltaTime = 0.02;
 
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
