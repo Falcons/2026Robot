@@ -38,7 +38,7 @@ public final class Constants {
             public static final double turretMinRad = Math.toRadians(0); // TODO: change min and max
             public static final double turretMaxRad = Math.toRadians(180);
 
-            public static final double turretError = Math.toRadians(5);
+            public static final double turretError = Math.toRadians(3);
         }
         public static final class ShooterConstants {
 
