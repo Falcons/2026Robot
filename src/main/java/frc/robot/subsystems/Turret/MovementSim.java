@@ -29,16 +29,16 @@ public class MovementSim extends SubsystemBase {
   private final Field2d field = new Field2d();
 
   // simulated motor
-  private final SparkMax turretPivot = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
-  private final SparkMaxSim turretPivotSim = new SparkMaxSim(turretPivot, DCMotor.getNEO(1));
+  private final SparkMax turret = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
+  private final SparkMaxSim turretSim = new SparkMaxSim(turret, DCMotor.getNEO(1));
 
   // sim encoder
-  private final SparkAbsoluteEncoderSim turretPivotEncoderSim = turretPivotSim.getAbsoluteEncoderSim();
+  private final SparkAbsoluteEncoderSim turretEncoderSim = turretSim.getAbsoluteEncoderSim();
 
   // private final Servo leftHoodActuators = new Servo(MovementConstants.leftHoodActuatorPWM);
   // private final Servo rightHoodActuators = new Servo(MovementConstants.rightHoodActuatorPWM);
 
-  private final PIDController pivotPID = new PIDController(0.05, 0, 0);
+  private final PIDController turretPID = new PIDController(0.05, 0, 0);
 
   private boolean atMax = false, atMin = false;
 
@@ -51,19 +51,19 @@ public class MovementSim extends SubsystemBase {
     this.swerve = swerve;
     SmartDashboard.putData("Field", field);
 
-    // pivotPID.enableContinuousInput(-Math.PI, Math.PI);
+    // turretPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
   public void periodic() {
     // check if max or min
-    atMax = turretPivotEncoderSim.getPosition() >= MovementConstants.turretMaxRad;
-    atMin = turretPivotEncoderSim.getPosition() <= MovementConstants.turretMinRad;
+    atMax = turretEncoderSim.getPosition() >= MovementConstants.turretMaxRad;
+    atMin = turretEncoderSim.getPosition() <= MovementConstants.turretMinRad;
 
     // for sim make a direction and a pose, add robot radians becuase turret rotates with bot
-    turretDir = new Rotation2d(turretPivotEncoderSim.getPosition() + swerve.getPose().getRotation().getRadians());
+    turretDir = new Rotation2d(turretEncoderSim.getPosition() + swerve.getPose().getRotation().getRadians());
     turretPose = new Pose2d(swerve.getPose().getTranslation(), turretDir);
-    field.getObject("TurretPivot").setPose(turretPose);
+    field.getObject("turret").setPose(turretPose);
 
     SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
     SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
@@ -78,29 +78,29 @@ public class MovementSim extends SubsystemBase {
     double setpoint = MathUtil.clamp(getRelativeRad(), MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
     setpoint = getRelativeRad();
     // calc pid
-    double pid = pivotPID.calculate(turretPivot.getAbsoluteEncoder().getPosition(), -setpoint);
+    double pid = turretPID.calculate(turret.getAbsoluteEncoder().getPosition(), -setpoint);
     // clamp setpoint 
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     // move motor
-    setPivot(pid);
-    pivotPID.reset();
+    setTurret(pid);
+    turretPID.reset();
   }
 
   /**
    * move the pivot wiht a clamp
-   * @param speed the speed to move the pivot
+   * @param speed the speed to move the turret
    */
-  public void setPivot(double speed) { 
+  public void setTurret(double speed) { 
     // clamp
     if (atMax && speed > 0) {
-      speed = 0; turretPivot.stopMotor();
+      speed = 0; turret.stopMotor();
     } 
     if (atMin && speed < 0) {
-      speed = 0; turretPivot.stopMotor();
+      speed = 0; turret.stopMotor();
     }
-    turretPivotSim.setAppliedOutput(speed);
-    turretPivotEncoderSim.setPosition(turretPivotEncoderSim.getPosition() + speed);
+    turretSim.setAppliedOutput(speed);
+    turretEncoderSim.setPosition(turretEncoderSim.getPosition() + speed);
   }
 
   public void moveHood(){
@@ -127,9 +127,9 @@ public class MovementSim extends SubsystemBase {
   }
 
   /**
-   * @return true if pivot is in range
+   * @return true if turret is in range
    */
-  public boolean pivotInRange() {
+  public boolean turretInRange() {
     return getGlobalRad() - getRelativeRad() < MovementConstants.turretError;
   }
 
@@ -145,6 +145,6 @@ public class MovementSim extends SubsystemBase {
    * @return a bool, true if in range
    */
   public boolean inRange() {
-    return pivotInRange() && hoodInRange();
+    return turretInRange() && hoodInRange();
   }
 }

@@ -57,7 +57,7 @@ public final class Constants {
             public static final int transferCANID = 1004; // TODO: canid
             public static final int kickerCANID = 1005; // TODO: canid
 
-            public static final double maxShooterSpeed = 1;
+            public static final double maxShooterSpeed = 300;
             
         }
     }

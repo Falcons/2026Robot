@@ -137,7 +137,7 @@ public class Movement extends SubsystemBase {
    * @return true if turret is in range
    */
   public boolean turretInRange() {
-    return getGlobalRad() - getRelativeRad() < MovementConstants.turretError;
+    return getRelativeRad() - turretEncoder.getPosition() < MovementConstants.turretError;
   }
 
   /**
