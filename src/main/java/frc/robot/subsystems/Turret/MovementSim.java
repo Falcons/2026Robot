@@ -51,6 +51,8 @@ public class MovementSim extends SubsystemBase {
   public MovementSim(Swerve swerve) {
     this.swerve = swerve;
     SmartDashboard.putData("Field", field);
+
+    pivotPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override

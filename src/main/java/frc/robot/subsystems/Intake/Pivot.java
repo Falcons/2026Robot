@@ -7,6 +7,7 @@ package frc.robot.subsystems.Intake;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
@@ -19,27 +20,29 @@ import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 
 public class Pivot extends SubsystemBase {
-  private final SparkMax pivot;
+  // pivot motor, encoder and config
+  private final SparkMax pivot = new SparkMax(PivotConstants.pivotCANID, MotorType.kBrushless);
+  private final SparkAbsoluteEncoder pivotEncoder = pivot.getAbsoluteEncoder();
   private final SparkMaxConfig pivotConfig;
+
   PIDController pivotPid = new PIDController(0.3, 0, 0);
 
   private boolean atMin, atMax;
   /** Creates a new Pivot. */
   public Pivot() {
-    this.pivot = new SparkMax(PivotConstants.pivotCANID, MotorType.kBrushless);
+    // configs
     pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(IdleMode.kBrake);
 
-    pivotConfig.encoder.positionConversionFactor(360 / RollersConstants.intakeRollersRatio); // 1 rotation = 360 degrees
+    // convert to radians
+    pivotConfig.encoder.positionConversionFactor((2 * Math.PI) / RollersConstants.intakeRollersRatio); // 1 rotation = 2 pi
 
-    pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kNoPersistParameters);
+    pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    pivotPid.enableContinuousInput(-180, 180);
+    // pid limits
+    pivotPid.enableContinuousInput(-Math.PI, Math.PI);
     pivotPid.setTolerance(0.05);
     pivotPid.setIntegratorRange(-0.01, 0.01);
-  }
-  public void stopPivot() {
-    pivot.stopMotor();
   }
 
   @Override
@@ -53,10 +56,6 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Pivot/Bus Voltage", getBusVoltage());
     SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
     SmartDashboard.putBoolean("Intake/Pivot/at min", atMin);
-    pidReset();
-  }
-
-  public void pidReset() {
     pivotPid.reset();
   }
   
@@ -72,10 +71,10 @@ public class Pivot extends SubsystemBase {
   }
 
   /**
-   * @param setpoint the angle to set the pivot
+   * @param setpoint the radians to set the pivot
    */
   public void setPivotPid(double setpoint) {
-    double pid = pivotPid.calculate(pivot.getAbsoluteEncoder().getPosition(), setpoint);
+    double pid = pivotPid.calculate(pivotEncoder.getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
     setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotMin, PivotConstants.pivotMax);
     pid = MathUtil.clamp(pid, -0.5, 0.5);
@@ -84,9 +83,11 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
     setPivot(pid);
   }
+
   public double getDegrees() {
-    return pivot.getAbsoluteEncoder().getPosition();
+    return Math.toDegrees(pivotEncoder.getPosition());
   }
+
   public double getCurrent() {
     return pivot.getOutputCurrent();
   }
@@ -101,5 +102,12 @@ public class Pivot extends SubsystemBase {
 
   public void set(double speed) {
     pivot.set(speed);
+  }
+
+  /**
+   * Stops the pivot motor
+   */
+  public void stopPivot() {
+    pivot.stopMotor();
   }
 }

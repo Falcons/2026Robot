@@ -42,6 +42,8 @@ public class Movement extends SubsystemBase {
 
     turretPivotConfig.encoder.positionConversionFactor(360 / MovementConstants.turretRatio); // 1 rotation = 360 degrees
     turretPivot.configure(turretPivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    pivotPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override

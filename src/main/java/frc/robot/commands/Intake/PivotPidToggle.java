@@ -25,14 +25,16 @@ public class PivotPidToggle extends Command {
   public void initialize() {
     System.out.println(this.getName() + " start");
     pivotPosition = PivotConstants.pivotMin;
-    if (pivot.getDegrees() >= PivotConstants.pivotMax - 10){pivotPosition = PivotConstants.pivotMax;}
+    if (pivot.getDegrees() >= Math.toDegrees(PivotConstants.pivotMax) - 10) {
+      pivotPosition = PivotConstants.pivotMax;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     SmartDashboard.putNumber("Pivot/home", pivotPosition);
-    pivot.setPivotPid(PivotConstants.pivotMax);
+    pivot.setPivotPid(pivotPosition);
   }
 
   // Called once the command ends or is interrupted.
