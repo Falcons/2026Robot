@@ -11,6 +11,7 @@ import com.revrobotics.sim.SparkAbsoluteEncoderSim;
 import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkMax;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,14 +25,14 @@ public class PivotSim extends SubsystemBase {
 
   private final Field2d field = new Field2d();
 
+  PIDController pivotPid = new PIDController(0.3, 0, 0);
+
   // Simulated motor
   private final SparkMax pivotMotor = new SparkMax(PivotConstants.pivotCANID, MotorType.kBrushless);
   private final SparkMaxSim pivotSim = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
 
   // Motor Encoder
   private final SparkAbsoluteEncoderSim pivotEncoderSim = pivotSim.getAbsoluteEncoderSim();
-
-  private final PIDController pivotPID = new PIDController(0.05, 0, 0);
 
   private boolean atMax = false, atMin = false;
 
@@ -42,16 +43,51 @@ public class PivotSim extends SubsystemBase {
   /** Creates a new PivotSim. */
   public PivotSim() {
     SmartDashboard.putData("Field", field);
-    pivotPID.enableContinuousInput(-Math.PI, Math.PI);
+    //pivotPid.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    atMax = pivotEncoderSim.getPosition() >= PivotConstants.pivotMax;
+    atMin = pivotEncoderSim.getPosition() <= PivotConstants.pivotMin;
+    
     pivotDir = new Rotation2d(pivotEncoderSim.getPosition());
     pivotPose = new Pose2d(new Translation2d(0, 0), pivotDir);
     field.getObject("IntakePivot").setPose(pivotPose);
 
     SmartDashboard.putNumber("Pivot/MovementSim/Angle", pivotDir.getDegrees());
+  }
+
+  public void setPivot(double speed) { 
+    speed *= 0.02;
+    // clamp
+    if (atMax && speed > 0) {
+      speed = 0; pivotMotor.stopMotor();
+    } 
+    if (atMin && speed < 0) {
+      speed = 0; pivotMotor.stopMotor();
+    }
+    pivotSim.setAppliedOutput(speed);
+    pivotEncoderSim.setPosition(pivotEncoderSim.getPosition() + speed);
+  }
+
+  /**
+   * @param setpoint the radians to set the pivot
+   */
+  public void setPivotPid(double setpoint) {
+    setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotMin, PivotConstants.pivotMax);
+    double pid = pivotPid.calculate(pivotEncoderSim.getPosition(), setpoint);
+    // check if above setpoint clamp, and clamp pid speed
+    pid = MathUtil.clamp(pid, -1, 1);
+
+    SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
+    SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
+    setPivot(pid);
+    //pivotPid.reset();
+  }
+
+  public boolean atPosition() {
+    return pivotPid.atSetpoint();
   }
 }

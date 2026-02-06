@@ -12,6 +12,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.ZeroGyro;
+import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
+import frc.robot.commands.Intake.IntakeSim.PivotManualSim;
 import frc.robot.commands.Turret.AutoAimSim;
 import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Swerve.Swerve;
@@ -28,6 +30,7 @@ public class RobotContainer {
 
 
   private final CommandXboxController driver = new CommandXboxController(0);
+
 
   // make a chooser option to select autos
   SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -49,12 +52,15 @@ public class RobotContainer {
     
     movementSim.setDefaultCommand(new AutoAimSim(movementSim));
 
+    pivotSim.setDefaultCommand(new PivotManualSim(pivotSim, () -> MathUtil.applyDeadband(-driver.getRightY(), ControllerConstants.deadBand)));  
+    
     // Configure the button bindings
     configureBindings();
   }
   
   private void configureBindings() {
     driver.b().onTrue(new ZeroGyro(swerve));
+    driver.a().onTrue(new PivotPidToggleSim(pivotSim));
   }
 
   public Command getAutonomousCommand() {
