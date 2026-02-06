@@ -76,7 +76,6 @@ public class MovementSim extends SubsystemBase {
   public void autoAim() {
     // clamp setpoint
     double setpoint = MathUtil.clamp(getRelativeRad(), MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
-    setpoint = getRelativeRad();
     // calc pid
     double pid = turretPID.calculate(turret.getAbsoluteEncoder().getPosition(), -setpoint);
     // clamp setpoint 
