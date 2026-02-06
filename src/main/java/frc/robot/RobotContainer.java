@@ -14,8 +14,9 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.ZeroGyro;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
+import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
 import frc.robot.commands.Turret.TurretSim.AutoTurretSim;
-import frc.robot.commands.Turret.TurretSim.ManualTurretSim;
+import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.IntakeSim.PivotManualSim;
 import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Swerve.Swerve;
@@ -47,8 +48,8 @@ public class RobotContainer {
     swerve.setDefaultCommand(new TeleopDrive( 
       swerve, 
       () -> MathUtil.applyDeadband(-driver.getLeftX(), ControllerConstants.deadBand), 
-      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), 
-      () -> 0, 
+      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), //() -> 0,
+      () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
       () -> !driver.getHID().getLeftBumper()));
   
     
@@ -60,10 +61,6 @@ public class RobotContainer {
 
     // auto aim
     movementSim.setDefaultCommand(new AutoTurretSim(movementSim));
-    // manual pivot
-    pivotSim.setDefaultCommand(new PivotManualSim(
-      pivotSim, 
-      () -> MathUtil.applyDeadband(-driver.getRightY(), ControllerConstants.deadBand))); 
   }
   
   private void configureBindings() {
@@ -76,12 +73,18 @@ public class RobotContainer {
 
     // pivot toggle
     driver.a().onTrue(new PivotPidToggleSim(pivotSim));
+    driver.x().onTrue(new PivotShakeSim(pivotSim));
 
     // manual turret
-    driver.axisMagnitudeGreaterThan(4, ControllerConstants.deadBand).whileTrue(
-      new ManualTurretSim(
-      movementSim, 
-      () -> -driver.getRightX()));
+    // driver.axisMagnitudeGreaterThan(4, ControllerConstants.deadBand).whileTrue(
+    //   new ManualTurretSim(
+    //   movementSim, 
+    //   () -> -driver.getRightX()));
+    // manual pivot
+    driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
+      new PivotManualSim(
+      pivotSim, 
+      () -> driver.getRightY()));
   }
 
   public Command getAutonomousCommand() {

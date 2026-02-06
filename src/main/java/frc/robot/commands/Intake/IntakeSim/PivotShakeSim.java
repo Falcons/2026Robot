@@ -1,0 +1,26 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
+package frc.robot.commands.Intake.IntakeSim;
+
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import frc.robot.Constants.IntakeConstants.PivotConstants;
+import frc.robot.subsystems.Intake.PivotSim;
+
+// NOTE:  Consider using this command inline, rather than writing a subclass.  For more
+// information, see:
+// https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
+public class PivotShakeSim extends SequentialCommandGroup {
+
+  @SuppressWarnings("unused") // its complaining about pivot sim never being used when it is
+  private final PivotSim pivotSim;
+  /** Creates a new PivotShake. */
+  public PivotShakeSim(PivotSim pivotSim) {
+    this.pivotSim = pivotSim;
+
+    // Add your commands in the addCommands() call, e.g.
+    // addCommands(new FooCommand(), new BarCommand());
+    addCommands(new PivotPidSim(pivotSim, PivotConstants.pivotShake), new PivotPidSim(pivotSim, PivotConstants.pivotOut));
+  }
+}

@@ -25,9 +25,9 @@ public class PivotPidToggle extends Command {
   public void initialize() {
     System.out.println(this.getName() + " start");
 
-    pivotPosition = PivotConstants.pivotMax;
-    if (pivot.getPivotDegrees() >= Math.toDegrees(PivotConstants.pivotMax) - 10) {
-      pivotPosition = PivotConstants.pivotMin;
+    pivotPosition = PivotConstants.pivotIn;
+    if (pivot.getPivotDegrees() >= Math.toDegrees(PivotConstants.pivotIn) - 10) {
+      pivotPosition = PivotConstants.pivotOut;
     }
   }
 

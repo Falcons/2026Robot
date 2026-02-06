@@ -49,8 +49,8 @@ public class PivotSim extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    atMax = pivotEncoderSim.getPosition() >= PivotConstants.pivotMax;
-    atMin = pivotEncoderSim.getPosition() <= PivotConstants.pivotMin;
+    atMax = pivotEncoderSim.getPosition() >= PivotConstants.pivotIn;
+    atMin = pivotEncoderSim.getPosition() <= PivotConstants.pivotOut;
     
     pivotDir = new Rotation2d(pivotEncoderSim.getPosition());
     pivotPose = new Pose2d(new Translation2d(0, 0), pivotDir);
@@ -76,7 +76,7 @@ public class PivotSim extends SubsystemBase {
    * @param setpoint the radians to set the pivot
    */
   public void setPivotPid(double setpoint) {
-    setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotMin, PivotConstants.pivotMax);
+    setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotOut, PivotConstants.pivotIn);
     double pid = pivotPid.calculate(pivotEncoderSim.getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
     pid = MathUtil.clamp(pid, -0.5, 0.5);

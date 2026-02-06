@@ -30,8 +30,8 @@ public class Movement extends SubsystemBase {
   private final AbsoluteEncoder turretEncoder = turret.getAbsoluteEncoder();
   private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 
-  private final Servo leftHoodActuators = new Servo(MovementConstants.leftHoodActuatorPWM);
-  private final Servo rightHoodActuators = new Servo(MovementConstants.rightHoodActuatorPWM);
+  private final Servo leftHoodActuator = new Servo(MovementConstants.leftHoodActuatorPWM);
+  private final Servo rightHoodActuator = new Servo(MovementConstants.rightHoodActuatorPWM);
 
   private final PIDController turretPID = new PIDController(0.05, 0, 0);
 
@@ -41,7 +41,8 @@ public class Movement extends SubsystemBase {
   public Movement(Swerve swerve) {
     this.swerve = swerve;
 
-    turretConfig.encoder.positionConversionFactor(360 / MovementConstants.turretRatio); // 1 rotation = 360 degrees
+    // turret configs
+    turretConfig.encoder.positionConversionFactor(Math.PI * 2 / MovementConstants.turretRatio); // 1 rotation = 2 pi
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // turretPID.enableContinuousInput(-Math.PI, Math.PI);
@@ -56,8 +57,8 @@ public class Movement extends SubsystemBase {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Turret/Movmement/Turret/Speed", turret.get());
     SmartDashboard.putNumber("Turret/Movmement/Turret/Absolute Encoder", turretEncoder.getPosition());
-    SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuators.get());
-    SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuators.get());
+    SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuator.get());
+    SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuator.get());
   }
 
   /**

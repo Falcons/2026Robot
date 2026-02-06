@@ -5,9 +5,13 @@ import static edu.wpi.first.units.Units.Meter;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
+    public static final double loopPeriodSecs = 0.02; // delta time
+
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
         public static final double maxSpeedMPS = 5;
@@ -40,10 +44,10 @@ public final class Constants {
             public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
             
             public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
-            public static final double turretMinRad = Math.toRadians(-45); // TODO: change min and max
-            public static final double turretMaxRad = Math.toRadians(45);
+            public static final double turretMinRad = Math.toRadians(-80); // TODO: change min and max
+            public static final double turretMaxRad = Math.toRadians(80);
 
-            public static final double turretError = Math.toRadians(3);
+            public static final double turretError = Math.toRadians(3); //TODO: turret error
 
             public static final int hubTagIDs[] = {0};
         }
@@ -73,9 +77,9 @@ public final class Constants {
         public static final class PivotConstants {
             public static final int pivotCANID = 1050; // TODO: canid
 
-            public static final double pivotMin = Math.toRadians(0); // TODO: pivot setpoints
+            public static final double pivotOut = Math.toRadians(0); // TODO: pivot setpoints
             public static final double pivotShake = Math.toRadians(45);
-            public static final double pivotMax = Math.toRadians(90);
+            public static final double pivotIn = Math.toRadians(90); // in is higher, out is lower
 
             public static final int intakePivotRatio = 48;
             public static final int singlizerRatio = 4;
@@ -83,6 +87,15 @@ public final class Constants {
     }
 
     public static final class ClimbConstants {
-        public static final int climbCANID = 1432;
+        public static final int climbCANID = 1432; //TODO: canid
+    }
+
+    public class LauncherConstants {
+        public static Transform3d robotToTurret = new Transform3d(-0.19685, 0.0, 0.44, Rotation3d.kZero);
+        public static Transform3d turretToCamera =
+            new Transform3d(
+                -0.1314196, 0.0, 0.2770674, new Rotation3d(0.0, Math.toRadians(-22.5), 0.0));
+
+        private LauncherConstants() {}
     }
 }
