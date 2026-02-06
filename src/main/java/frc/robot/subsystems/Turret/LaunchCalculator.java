@@ -7,11 +7,11 @@
 
 package frc.robot.subsystems.Turret;
 
-import java.lang.reflect.Array;
-
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -20,7 +20,10 @@ import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.Constants.LauncherConstants;
+import frc.robot.Util.AllianceFlipUtil;
+import frc.robot.Util.FieldConstants;
+import frc.robot.subsystems.Swerve.Swerve;
+import static frc.robot.subsystems.Turret.LauncherVariables.*;
 
 
 public class LaunchCalculator {
@@ -98,14 +101,14 @@ public class LaunchCalculator {
     timeOfFlightMap.put(1.38, 0.90);
   }
 
-  public LaunchingParameters getParameters() {
+  public LaunchingParameters getParameters(Swerve swerve) {
     if (latestParameters != null) {
       return latestParameters;
     }
 
     // Calculate estimated pose while accounting for phase delay
-    Pose2d estimatedPose = RobotState.getInstance().getEstimatedPose();
-    ChassisSpeeds robotRelativeVelocity = RobotState.getInstance().getRobotVelocity();
+    Pose2d estimatedPose = swerve.getPose();
+    ChassisSpeeds robotRelativeVelocity = swerve.getFieldVelocity();
     estimatedPose =
         estimatedPose.exp(
             new Twist2d(
@@ -116,11 +119,11 @@ public class LaunchCalculator {
     // Calculate distance from turret to target
     Translation2d target =
         AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-    Pose2d turretPosition = estimatedPose.transformBy(robotToTurret.toTransform2d());
+    Pose2d turretPosition = estimatedPose.transformBy(toTransform2d(robotToTurret));
     double turretToTargetDistance = target.getDistance(turretPosition.getTranslation());
 
     // Calculate field relative turret velocity
-    ChassisSpeeds robotVelocity = RobotState.getInstance().getFieldVelocity();
+    ChassisSpeeds robotVelocity = swerve.getFieldVelocity();
     double robotAngle = estimatedPose.getRotation().getRadians();
     double turretVelocityX =
         robotVelocity.vxMetersPerSecond
@@ -179,5 +182,16 @@ public class LaunchCalculator {
 
   public void clearLaunchingParameters() {
     latestParameters = null;
+  }
+
+  /**
+   * Converts a Transform3d to a Transform2d
+   *
+   * @param transform The original transform
+   * @return The resulting transform
+   */
+  public static Transform2d toTransform2d(Transform3d transform) {
+    return new Transform2d(
+        transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d());
   }
 }

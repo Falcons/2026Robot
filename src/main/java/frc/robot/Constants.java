@@ -2,7 +2,6 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meter;
 
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -11,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
     public static final double deltaTime = 0.02;
+    public static boolean disableHAL = false; // TODO: hal isnt a constant, werid its here(for launc calc)
 
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS

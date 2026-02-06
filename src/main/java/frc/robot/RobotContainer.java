@@ -20,7 +20,7 @@ import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.IntakeSim.PivotManualSim;
 import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Swerve.Swerve;
-import frc.robot.subsystems.Turret.MovementSim;
+import frc.robot.subsystems.Turret.TurretSim.MovementSim;
 
 public class RobotContainer {
 
