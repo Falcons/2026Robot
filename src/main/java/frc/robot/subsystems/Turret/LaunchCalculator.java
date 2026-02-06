@@ -27,9 +27,9 @@ public class LaunchCalculator {
   private static LaunchCalculator instance;
 
   private final LinearFilter turretAngleFilter =
-      LinearFilter.movingAverage((int) (0.1 / Constants.loopPeriodSecs));
+      LinearFilter.movingAverage((int) (0.1 / Constants.deltaTime));
   private final LinearFilter hoodAngleFilter =
-      LinearFilter.movingAverage((int) (0.1 / Constants.loopPeriodSecs));
+      LinearFilter.movingAverage((int) (0.1 / Constants.deltaTime));
 
   private Rotation2d lastTurretAngle;
   private double lastHoodAngle;
@@ -155,9 +155,9 @@ public class LaunchCalculator {
     if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
     turretVelocity =
         turretAngleFilter.calculate(
-            turretAngle.minus(lastTurretAngle).getRadians() / Constants.loopPeriodSecs);
+            turretAngle.minus(lastTurretAngle).getRadians() / Constants.deltaTime);
     hoodVelocity =
-        hoodAngleFilter.calculate((hoodAngle - lastHoodAngle) / Constants.loopPeriodSecs);
+        hoodAngleFilter.calculate((hoodAngle - lastHoodAngle) / Constants.deltaTime);
     lastTurretAngle = turretAngle;
     lastHoodAngle = hoodAngle;
     latestParameters =

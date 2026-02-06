@@ -7,6 +7,7 @@ package frc.robot.commands.Intake.IntakeSim;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Intake.PivotSim;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -28,7 +29,7 @@ public class PivotManualSim extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivotSim.setPivot(speed.getAsDouble() * 0.02); //delta time
+    pivotSim.setPivot(speed.getAsDouble() * Constants.deltaTime);
   }
 
   // Called once the command ends or is interrupted.

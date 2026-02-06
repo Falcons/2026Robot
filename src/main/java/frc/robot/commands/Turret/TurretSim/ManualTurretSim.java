@@ -7,6 +7,7 @@ package frc.robot.commands.Turret.TurretSim;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants;
 import frc.robot.subsystems.Turret.MovementSim;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
@@ -30,7 +31,7 @@ public class ManualTurretSim extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    movementSim.setTurret(speed.getAsDouble() * 0.02); // delta time
+    movementSim.setTurret(speed.getAsDouble() * Constants.deltaTime);
   }
 
   // Called once the command ends or is interrupted.
