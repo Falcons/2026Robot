@@ -5,8 +5,6 @@ import static edu.wpi.first.units.Units.Meter;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
@@ -88,14 +86,5 @@ public final class Constants {
 
     public static final class ClimbConstants {
         public static final int climbCANID = 1432; //TODO: canid
-    }
-
-    public class LauncherConstants {
-        public static Transform3d robotToTurret = new Transform3d(-0.19685, 0.0, 0.44, Rotation3d.kZero);
-        public static Transform3d turretToCamera =
-            new Transform3d(
-                -0.1314196, 0.0, 0.2770674, new Rotation3d(0.0, Math.toRadians(-22.5), 0.0));
-
-        private LauncherConstants() {}
     }
 }
