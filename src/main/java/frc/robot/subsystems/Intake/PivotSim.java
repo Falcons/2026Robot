@@ -43,7 +43,7 @@ public class PivotSim extends SubsystemBase {
   /** Creates a new PivotSim. */
   public PivotSim() {
     SmartDashboard.putData("Field", field);
-    //pivotPid.enableContinuousInput(-Math.PI, Math.PI);
+    // pivotPid.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
@@ -56,11 +56,10 @@ public class PivotSim extends SubsystemBase {
     pivotPose = new Pose2d(new Translation2d(0, 0), pivotDir);
     field.getObject("IntakePivot").setPose(pivotPose);
 
-    SmartDashboard.putNumber("Pivot/MovementSim/Angle", pivotDir.getDegrees());
+    SmartDashboard.putNumber("Intake/PivotSim/Angle", pivotDir.getDegrees());
   }
 
   public void setPivot(double speed) { 
-    speed *= 0.02;
     // clamp
     if (atMax && speed > 0) {
       speed = 0; pivotMotor.stopMotor();
@@ -70,6 +69,7 @@ public class PivotSim extends SubsystemBase {
     }
     pivotSim.setAppliedOutput(speed);
     pivotEncoderSim.setPosition(pivotEncoderSim.getPosition() + speed);
+    SmartDashboard.putNumber("Intake/PivotSim/Speed", speed);
   }
 
   /**
@@ -79,15 +79,18 @@ public class PivotSim extends SubsystemBase {
     setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotMin, PivotConstants.pivotMax);
     double pid = pivotPid.calculate(pivotEncoderSim.getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
-    pid = MathUtil.clamp(pid, -1, 1);
+    pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
     SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
     setPivot(pid);
-    //pivotPid.reset();
+    // pivotPid.reset();
+  }
+  public double getPivotDegrees() {
+    return Math.toDegrees(pivotEncoderSim.getPosition());
   }
 
-  public boolean atPosition() {
+  public boolean atSetpoint() {
     return pivotPid.atSetpoint();
   }
 }

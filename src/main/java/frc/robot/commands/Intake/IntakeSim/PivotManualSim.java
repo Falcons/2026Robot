@@ -12,12 +12,12 @@ import frc.robot.subsystems.Intake.PivotSim;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PivotManualSim extends Command {
   private final PivotSim pivotSim;
-  private final DoubleSupplier control;
+  private final DoubleSupplier speed;
   /** Creates a new PivotControlSim. */
-  public PivotManualSim(PivotSim pivotSim, DoubleSupplier control) {
+  public PivotManualSim(PivotSim pivotSim, DoubleSupplier speed) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.pivotSim = pivotSim;
-    this.control = control;
+    this.speed = speed;
     addRequirements(pivotSim);
   }
 
@@ -28,7 +28,7 @@ public class PivotManualSim extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivotSim.setPivot(control.getAsDouble());
+    pivotSim.setPivot(speed.getAsDouble() * 0.02); //delta time
   }
 
   // Called once the command ends or is interrupted.

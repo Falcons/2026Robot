@@ -84,7 +84,7 @@ public class Pivot extends SubsystemBase {
     setPivot(pid);
   }
 
-  public double getDegrees() {
+  public double getPivotDegrees() {
     return Math.toDegrees(pivotEncoder.getPosition());
   }
 

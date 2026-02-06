@@ -74,8 +74,8 @@ public final class Constants {
             public static final int pivotCANID = 1050; // TODO: canid
 
             public static final double pivotMin = Math.toRadians(0); // TODO: pivot setpoints
-            public static final double pivotShake = Math.toRadians(90);
-            public static final double pivotMax = Math.toRadians(180);
+            public static final double pivotShake = Math.toRadians(45);
+            public static final double pivotMax = Math.toRadians(90);
 
             public static final int intakePivotRatio = 48;
             public static final int singlizerRatio = 4;

@@ -11,10 +11,9 @@ import frc.robot.subsystems.Intake.PivotSim;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class PivotPidToggleSim extends Command {
   private final PivotSim pivotSim;
-  private boolean deployed = false;
+  private double pivotPosition;
   /** Creates a new PivotPidToggleSim. */
   public PivotPidToggleSim(PivotSim pivotSim) {
-    // Use addRequirements() here to declare subsystem dependencies.
     // Use addRequirements() here to declare subsystem dependencies.
     this.pivotSim = pivotSim;
     addRequirements(pivotSim);
@@ -22,35 +21,26 @@ public class PivotPidToggleSim extends Command {
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    pivotPosition = PivotConstants.pivotMax;
+    if (pivotSim.getPivotDegrees() >= Math.toDegrees(PivotConstants.pivotMax) - 10) {
+      pivotPosition = PivotConstants.pivotMin;
+    }
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (deployed == false) {
-      pivotSim.setPivotPid(PivotConstants.pivotMax);
-    }
-    else
-    {
-        pivotSim.setPivotPid(PivotConstants.pivotMin);
-    }
+    pivotSim.setPivotPid(pivotPosition);
   }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {
-    if (deployed == false) {
-      deployed = true;
-    }
-    else
-    {
-      deployed = false;
-    }
-  }
+  public void end(boolean interrupted) {}
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return pivotSim.atPosition();
+    return pivotSim.atSetpoint();
   }
 }

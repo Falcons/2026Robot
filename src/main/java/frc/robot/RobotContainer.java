@@ -52,7 +52,9 @@ public class RobotContainer {
     
     movementSim.setDefaultCommand(new AutoAimSim(movementSim));
 
-    pivotSim.setDefaultCommand(new PivotManualSim(pivotSim, () -> MathUtil.applyDeadband(-driver.getRightY(), ControllerConstants.deadBand)));  
+    pivotSim.setDefaultCommand(new PivotManualSim(
+      pivotSim, 
+      () -> MathUtil.applyDeadband(-driver.getRightY(), ControllerConstants.deadBand)));  
     
     // Configure the button bindings
     configureBindings();
