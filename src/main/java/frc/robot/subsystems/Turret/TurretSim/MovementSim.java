@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
+import frc.robot.subsystems.Turret.LaunchCalculator;
 
 public class MovementSim extends SubsystemBase {
 
@@ -68,6 +69,12 @@ public class MovementSim extends SubsystemBase {
     SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
     SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
     SmartDashboard.putNumber("Turret/MovementSim/robotAngle", swerve.getPose().getRotation().getDegrees());
+    // clear each time before uploading
+    LaunchCalculator.getInstance().clearLaunchingParameters();
+    var params = LaunchCalculator.getInstance().getParameters(swerve);
+    SmartDashboard.putNumber(
+        "Turret/MovementSim/New",
+        params.turretAngle().getDegrees());
   }
 
   /**
