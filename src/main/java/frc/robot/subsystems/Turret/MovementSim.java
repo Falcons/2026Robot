@@ -20,7 +20,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 
@@ -58,8 +57,8 @@ public class MovementSim extends SubsystemBase {
   @Override
   public void periodic() {
     // check if max or min
-    // atMax = turretPivotEncoderSim.getPosition() >= MovementConstants.turretMaxRad;
-    // atMin = turretPivotEncoderSim.getPosition() <= MovementConstants.turretMinRad;
+    atMax = turretPivotEncoderSim.getPosition() >= MovementConstants.turretMaxRad;
+    atMin = turretPivotEncoderSim.getPosition() <= MovementConstants.turretMinRad;
 
     // for sim make a direction and a pose, add robot radians becuase turret rotates with bot
     turretDir = new Rotation2d(turretPivotEncoderSim.getPosition() + swerve.getPose().getRotation().getRadians());
@@ -76,7 +75,7 @@ public class MovementSim extends SubsystemBase {
    */
   public void autoAim() {
     // clamp setpoint
-    double setpoint = MathUtil.clamp(getRelativeRad(), PivotConstants.pivotMin, PivotConstants.pivotMax);
+    double setpoint = MathUtil.clamp(getRelativeRad(), MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
     setpoint = getRelativeRad();
     // calc pid
     double pid = pivotPID.calculate(turretPivot.getAbsoluteEncoder().getPosition(), -setpoint);

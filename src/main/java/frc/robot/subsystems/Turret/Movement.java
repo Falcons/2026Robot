@@ -17,7 +17,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.IntakeConstants.PivotConstants;
+import frc.robot.LimelightHelpers;
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 
@@ -25,14 +26,14 @@ public class Movement extends SubsystemBase {
 
   private final Swerve swerve;
 
-  private final SparkMax turretPivot = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
-  private final AbsoluteEncoder turretPivotEncoder = turretPivot.getAbsoluteEncoder();
-  private final SparkMaxConfig turretPivotConfig = new SparkMaxConfig();
+  private final SparkMax turret = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
+  private final AbsoluteEncoder turretEncoder = turret.getAbsoluteEncoder();
+  private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 
   private final Servo leftHoodActuators = new Servo(MovementConstants.leftHoodActuatorPWM);
   private final Servo rightHoodActuators = new Servo(MovementConstants.rightHoodActuatorPWM);
 
-  private final PIDController pivotPID = new PIDController(0.05, 0, 0);
+  private final PIDController turretPID = new PIDController(0.05, 0, 0);
 
   private boolean atMax, atMin;
 
@@ -40,21 +41,21 @@ public class Movement extends SubsystemBase {
   public Movement(Swerve swerve) {
     this.swerve = swerve;
 
-    turretPivotConfig.encoder.positionConversionFactor(360 / MovementConstants.turretRatio); // 1 rotation = 360 degrees
-    turretPivot.configure(turretPivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    turretConfig.encoder.positionConversionFactor(360 / MovementConstants.turretRatio); // 1 rotation = 360 degrees
+    turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    pivotPID.enableContinuousInput(-Math.PI, Math.PI);
+    turretPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
   public void periodic() {
     // check if max or min;
-    atMax = turretPivotEncoder.getPosition() >= MovementConstants.turretMaxRad;
-    atMin = turretPivotEncoder.getPosition() <= MovementConstants.turretMinRad;
+    atMax = turretEncoder.getPosition() >= MovementConstants.turretMaxRad;
+    atMin = turretEncoder.getPosition() <= MovementConstants.turretMinRad;
 
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Turret/Movmement/Pivot/Speed", turretPivot.get());
-    SmartDashboard.putNumber("Turret/Movmement/Pivot/Absolute Encoder", turretPivotEncoder.getPosition());
+    SmartDashboard.putNumber("Turret/Movmement/Turret/Speed", turret.get());
+    SmartDashboard.putNumber("Turret/Movmement/Turret/Absolute Encoder", turretEncoder.getPosition());
     SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuators.get());
     SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuators.get());
   }
@@ -63,31 +64,50 @@ public class Movement extends SubsystemBase {
    * call this to actually auto aim to the goal
    */
   public void autoAim() {
-    // clamp speed
-    double setpoint = MathUtil.clamp(getRelativeRad(), PivotConstants.pivotMin, PivotConstants.pivotMax);
+    double setpoint;
+    boolean correctTag = false;
+    for (int tagID : MovementConstants.hubTagIDs) {
+      correctTag = LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID;
+    }
+    // if the april tag id is in the hub tags than use april tag with tx
+    if (correctTag) {
+      setpoint = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[0];
+    } else { 
+      // if there is no april tag use bot position, 
+      setpoint = getRelativeRad();
+    }
+    aimToSetpoint(setpoint);
+  }
+
+  /**
+   * Aim with botpose
+   */
+  public void aimToSetpoint(double setpoint) {
+    // clamp setpoint
+    setpoint = MathUtil.clamp(setpoint, MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
     // calc pid
-    double pid = pivotPID.calculate(turretPivot.getAbsoluteEncoder().getPosition(), -setpoint);
+    double pid = turretPID.calculate(turretEncoder.getPosition(), -setpoint);
     // clamp setpoint 
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     // move motor
-    setPivot(pid);
-    pivotPID.reset();
+    setTurret(pid);
+    turretPID.reset();
   }
 
   /**
-   * move the pivot wiht a clamp
-   * @param speed the speed to move the pivot
+   * move the turret wiht a clamp
+   * @param speed the speed to move the turret
    */
-  public void setPivot(double speed) { 
+  public void setTurret(double speed) { 
     // clamp
     if (atMax && speed > 0) {
-      speed = 0; turretPivot.stopMotor();
+      speed = 0; turret.stopMotor();
     } 
     if (atMin && speed < 0) {
-      speed = 0; turretPivot.stopMotor();
+      speed = 0; turret.stopMotor();
     }
-    turretPivot.set(speed);
+    turret.set(speed);
   }
 
   public void moveHood(){
@@ -114,9 +134,9 @@ public class Movement extends SubsystemBase {
   }
 
   /**
-   * @return true if pivot is in range
+   * @return true if turret is in range
    */
-  public boolean pivotInRange() {
+  public boolean turretInRange() {
     return getGlobalRad() - getRelativeRad() < MovementConstants.turretError;
   }
 
@@ -132,6 +152,6 @@ public class Movement extends SubsystemBase {
    * @return a bool, true if in range
    */
   public boolean inRange() {
-    return pivotInRange() && hoodInRange();
+    return turretInRange() && hoodInRange();
   }
 }
