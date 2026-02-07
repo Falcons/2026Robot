@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 
 public final class Constants {
     public static final double deltaTime = 0.02;
+    public static boolean disableHAL = false; //TODO: idk why this in constants its not a constant :/
 
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
@@ -19,7 +20,7 @@ public final class Constants {
 
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
-            Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(-90));
+            Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(0));
     }
 
     public static final class LimelightConstants {
