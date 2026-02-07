@@ -66,8 +66,8 @@ public class LaunchCalculator {
       new InterpolatingDoubleTreeMap();
 
   static {
-    minDistance = 1; // 1.34
-    maxDistance = 20; // 5.6
+    minDistance = 1.34;
+    maxDistance = 5.6;
     phaseDelay = 0.03;
 
     launchHoodAngleMap.put(1.34, Rotation2d.fromDegrees(19.0));
@@ -151,7 +151,7 @@ public class LaunchCalculator {
     }
     
     // Calculate parameters accounted for imparted velocity
-    turretAngle = target.minus(lookaheadPose.getTranslation()).getAngle(); // target position - future turret pos
+    turretAngle = target.minus(lookaheadPose.getTranslation()).getAngle();
     hoodAngle = launchHoodAngleMap.get(lookaheadTurretToTargetDistance).getRadians();
     if (lastTurretAngle == null) lastTurretAngle = turretAngle;
     if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
@@ -175,15 +175,6 @@ public class LaunchCalculator {
     // Log calculated values
     // SmartDashboard.putNumber("Turret/LaunchCalculator/LookaheadPose", lookaheadPose);
     SmartDashboard.putNumber("Turret/LaunchCalculator/lookaheadTurretToTargetDistance", lookaheadTurretToTargetDistance);
-
-    // Translation2d distanceToGoal = swerve.getPose().getTranslation().minus(AimerConstants.goalPos);
-    Translation2d distanceToGoal = FieldConstants.Hub.topCenterPoint.toTranslation2d().minus(swerve.getPose().getTranslation());
-    // to get target angle use inverse tan O/A
-    double targetAngle = Math.atan2(distanceToGoal.getY(), distanceToGoal.getX()); 
-    SmartDashboard.putNumber("Turret/LaunchCalculator/realAngle", Math.toDegrees(targetAngle));
-
-    SmartDashboard.putNumber("Turret/LaunchCalculator/turretToTargetDistance", turretToTargetDistance);
-    SmartDashboard.putNumber("Turret/LaunchCalculator/hypoyDistance", Math.hypot(distanceToGoal.getX(), distanceToGoal.getY()));
 
     return latestParameters;
   }
