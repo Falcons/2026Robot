@@ -48,7 +48,8 @@ public class RobotContainer {
     swerve.setDefaultCommand(new TeleopDrive( 
       swerve, 
       () -> MathUtil.applyDeadband(-driver.getLeftX(), ControllerConstants.deadBand), 
-      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), //() -> 0,
+      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), 
+      // () -> 0,
       () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
       () -> !driver.getHID().getLeftBumper()));
   
@@ -75,7 +76,7 @@ public class RobotContainer {
     driver.a().onTrue(new PivotPidToggleSim(pivotSim));
     driver.x().onTrue(new PivotShakeSim(pivotSim));
 
-    // manual turret
+    // // manual turret
     // driver.axisMagnitudeGreaterThan(4, ControllerConstants.deadBand).whileTrue(
     //   new ManualTurretSim(
     //   movementSim, 
