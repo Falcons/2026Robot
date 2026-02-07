@@ -14,7 +14,6 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,6 +21,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
+import frc.robot.subsystems.Turret.LaunchCalculator;
 
 public class MovementSim extends SubsystemBase {
 
@@ -67,7 +67,6 @@ public class MovementSim extends SubsystemBase {
 
     SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
     SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
-    SmartDashboard.putNumber("Turret/MovementSim/robotAngle", swerve.getPose().getRotation().getDegrees());
   }
 
   /**
@@ -76,9 +75,10 @@ public class MovementSim extends SubsystemBase {
   public void autoAim() {
     // clamp setpoint
     double setpoint = MathUtil.clamp(getRelativeRad(), MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
+    
     // calc pid
-    double pid = turretPID.calculate(turret.getAbsoluteEncoder().getPosition(), -setpoint);
-    // clamp setpoint 
+    double pid = turretPID.calculate(turret.getAbsoluteEncoder().getPosition(), setpoint);
+    // clamp pid 
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     // move motor
@@ -110,19 +110,16 @@ public class MovementSim extends SubsystemBase {
    * @return the angle in which the shooter should be aiming at towards the goal in radians -pi to pi
    */
   public double getGlobalRad() {
-    // Translation2d distanceToGoal = swerve.getPose().getTranslation().minus(AimerConstants.goalPos);
-    Translation2d distanceToGoal = MovementConstants.goalPos.minus(swerve.getPose().getTranslation());
-    // to get target angle use inverse tan O/A
-    double targetAngle = Math.atan2(distanceToGoal.getY(), distanceToGoal.getX()); 
-    
-    return MathUtil.angleModulus(targetAngle);
+    // use the launch calulator to get global angle
+    LaunchCalculator.getInstance().clearLaunchingParameters();
+    return LaunchCalculator.getInstance().getParameters(swerve).turretAngle().getRadians();
   }
 
   /**
    * @return the relative abgle the shooter should point at in radians -pi to pi
    */
   public double getRelativeRad() {
-    return MathUtil.angleModulus(swerve.getHeading().getRadians() - getGlobalRad());
+    return MathUtil.angleModulus(getGlobalRad() - swerve.getHeading().getRadians());
   }
 
   /**
