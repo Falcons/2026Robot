@@ -10,8 +10,6 @@ package frc.robot.subsystems.Turret;
 import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Transform2d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -22,9 +20,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Util.AllianceFlipUtil;
 import frc.robot.Util.FieldConstants;
+import frc.robot.Util.GeomUtil;
 import frc.robot.subsystems.Swerve.Swerve;
 import static frc.robot.subsystems.Turret.LauncherVariables.*;
-
 
 public class LaunchCalculator {
   private static LaunchCalculator instance;
@@ -68,8 +66,8 @@ public class LaunchCalculator {
       new InterpolatingDoubleTreeMap();
 
   static {
-    minDistance = 1.34;
-    maxDistance = 5.60;
+    minDistance = 1; // 1.34
+    maxDistance = 20; // 5.6
     phaseDelay = 0.03;
 
     launchHoodAngleMap.put(1.34, Rotation2d.fromDegrees(19.0));
@@ -94,11 +92,12 @@ public class LaunchCalculator {
     launchFlywheelSpeedMap.put(5.57, 275.0);
     launchFlywheelSpeedMap.put(5.60, 290.0);
 
-    timeOfFlightMap.put(5.68, 1.16);
-    timeOfFlightMap.put(4.55, 1.12);
-    timeOfFlightMap.put(3.15, 1.11);
-    timeOfFlightMap.put(1.88, 1.09);
+    // Existing entries
     timeOfFlightMap.put(1.38, 0.90);
+    timeOfFlightMap.put(1.88, 1.09);
+    timeOfFlightMap.put(3.15, 1.11);
+    timeOfFlightMap.put(4.55, 1.12);
+    timeOfFlightMap.put(5.68, 1.16);
   }
 
   public LaunchingParameters getParameters(Swerve swerve) {
@@ -119,7 +118,7 @@ public class LaunchCalculator {
     // Calculate distance from turret to target
     Translation2d target =
         AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-    Pose2d turretPosition = estimatedPose.transformBy(toTransform2d(robotToTurret));
+    Pose2d turretPosition = estimatedPose.transformBy(GeomUtil.toTransform2d(robotToTurret));
     double turretToTargetDistance = target.getDistance(turretPosition.getTranslation());
 
     // Calculate field relative turret velocity
@@ -150,9 +149,9 @@ public class LaunchCalculator {
               turretPosition.getRotation());
       lookaheadTurretToTargetDistance = target.getDistance(lookaheadPose.getTranslation());
     }
-
+    
     // Calculate parameters accounted for imparted velocity
-    turretAngle = target.minus(lookaheadPose.getTranslation()).getAngle();
+    turretAngle = target.minus(lookaheadPose.getTranslation()).getAngle(); // target position - future turret pos
     hoodAngle = launchHoodAngleMap.get(lookaheadTurretToTargetDistance).getRadians();
     if (lastTurretAngle == null) lastTurretAngle = turretAngle;
     if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
@@ -175,23 +174,21 @@ public class LaunchCalculator {
 
     // Log calculated values
     // SmartDashboard.putNumber("Turret/LaunchCalculator/LookaheadPose", lookaheadPose);
-    SmartDashboard.putNumber("Turret/LaunchCalculator/TurretToTargetDistance", lookaheadTurretToTargetDistance);
+    SmartDashboard.putNumber("Turret/LaunchCalculator/lookaheadTurretToTargetDistance", lookaheadTurretToTargetDistance);
+
+    // Translation2d distanceToGoal = swerve.getPose().getTranslation().minus(AimerConstants.goalPos);
+    Translation2d distanceToGoal = FieldConstants.Hub.topCenterPoint.toTranslation2d().minus(swerve.getPose().getTranslation());
+    // to get target angle use inverse tan O/A
+    double targetAngle = Math.atan2(distanceToGoal.getY(), distanceToGoal.getX()); 
+    SmartDashboard.putNumber("Turret/LaunchCalculator/realAngle", Math.toDegrees(targetAngle));
+
+    SmartDashboard.putNumber("Turret/LaunchCalculator/turretToTargetDistance", turretToTargetDistance);
+    SmartDashboard.putNumber("Turret/LaunchCalculator/hypoyDistance", Math.hypot(distanceToGoal.getX(), distanceToGoal.getY()));
 
     return latestParameters;
   }
 
   public void clearLaunchingParameters() {
     latestParameters = null;
-  }
-
-  /**
-   * Converts a Transform3d to a Transform2d
-   *
-   * @param transform The original transform
-   * @return The resulting transform
-   */
-  public static Transform2d toTransform2d(Transform3d transform) {
-    return new Transform2d(
-        transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d());
   }
 }
