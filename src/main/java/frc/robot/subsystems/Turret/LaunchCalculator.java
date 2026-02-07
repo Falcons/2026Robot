@@ -11,6 +11,7 @@ import edu.wpi.first.math.filter.LinearFilter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform2d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
@@ -183,13 +184,14 @@ public class LaunchCalculator {
     latestParameters = null;
   }
 
-  /**
-   * Creates a pure translating transform
+ /**
+   * Converts a Transform3d to a Transform2d
    *
-   * @param translation The translation to create the transform with
+   * @param transform The original transform
    * @return The resulting transform
    */
-  public static Transform2d toTransform2d(Translation2d translation) {
-    return new Transform2d(translation, Rotation2d.kZero);
+  public static Transform2d toTransform2d(Transform3d transform) {
+    return new Transform2d(
+        transform.getTranslation().toTranslation2d(), transform.getRotation().toRotation2d());
   }
 }
