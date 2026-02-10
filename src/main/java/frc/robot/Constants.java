@@ -5,11 +5,15 @@ import static edu.wpi.first.units.Units.Meter;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.util.Units;
+import frc.robot.Util.AllianceFlipUtil;
 
 public final class Constants {
     public static final double deltaTime = 0.02;
-    public static boolean disableHAL = false; //TODO: idk why this in constants its not a constant :/
+    public static final boolean disableHAL = false; // if tue alliance doesnt update in sim
 
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
@@ -19,8 +23,10 @@ public final class Constants {
         public static final double driveSteeringRatio = 150/7;
 
          // starting position of bot
-        public static final Pose2d startingPose = new Pose2d(new Translation2d(
-            Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(0));
+        public static final Pose2d startingPose = AllianceFlipUtil.apply(
+            new Pose2d(new Translation2d(
+            Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(0))
+        );
     }
 
     public static final class LimelightConstants {
@@ -64,6 +70,12 @@ public final class Constants {
             public static final double maxShooterSpeed = 1;
             public static final double maxTransferSpeed = 1;
         }
+
+        // shoot on the move
+        public static Transform3d robotToTurret = new Transform3d(0, 0.0, 0, Rotation3d.kZero); //TODO: change these
+        public static Transform3d turretToCamera =
+        new Transform3d(
+            0, 0.0, 0, new Rotation3d(0.0, Units.degreesToRadians(0), 0.0));
     }
 
     public static final class IntakeConstants {

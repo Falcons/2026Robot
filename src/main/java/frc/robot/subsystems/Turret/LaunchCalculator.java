@@ -18,12 +18,16 @@ import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
+import frc.robot.Constants.TurretConstants.MovementConstants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.Constants.TurretConstants;
+import frc.robot.LimelightHelpers;
 import frc.robot.Util.AllianceFlipUtil;
 import frc.robot.Util.FieldConstants;
 import frc.robot.subsystems.Swerve.Swerve;
-import static frc.robot.subsystems.Turret.LauncherVariables.*;
 
 public class LaunchCalculator {
   private static LaunchCalculator instance;
@@ -108,6 +112,7 @@ public class LaunchCalculator {
 
     // Calculate estimated pose while accounting for phase delay
     Pose2d estimatedPose = swerve.getPose();
+
     ChassisSpeeds robotRelativeVelocity = swerve.getFieldVelocity();
     estimatedPose =
         estimatedPose.exp(
@@ -119,7 +124,7 @@ public class LaunchCalculator {
     // Calculate distance from turret to target
     Translation2d target =
         AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-    Pose2d turretPosition = estimatedPose.transformBy(toTransform2d(robotToTurret));
+    Pose2d turretPosition = estimatedPose.transformBy(toTransform2d(TurretConstants.robotToTurret));
     double turretToTargetDistance = target.getDistance(turretPosition.getTranslation());
 
     // Calculate field relative turret velocity
@@ -128,18 +133,30 @@ public class LaunchCalculator {
     double turretVelocityX =
         robotVelocity.vxMetersPerSecond
             + robotVelocity.omegaRadiansPerSecond
-                * (robotToTurret.getY() * Math.cos(robotAngle)
-                    - robotToTurret.getX() * Math.sin(robotAngle));
+                * (TurretConstants.robotToTurret.getY() * Math.cos(robotAngle)
+                    - TurretConstants.robotToTurret.getX() * Math.sin(robotAngle));
     double turretVelocityY =
         robotVelocity.vyMetersPerSecond
             + robotVelocity.omegaRadiansPerSecond
-                * (robotToTurret.getX() * Math.cos(robotAngle)
-                    - robotToTurret.getY() * Math.sin(robotAngle));
+                * (TurretConstants.robotToTurret.getX() * Math.cos(robotAngle)
+                    - TurretConstants.robotToTurret.getY() * Math.sin(robotAngle));
 
     // Account for imparted velocity by robot (turret) to offset
     double timeOfFlight;
     Pose2d lookaheadPose = turretPosition;
     double lookaheadTurretToTargetDistance = turretToTargetDistance;
+
+    // if limelight can see tag set distance to tz
+    boolean correctTag = false;
+    for (int tagID : MovementConstants.hubTagIDs) {
+        // if not real ignore
+        if (!RobotBase.isReal()){break;}
+        correctTag = LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID;
+    }
+    if (correctTag) {
+        turretToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
+    }
+    
     for (int i = 0; i < 20; i++) {
       timeOfFlight = timeOfFlightMap.get(lookaheadTurretToTargetDistance);
       double offsetX = turretVelocityX * timeOfFlight;
@@ -153,6 +170,14 @@ public class LaunchCalculator {
     
     // Calculate parameters accounted for imparted velocity
     turretAngle = target.minus(lookaheadPose.getTranslation()).getAngle();
+    // if limelight use that angle
+    if (correctTag) {
+        double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
+        turretToTargetDistance = aprilTagOffset[2]; // distance is tz
+        // get angle
+        turretAngle = new Rotation2d(Math.atan2(aprilTagOffset[2], aprilTagOffset[0]));
+    }
+
     hoodAngle = launchHoodAngleMap.get(lookaheadTurretToTargetDistance).getRadians();
     if (lastTurretAngle == null) lastTurretAngle = turretAngle;
     if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
@@ -163,6 +188,7 @@ public class LaunchCalculator {
         hoodAngleFilter.calculate((hoodAngle - lastHoodAngle) / Constants.deltaTime);
     lastTurretAngle = turretAngle;
     lastHoodAngle = hoodAngle;
+
     latestParameters =
         new LaunchingParameters(
             lookaheadTurretToTargetDistance >= minDistance
