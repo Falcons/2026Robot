@@ -46,7 +46,6 @@ public class Shooter extends SubsystemBase {
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leftShooter.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Opposed));
-    // kickerConfig.follow(ShooterConstants.rightShooterCANID); //TODO: spark max may not follow the talon
 
     // apply configs
     leftShooter.getConfigurator().apply(leftShooterConfig);
@@ -60,7 +59,7 @@ public class Shooter extends SubsystemBase {
    */
   public void shootWhenMaxSpeed() {
     // dont run if not in range
-    if (!aimer.inRange()){return;}
+    if (!aimer.inRange()) return;
 
     rightShooter.set(ShooterConstants.maxShooterSpeed);
     kicker.set(ShooterConstants.maxShooterSpeed);

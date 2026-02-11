@@ -39,8 +39,8 @@ public final class Constants {
             public static final int hoodRatio = 100;
 
             public static final int turretCANID = 1000; // TODO: canids
-            public static final int leftHoodActuatorPWM = 1006; //TODO: set PWM channel
-            public static final int rightHoodActuatorPWM = 1007; //TODO: set PWM channel
+            public static final int leftHoodActuatorPWM = 18; //TODO: set PWM channel
+            public static final int rightHoodActuatorPWM = 19; //TODO: set PWM channel
             
             public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
             public static final double turretMinRad = Math.toRadians(-180); // TODO: change min and max

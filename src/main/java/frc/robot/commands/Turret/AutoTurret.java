@@ -29,6 +29,7 @@ public class AutoTurret extends Command {
   public void execute() {
     // movementSim.setPivot(speedX.getAsDouble());
     movement.autoAim();
+    
   }
 
   // Called once the command ends or is interrupted.

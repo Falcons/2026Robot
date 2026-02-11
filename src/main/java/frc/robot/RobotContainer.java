@@ -76,15 +76,15 @@ public class RobotContainer {
     driver.x().onTrue(new PivotShakeSim(pivotSim));
 
     // manual turret
-    // driver.axisMagnitudeGreaterThan(4, ControllerConstants.deadBand).whileTrue(
-    //   new ManualTurretSim(
-    //   movementSim, 
-    //   () -> -driver.getRightX()));
+    driver.axisMagnitudeGreaterThan(4, ControllerConstants.deadBand).whileTrue(
+      new ManualTurretSim(
+      movementSim, 
+      () -> -driver.getRightY()));
     // manual pivot
-    driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
-      new PivotManualSim(
-      pivotSim, 
-      () -> driver.getRightY()));
+    // driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
+    //   new PivotManualSim(
+    //   pivotSim, 
+    //   () -> driver.getRightY()));
   }
 
   public Command getAutonomousCommand() {
