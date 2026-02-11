@@ -119,6 +119,13 @@ public class MovementSim extends SubsystemBase {
    * @return the angle in which the shooter should be aiming at towards the goal in radians -pi to pi
    */
   public double getGlobalRad() {
+    // // Translation2d distanceToGoal = swerve.getPose().getTranslation().minus(AimerConstants.goalPos);
+    // Translation2d distanceToGoal = MovementConstants.goalPos.minus(swerve.getPose().getTranslation());
+    // // to get target angle use inverse tan O/A
+    // double targetAngle = Math.atan2(distanceToGoal.getY(), distanceToGoal.getX()); 
+    
+    // return MathUtil.angleModulus(targetAngle);
+
     // use the launch calulator to get global angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
     return LaunchCalculator.getInstance().getParameters(swerve).turretAngle().getRadians();

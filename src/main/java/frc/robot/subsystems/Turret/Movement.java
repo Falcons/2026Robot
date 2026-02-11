@@ -13,7 +13,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -70,6 +69,7 @@ public class Movement extends SubsystemBase {
   public void autoAim() {
     double setpoint;
     boolean correctTag = false;
+    // loop through tags to set correct tag
     for (int tagID : MovementConstants.hubTagIDs) {
       correctTag = LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID;
     }
@@ -133,12 +133,9 @@ public class Movement extends SubsystemBase {
    * @return the angle in which the shooter should be aiming at towards the goal in radians
    */
   public double getGlobalRad() {
-    // Translation2d distanceToGoal = swerve.getPose().getTranslation().minus(AimerConstants.goalPos);
-    Translation2d distanceToGoal = MovementConstants.goalPos.minus(swerve.getPose().getTranslation());
-    // to get target angle use inverse tan O/A
-    double targetAngle = Math.atan2(distanceToGoal.getY(), distanceToGoal.getX()); 
-    
-    return MathUtil.angleModulus(targetAngle);
+    // use the launch calulator to get global angle
+    LaunchCalculator.getInstance().clearLaunchingParameters();
+    return LaunchCalculator.getInstance().getParameters(swerve).turretAngle().getRadians();
   }
 
   /**
