@@ -11,17 +11,17 @@
   },
   "encoder": {
     "type": "thrifty",
-    "id": 2,
+    "id": 0,
     "canbus": null
   },
   "inverted": {
     "drive": false,
     "angle": true
   },
-  "absoluteEncoderOffset": 72.7,
+  "absoluteEncoderOffset": 71.3,
     "location": {
       "front": -11.875,
       "left": -11.875
     },
-    "absoluteEncoderInverted": true
+    "absoluteEncoderInverted": false
   }
