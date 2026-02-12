@@ -22,6 +22,7 @@ import frc.robot.commands.Drive.ZeroGyro;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
 import frc.robot.commands.Turret.TurretSim.AutoTurretSim;
+import frc.robot.commands.Turret.TurretSim.ManualHoodSim;
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // DONT REMOVE
 import frc.robot.subsystems.Intake.PivotSim;
@@ -89,15 +90,21 @@ public class RobotContainer {
     driver.x().onTrue(new PivotShakeSim(pivotSim));
 
     // manual turret
-    driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
-      new ManualTurretSim(
-      movementSim, 
-      () -> -driver.getRightY()));
+    // driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
+    //   new ManualTurretSim(
+    //   movementSim, 
+    //   () -> -driver.getRightY()));
     // manual pivot
     // driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
     //   new PivotManualSim(
     //   pivotSim, 
     //   () -> driver.getRightY()));
+
+    // manual hood
+    driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
+      new ManualHoodSim(
+      movementSim, 
+      () -> driver.getRightY()));
   }
 
   public Command getAutonomousCommand() {

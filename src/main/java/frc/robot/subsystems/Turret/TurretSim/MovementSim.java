@@ -14,6 +14,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -44,8 +45,12 @@ public class MovementSim extends SubsystemBase {
   private boolean atMax = false, atMin = false;
 
   // simulated variables
-  private Rotation2d turretDir = new Rotation2d();
+  // turret
   private Pose2d turretPose = new Pose2d();
+
+  // hood
+  private Pose2d hoodPoseLeft = new Pose2d();
+  private Pose2d hoodPoseRight = new Pose2d();
 
   /** Creates a new Movement. */
   public MovementSim(Swerve swerve) {
@@ -63,9 +68,18 @@ public class MovementSim extends SubsystemBase {
     atMin = turretEncoderSim.getPosition() <= MovementConstants.turretMinRad;
 
     // for sim make a direction and a pose, add robot radians becuase turret rotates with bot
-    turretDir = new Rotation2d(turretEncoderSim.getPosition() + swerve.getPose().getRotation().getRadians());
-    turretPose = new Pose2d(swerve.getPose().getTranslation(), turretDir);
+    turretPose = new Pose2d(swerve.getPose().getTranslation(), 
+                 new Rotation2d(turretEncoderSim.getPosition() + swerve.getPose().getRotation().getRadians()));
+
     field.getObject("turret").setPose(turretPose);
+
+    // hood
+    hoodPoseLeft = new Pose2d(new Translation2d(5,0), 
+                   new Rotation2d(Math.toRadians(leftHoodActuatorSim.getAngle())));
+    hoodPoseRight = new Pose2d(new Translation2d(7,0), 
+                   new Rotation2d(Math.toRadians(rightHoodActuatorSim.getAngle())));
+    field.getObject("hoodLeft").setPose(hoodPoseLeft);
+    field.getObject("hoodRight").setPose(hoodPoseRight);
 
     SmartDashboard.putBoolean("Turret/Movment/Turret/at max", atMax);
     SmartDashboard.putBoolean("Turret/Movment/Turret/at min", atMin);
@@ -145,11 +159,20 @@ public class MovementSim extends SubsystemBase {
 
   /**
    * Set the hood to the position
-   * @param Position position in degrees
+   * @param Position position 
    */
   public void setHood(double Position){
     leftHoodActuatorSim.set(Position);
     rightHoodActuatorSim.set(Position);
+  }
+
+  /**
+   * Set the hood to the position
+   * @param Position position in degrees
+   */
+  public void setHoodDeg(double Position){
+    leftHoodActuatorSim.setAngle(Position);
+    rightHoodActuatorSim.setAngle(Position);
   }
 
   /**
@@ -159,6 +182,14 @@ public class MovementSim extends SubsystemBase {
   public void moveHood(double speed){
     leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
     leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
+  }
+
+  /**
+   * Get the average of the two hood angles
+   * @return the angle in degrees
+   */
+  public double getHoodPosition(){
+    return (leftHoodActuatorSim.getAngle() + rightHoodActuatorSim.getAngle())/2;
   }
 
   /**
