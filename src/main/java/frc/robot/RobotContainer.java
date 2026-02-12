@@ -4,20 +4,25 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.commands.Test;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.ZeroGyro;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
 import frc.robot.commands.Turret.TurretSim.AutoTurretSim;
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
-import frc.robot.commands.Intake.IntakeSim.PivotManualSim;
+import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // DONT REMOVE
 import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.TurretSim.MovementSim;
@@ -55,6 +60,12 @@ public class RobotContainer {
     
     // Configure the button bindings
     configureBindings();
+    
+    // make commands for auto
+    NamedCommands.registerCommand("Test", new Test());
+
+    autoChooser = AutoBuilder.buildAutoChooser();
+    SmartDashboard.putData("Choose Auto: ", autoChooser);
 
     // SIM CONTROLS:
     if (RobotBase.isReal()){return;}
