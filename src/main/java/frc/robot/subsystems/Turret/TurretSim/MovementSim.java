@@ -10,15 +10,12 @@ import com.revrobotics.sim.SparkMaxSim;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
-import edu.wpi.first.hal.SimDevice;
-import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.simulation.SimDeviceSim;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 // import edu.wpi.first.wpilibj.Servo;
@@ -31,6 +28,9 @@ public class MovementSim extends SubsystemBase {
 
   private final Swerve swerve;
   private final Field2d field = new Field2d();
+  
+  private final Servo leftHoodActuatorSim = new Servo(MovementConstants.leftHoodActuatorPWM);
+  private final Servo rightHoodActuatorSim = new Servo(MovementConstants.rightHoodActuatorPWM);
 
   // simulated motor
   private final SparkMax turret = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
@@ -69,8 +69,8 @@ public class MovementSim extends SubsystemBase {
 
     SmartDashboard.putBoolean("Turret/Movment/Turret/at max", atMax);
     SmartDashboard.putBoolean("Turret/Movment/Turret/at min", atMin);
-    // SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuatorSim.getDouble("position").get());
-    // SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuatorSim.getDouble("position").get());
+    SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuatorSim.getAngle());
     SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
     SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
   }
@@ -112,9 +112,6 @@ public class MovementSim extends SubsystemBase {
     setHood(setpoint);
   }
 
-  public void setHood(double position){
-  }
-
   /**
    * @return the angle in which the shooter should be aiming at towards the goal in radians -pi to pi
    */
@@ -144,6 +141,24 @@ public class MovementSim extends SubsystemBase {
    */
   public double getRelativeRad() {
     return MathUtil.angleModulus(getGlobalRad() - swerve.getHeading().getRadians());
+  }
+
+  /**
+   * Set the hood to the position
+   * @param Position position in degrees
+   */
+  public void setHood(double Position){
+    leftHoodActuatorSim.set(Position);
+    rightHoodActuatorSim.set(Position);
+  }
+
+  /**
+   * move hood based on commanded position + speed in degrees
+   * @param speed degrees * 20  /second
+   */
+  public void moveHood(double speed){
+    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
+    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
   }
 
   /**
