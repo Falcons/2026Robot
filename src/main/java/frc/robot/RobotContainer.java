@@ -4,6 +4,7 @@
 
 package frc.robot;
 
+import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
 
@@ -50,7 +51,9 @@ public class RobotContainer {
     // make commands for auto
     NamedCommands.registerCommand("Test", new Test());
 
-    autoChooser.setDefaultOption("Test Auto", new PathPlannerAuto("Test Auto"));
+
+    // auto load all pathplanner autos
+    autoChooser = AutoBuilder.buildAutoChooser();
     SmartDashboard.putData("Choose Auto: ", autoChooser);
   }
   

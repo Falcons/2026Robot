@@ -45,6 +45,7 @@ public class Swerve extends SubsystemBase {
       throw new RuntimeException(e);
     }
     setupPathPlanner();
+    setMaxSpeed(1.0, Math.toRadians(180));
   }
 
   @Override
@@ -57,6 +58,15 @@ public class Swerve extends SubsystemBase {
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
+  }
+
+  /**
+   * 
+   * @param translationalSpeed double, max movement speed in meters per second
+   * @param angularSpeed double, max rotation speed in radians per second
+   */
+  public void setMaxSpeed(Double translationalSpeed, double angularSpeed){
+    swerveDrive.setMaximumAllowableSpeeds(translationalSpeed, angularSpeed);
   }
 
   /**
@@ -215,13 +225,11 @@ public class Swerve extends SubsystemBase {
     /**
    * Setup AutoBuilder for PathPlanner.
    */
-  public void setupPathPlanner()
-  {
+  public void setupPathPlanner(){
     // Load the RobotConfig from the GUI settings. You should probably
     // store this in your Constants file
     RobotConfig config;
-    try
-    {
+    try{
       config = RobotConfig.fromGUISettings();
 
       final boolean enableFeedforward = true;
@@ -234,15 +242,13 @@ public class Swerve extends SubsystemBase {
           swerveDrive::getRobotVelocity,
           // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
           (speedsRobotRelative, moduleFeedForwards) -> {
-            if (enableFeedforward)
-            {
+            if (enableFeedforward){
               swerveDrive.drive(
                   speedsRobotRelative,
                   swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
                   moduleFeedForwards.linearForces()
                                );
-            } else
-            {
+            } else{
               swerveDrive.setChassisSpeeds(speedsRobotRelative);
             }
           },
@@ -250,9 +256,9 @@ public class Swerve extends SubsystemBase {
           new PPHolonomicDriveController(
               // TODO: pid
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
+              new PIDConstants(5, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
+              new PIDConstants(5, 0.0, 0.0)
               // Rotation PID constants
           ),
           config,
@@ -273,8 +279,7 @@ public class Swerve extends SubsystemBase {
           // Reference to this subsystem to set requirements
                            );
 
-    } catch (Exception e)
-    {
+    } catch (Exception e){
       // Handle exception as needed
       e.printStackTrace();
     }
