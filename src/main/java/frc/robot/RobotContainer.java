@@ -76,7 +76,7 @@ public class RobotContainer {
     driver.x().onTrue(new PivotShakeSim(pivotSim));
 
     // manual turret
-    driver.axisMagnitudeGreaterThan(4, ControllerConstants.deadBand).whileTrue(
+    driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
       new ManualTurretSim(
       movementSim, 
       () -> -driver.getRightY()));
