@@ -81,10 +81,11 @@ public class MovementSim extends SubsystemBase {
     field.getObject("hoodLeft").setPose(hoodPoseLeft);
     field.getObject("hoodRight").setPose(hoodPoseRight);
 
-    SmartDashboard.putBoolean("Turret/Movment/Turret/at max", atMax);
-    SmartDashboard.putBoolean("Turret/Movment/Turret/at min", atMin);
-    SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuatorSim.getAngle());
+    SmartDashboard.putBoolean("Turret/MovementSim/Turret/at max", atMax);
+    SmartDashboard.putBoolean("Turret/MovementSim/Turret/at min", atMin);
+    SmartDashboard.putNumber("Turret/MovementSim/Hood/left actuators", leftHoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Turret/MovementSim/Hood/right actuators", rightHoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Turret/MovementSim/Hood/Auto hood angle", getHoodAngle());
     SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
     SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
   }
@@ -121,23 +122,15 @@ public class MovementSim extends SubsystemBase {
     turretSim.setAppliedOutput(speed);
     turretEncoderSim.setPosition(turretEncoderSim.getPosition() + speed);
   }
-  public void aimHood(){
-    double setpoint = MathUtil.clamp(getHoodAngle(), 0, 1);
-    setHood(setpoint);
+  public void autoAimHood(){
+    double setpoint = MathUtil.clamp(getHoodAngle(), 0, 180);
+    setHoodDeg(setpoint);
   }
 
   /**
    * @return the angle in which the shooter should be aiming at towards the goal in radians -pi to pi
    */
   public double getGlobalRad() {
-    // // Translation2d distanceToGoal = swerve.getPose().getTranslation().minus(AimerConstants.goalPos);
-    // Translation2d distanceToGoal = MovementConstants.goalPos.minus(swerve.getPose().getTranslation());
-    // // to get target angle use inverse tan O/A
-    // double targetAngle = Math.atan2(distanceToGoal.getY(), distanceToGoal.getX()); 
-    
-    // return MathUtil.angleModulus(targetAngle);
-
-    // use the launch calulator to get global angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
     return LaunchCalculator.getInstance().getParameters(swerve).turretAngle().getRadians();
   }
@@ -147,7 +140,7 @@ public class MovementSim extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return LaunchCalculator.getInstance().getParameters(swerve).hoodAngle();
+    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve).hoodAngle());
   }
 
   /**
