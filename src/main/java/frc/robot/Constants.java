@@ -16,7 +16,7 @@ public final class Constants {
 
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
-            Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(-90));
+            Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(0));
     }
 
     public static final class ControllerConstants {

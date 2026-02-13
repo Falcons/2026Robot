@@ -169,14 +169,14 @@ public class Swerve extends SubsystemBase {
   /**
    * Drive the robot given a chassis field oriented velocity.
    * @param velocity Velocity according to the field.
-   */
+   
   public void driveFieldOriented(ChassisSpeeds velocity)
   {
     SmartDashboard.putNumber("desierd x", velocity.vxMetersPerSecond);
     SmartDashboard.putNumber("desierd y", velocity.vyMetersPerSecond);
     SmartDashboard.putNumber("desierd rot", velocity.omegaRadiansPerSecond);
     swerveDrive.driveFieldOriented(velocity);
-  }
+  } */
   public void zeroGyro() {
     swerveDrive.zeroGyro();
   }
@@ -190,17 +190,32 @@ public class Swerve extends SubsystemBase {
    * @param headingY     Heading Y to calculate angle of the joystick.
    * @return Drive command.
    */
-  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX, DoubleSupplier headingY){
-    swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
+  public Command driveCommand(DoubleSupplier translationX, DoubleSupplier translationY, DoubleSupplier headingX,
+                              DoubleSupplier headingY)
+  {
+    // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
-      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(), translationY.getAsDouble()), 0.8);
+
+      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
+                                                                                 translationY.getAsDouble()), 0.8);
+
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
-        headingX.getAsDouble(),
-        headingY.getAsDouble(),
-        swerveDrive.getOdometryHeading().getRadians(),
-        swerveDrive.getMaximumChassisVelocity()));
+                                                                      headingX.getAsDouble(),
+                                                                      headingY.getAsDouble(),
+                                                                      swerveDrive.getOdometryHeading().getRadians(),
+                                                                      swerveDrive.getMaximumChassisVelocity()));
     });
+  }
+  
+  /**
+   * Drive the robot given a chassis field oriented velocity.
+   *
+   * @param velocity Velocity according to the field.
+   */
+  public void driveFieldOriented(ChassisSpeeds velocity)
+  {
+    swerveDrive.driveFieldOriented(velocity);
   }
 
     /**

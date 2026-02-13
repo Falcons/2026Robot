@@ -37,14 +37,26 @@ public class RobotContainer {
     // silence joystick warning if simulation
     if (Robot.isSimulation()){DriverStation.silenceJoystickConnectionWarning(true);}
 
-    // add default commands (run when no other commands are running)
-    swerve.setDefaultCommand(new TeleopDrive( 
-      swerve, 
-      () -> MathUtil.applyDeadband(-driver.getLeftX(), ControllerConstants.deadBand), 
-      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), 
-      () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
-      () -> !driver.getHID().getLeftBumper()));
-    
+    // // add default commands (run when no other commands are running)
+    // swerve.setDefaultCommand(new TeleopDrive( 
+    //   swerve, 
+    //   () -> MathUtil.applyDeadband(-driver.getLeftX(), ControllerConstants.deadBand), 
+    //   () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), 
+    //   () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
+    //   () -> !driver.getHID().getLeftBumper()));
+
+    // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the desired angle NOT angular rotation
+    Command driveFieldOrientedDirectAngle = swerve.driveCommand(
+        () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand),
+        () -> MathUtil.applyDeadband(-driver.getLeftX(), ControllerConstants.deadBand),
+        () -> -driver.getRightX(),
+        () -> -driver.getRightY());
+        
+    swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
     // Configure the button bindings
     configureBindings();
 
