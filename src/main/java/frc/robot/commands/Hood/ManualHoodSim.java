@@ -2,23 +2,23 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.commands.Turret.TurretSim;
+package frc.robot.commands.Hood;
 
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Turret.TurretSim.MovementSim;
+import frc.robot.subsystems.Hood.HoodSim;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualHoodSim extends Command {
-  private final MovementSim movementSim;
+  private final HoodSim hoodSim;
   private DoubleSupplier speed;
   /** Creates a new ManualHood. */
-  public ManualHoodSim(MovementSim movementSim, DoubleSupplier speed) {
-    this.movementSim = movementSim;
+  public ManualHoodSim(HoodSim hoodSim, DoubleSupplier speed) {
+    this.hoodSim = hoodSim;
     this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(movementSim);
+    addRequirements(hoodSim);
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +28,7 @@ public class ManualHoodSim extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    movementSim.setHood(speed.getAsDouble());
+    hoodSim.set(speed.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

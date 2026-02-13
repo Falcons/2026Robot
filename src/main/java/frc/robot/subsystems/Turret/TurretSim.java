@@ -2,7 +2,7 @@
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
-package frc.robot.subsystems.Turret.TurretSim;
+package frc.robot.subsystems.Turret;
 
 
 import com.revrobotics.sim.SparkAbsoluteEncoderSim;
@@ -14,24 +14,17 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.system.plant.DCMotor;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-// import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
-import frc.robot.subsystems.Turret.LaunchCalculator;
 
-public class MovementSim extends SubsystemBase {
+public class TurretSim extends SubsystemBase {
 
   private final Swerve swerve;
   private final Field2d field = new Field2d();
-  
-  private final Servo leftHoodActuatorSim = new Servo(MovementConstants.leftHoodActuatorPWM);
-  private final Servo rightHoodActuatorSim = new Servo(MovementConstants.rightHoodActuatorPWM);
 
   // simulated motor
   private final SparkMax turret = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
@@ -48,17 +41,10 @@ public class MovementSim extends SubsystemBase {
   // turret
   private Pose2d turretPose = new Pose2d();
 
-  // hood
-  private Pose2d hoodPoseLeft = new Pose2d();
-  private Pose2d hoodPoseRight = new Pose2d();
-
   /** Creates a new Movement. */
-  public MovementSim(Swerve swerve) {
-    // leftHoodActuator.createDouble("position", Direction.kBidir, 0);
-    // rightHoodActuator.createDouble("position", Direction.kBidir, 0);
+  public TurretSim(Swerve swerve) {
     this.swerve = swerve;
     SmartDashboard.putData("Field", field);
-    // turretPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 
   @Override
@@ -73,18 +59,8 @@ public class MovementSim extends SubsystemBase {
 
     field.getObject("turret").setPose(turretPose);
 
-    // hood
-    hoodPoseLeft = new Pose2d(new Translation2d(5,0), 
-                   new Rotation2d(Math.toRadians(leftHoodActuatorSim.getAngle())));
-    hoodPoseRight = new Pose2d(new Translation2d(7,0), 
-                   new Rotation2d(Math.toRadians(rightHoodActuatorSim.getAngle())));
-    field.getObject("hoodLeft").setPose(hoodPoseLeft);
-    field.getObject("hoodRight").setPose(hoodPoseRight);
-
     SmartDashboard.putBoolean("Turret/MovementSim/Turret/at max", atMax);
     SmartDashboard.putBoolean("Turret/MovementSim/Turret/at min", atMin);
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/left actuators", leftHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/right actuators", rightHoodActuatorSim.getAngle());
     SmartDashboard.putNumber("Turret/MovementSim/Hood/Auto hood angle", getHoodAngle());
     SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
     SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
@@ -103,7 +79,7 @@ public class MovementSim extends SubsystemBase {
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     // move motor
-    setTurret(pid);
+    set(pid);
     turretPID.reset();
   }
 
@@ -111,7 +87,7 @@ public class MovementSim extends SubsystemBase {
    * move the pivot wiht a clamp
    * @param speed the speed to move the turret
    */
-  public void setTurret(double speed) { 
+  public void set(double speed) { 
     // clamp
     if (atMax && speed > 0) {
       speed = 0; turret.stopMotor();
@@ -121,10 +97,6 @@ public class MovementSim extends SubsystemBase {
     }
     turretSim.setAppliedOutput(speed);
     turretEncoderSim.setPosition(turretEncoderSim.getPosition() + speed);
-  }
-  public void autoAimHood(){
-    double setpoint = MathUtil.clamp(getHoodAngle(), 0, 180);
-    setHoodDeg(setpoint);
   }
 
   /**
@@ -151,59 +123,9 @@ public class MovementSim extends SubsystemBase {
   }
 
   /**
-   * Set the hood to the position
-   * @param Position position 
-   */
-  public void setHood(double Position){
-    leftHoodActuatorSim.set(Position);
-    rightHoodActuatorSim.set(Position);
-  }
-
-  /**
-   * Set the hood to the position
-   * @param Position position in degrees
-   */
-  public void setHoodDeg(double Position){
-    leftHoodActuatorSim.setAngle(Position);
-    rightHoodActuatorSim.setAngle(Position);
-  }
-
-  /**
-   * move hood based on commanded position + speed in degrees
-   * @param speed degrees * 20  /second
-   */
-  public void moveHood(double speed){
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
-  }
-
-  /**
-   * Get the average of the two hood angles
-   * @return the angle in degrees
-   */
-  public double getHoodPosition(){
-    return (leftHoodActuatorSim.getAngle() + rightHoodActuatorSim.getAngle())/2;
-  }
-
-  /**
    * @return true if turret is in range
    */
-  public boolean turretInRange() {
-    return getGlobalRad() - getRelativeRad() < MovementConstants.turretError;
-  }
-
-  /**
-   * @return true if hood is in range
-   */
-  public boolean hoodInRange() {
-    return false;
-  }
-
-  /**
-   * checks if the turret is in range
-   * @return a bool, true if in range
-   */
   public boolean inRange() {
-    return turretInRange() && hoodInRange();
+    return getGlobalRad() - getRelativeRad() < MovementConstants.turretError;
   }
 }

@@ -19,15 +19,17 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Test;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.ZeroGyro;
+import frc.robot.commands.Hood.AutoHoodSim;
+import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
 import frc.robot.commands.Turret.TurretSim.AutoTurretSim;
-import frc.robot.commands.Turret.TurretSim.ManualHoodSim;
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // DONT REMOVE
+import frc.robot.subsystems.Hood.HoodSim;
 import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Swerve.Swerve;
-import frc.robot.subsystems.Turret.TurretSim.MovementSim;
+import frc.robot.subsystems.Turret.TurretSim;
 
 public class RobotContainer {
 
@@ -35,7 +37,8 @@ public class RobotContainer {
   private final Swerve swerve = new Swerve();
 
   // simulated classes
-  private final MovementSim movementSim = new MovementSim(swerve);
+  private final TurretSim turretSim = new TurretSim(swerve);
+  private final HoodSim hoodSim = new HoodSim(swerve);
   private final PivotSim pivotSim = new PivotSim();
   
   private final CommandXboxController driver = new CommandXboxController(0);
@@ -74,12 +77,12 @@ public class RobotContainer {
     if (RobotBase.isReal()){return;}
 
     // auto aim
-    movementSim.setDefaultCommand(new AutoTurretSim(movementSim));
+    turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
+    hoodSim.setDefaultCommand(new AutoHoodSim(hoodSim));
   }
   
   private void configureBindings() {
     
-
     driver.b().onTrue(new ZeroGyro(swerve));
 
     // SIM CONTROLS:
@@ -92,7 +95,7 @@ public class RobotContainer {
     // manual turret
     // driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
     //   new ManualTurretSim(
-    //   movementSim, 
+    //   turretSim, 
     //   () -> -driver.getRightY()));
     // manual pivot
     // driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
@@ -103,7 +106,7 @@ public class RobotContainer {
     // manual hood
     driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
       new ManualHoodSim(
-      movementSim, 
+      hoodSim, 
       () -> driver.getRightY()));
   }
 

@@ -36,10 +36,10 @@ public class Shooter extends SubsystemBase {
   private final SparkMaxConfig transferConfig = new SparkMaxConfig();
 
   // need to connect to movement to see if its aligned
-  private final Movement aimer;
+  private final Turret aimer;
 
   /** Creates a new Shooter. */
-  public Shooter(Movement aimer) {
+  public Shooter(Turret aimer) {
 
     this.aimer = aimer;
 

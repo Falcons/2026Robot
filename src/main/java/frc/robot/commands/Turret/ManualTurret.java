@@ -7,18 +7,18 @@ package frc.robot.commands.Turret;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Turret.Movement;
+import frc.robot.subsystems.Turret.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ManualTurret extends Command {
-  private final Movement movement;
+  private final Turret turret;
   private DoubleSupplier speed;
   /** Creates a new ManualAim. */
-  public ManualTurret(Movement movement, DoubleSupplier speed) {
-    this.movement = movement;
+  public ManualTurret(Turret turret, DoubleSupplier speed) {
+    this.turret = turret;
     this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(movement);
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
@@ -30,7 +30,7 @@ public class ManualTurret extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    movement.setTurret(speed.getAsDouble());
+    turret.set(speed.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

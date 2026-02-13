@@ -13,7 +13,6 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.LimelightHelpers;
@@ -21,7 +20,7 @@ import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 
-public class Movement extends SubsystemBase {
+public class Turret extends SubsystemBase {
 
   private final Swerve swerve;
 
@@ -29,15 +28,12 @@ public class Movement extends SubsystemBase {
   private final AbsoluteEncoder turretEncoder = turret.getAbsoluteEncoder();
   private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 
-  private final Servo leftHoodActuator = new Servo(MovementConstants.leftHoodActuatorPWM);
-  private final Servo rightHoodActuator = new Servo(MovementConstants.rightHoodActuatorPWM);
-
   private final PIDController turretPID = new PIDController(0.05, 0, 0);
 
   private boolean atMax, atMin;
 
   /** Creates a new Movement. */
-  public Movement(Swerve swerve) {
+  public Turret(Swerve swerve) {
     this.swerve = swerve;
 
     // turret configs 2048 ticks per revolution, convert to radians, divide by gear ratio
@@ -58,8 +54,6 @@ public class Movement extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Movmement/Turret/Absolute Encoder", turretEncoder.getPosition());
     SmartDashboard.putBoolean("Turret/Movment/Turret/at max", atMax);
     SmartDashboard.putBoolean("Turret/Movment/Turret/at min", atMin);
-    SmartDashboard.putNumber("Turret/Movememnt/Hood/left actuators", leftHoodActuator.get());
-    SmartDashboard.putNumber("Turret/Movememnt/Hood/right actuators", rightHoodActuator.get());
   }
 
   /**
@@ -94,7 +88,7 @@ public class Movement extends SubsystemBase {
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     // move motor
-    setTurret(pid);
+    set(pid);
     turretPID.reset();
   }
 
@@ -102,7 +96,7 @@ public class Movement extends SubsystemBase {
    * move the turret wiht a clamp
    * @param speed the speed to move the turret
    */
-  public void setTurret(double speed) { 
+  public void set(double speed) { 
     // clamp
     if (atMax && speed > 0) {
       speed = 0; turret.stopMotor();
@@ -112,22 +106,6 @@ public class Movement extends SubsystemBase {
     }
     turret.set(speed);
   }
-
-  public void setHood(double Position){
-    leftHoodActuator.set(Position);
-    rightHoodActuator.set(Position);
-  }
-
-  public double getLeftHoodPosition(){
-    return leftHoodActuator.getPosition();
-  }
-  public double getRightHoodPosition(){
-    return rightHoodActuator.getPosition();
-  }
-  public double getHoodPosition(){
-    return (getLeftHoodPosition() + getRightHoodPosition())/2;
-  }
-
   /**
    * @return the angle in which the shooter should be aiming at towards the goal in radians
    */
@@ -147,22 +125,7 @@ public class Movement extends SubsystemBase {
   /**
    * @return true if turret is in range
    */
-  public boolean turretInRange() {
-    return getRelativeRad() - turretEncoder.getPosition() < MovementConstants.turretError;
-  }
-
-  /**
-   * @return true if hood is in range
-   */
-  public boolean hoodInRange() {
-    return false;
-  }
-
-  /**
-   * checks if the turret is in range
-   * @return a bool, true if in range
-   */
   public boolean inRange() {
-    return turretInRange() && hoodInRange();
+    return getRelativeRad() - turretEncoder.getPosition() < MovementConstants.turretError;
   }
 }

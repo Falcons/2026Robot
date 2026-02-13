@@ -5,17 +5,17 @@
 package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Turret.Movement;
+import frc.robot.subsystems.Turret.Turret;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AutoTurret extends Command {
 
-  private final Movement movement;
+  private final Turret turret;
   /** Creates a new ManualPivotSim. */
-  public AutoTurret(Movement movement) {
-    this.movement= movement;
+  public AutoTurret(Turret turret) {
+    this.turret = turret;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(movement);
+    addRequirements(turret);
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +28,7 @@ public class AutoTurret extends Command {
   @Override
   public void execute() {
     // movementSim.setPivot(speedX.getAsDouble());
-    movement.autoAim();
+    turret.autoAim();
     
   }
 
