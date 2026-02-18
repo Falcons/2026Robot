@@ -6,6 +6,7 @@ package frc.robot.subsystems.Swerve;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.LimelightHelpers;
 import frc.robot.Constants.DriveConstants;
 
 import java.io.File;
@@ -19,6 +20,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
@@ -50,6 +52,7 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
+    addVisionMeasurement();
     SmartDashboard.putNumber("swerve/frontLeft encoder", swerveDrive.getModules()[0].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/frontRight encoder", swerveDrive.getModules()[1].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
@@ -58,6 +61,11 @@ public class Swerve extends SubsystemBase {
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
+  }
+
+  public void addVisionMeasurement(){
+    Pose2d visionPose = LimelightHelpers.getBotPose2d_wpiBlue(DriveConstants.driveLimelight);
+    swerveDrive.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
   }
 
   /**
@@ -83,10 +91,10 @@ public class Swerve extends SubsystemBase {
     Translation2d scaledInputs = SwerveMath.cubeTranslation(new Translation2d(xInput, yInput));
 
     return swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(),
-                                                        scaledInputs.getY(),
-                                                        angle.getRadians(),
-                                                        getHeading().getRadians(),
-                                                        DriveConstants.maxSpeedMPS);
+      scaledInputs.getY(),
+      angle.getRadians(),
+      getHeading().getRadians(),
+      DriveConstants.maxSpeedMPS);
   }
 
 
@@ -196,15 +204,14 @@ public class Swerve extends SubsystemBase {
     // swerveDrive.setHeadingCorrection(true); // Normally you would want heading correction for this kind of control.
     return run(() -> {
 
-      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),
-                                                                                 translationY.getAsDouble()), 0.8);
+      Translation2d scaledInputs = SwerveMath.scaleTranslation(new Translation2d(translationX.getAsDouble(),translationY.getAsDouble()), 0.8);
 
       // Make the robot move
       driveFieldOriented(swerveDrive.swerveController.getTargetSpeeds(scaledInputs.getX(), scaledInputs.getY(),
-                                                                      headingX.getAsDouble(),
-                                                                      headingY.getAsDouble(),
-                                                                      swerveDrive.getOdometryHeading().getRadians(),
-                                                                      swerveDrive.getMaximumChassisVelocity()));
+        headingX.getAsDouble(),
+        headingY.getAsDouble(),
+        swerveDrive.getOdometryHeading().getRadians(),
+        swerveDrive.getMaximumChassisVelocity()));
     });
   }
   
@@ -271,9 +278,9 @@ public class Swerve extends SubsystemBase {
           new PPHolonomicDriveController(
               // TODO: pid
               // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5, 0.0, 0.0),
+              new PIDConstants(4, 0.0, 0.0),
               // Translation PID constants
-              new PIDConstants(5, 0.0, 0.0)
+              new PIDConstants(3.13, 0.0, 0)
               // Rotation PID constants
           ),
           config,
