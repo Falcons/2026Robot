@@ -11,6 +11,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -86,7 +87,12 @@ public class RobotContainer {
     NamedCommands.registerCommand("Shake", new PivotShake(pivot));
     NamedCommands.registerCommand("taxi", new taxi(swerve, 1));
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    boolean isCompetition = SmartDashboard.getBoolean("Input/is competition", false);
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      (stream) -> isCompetition
+        ? stream.filter(auto -> !auto.getName().startsWith("Test"))
+        : stream
+    );
 
     // SIM CONTROLS:
     if (RobotBase.isReal()) return;

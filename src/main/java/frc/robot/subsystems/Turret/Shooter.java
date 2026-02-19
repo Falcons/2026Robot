@@ -23,7 +23,7 @@ public class Shooter extends SubsystemBase {
   
   // once shooters AND transfer are max speed than kicker
   private final TalonFX leftShooter = new TalonFX(ShooterConstants.leftShooterCANID);
-  private final TalonFX rightShooter = new TalonFX(ShooterConstants.leftShooterCANID);
+  private final TalonFX rightShooter = new TalonFX(ShooterConstants.rightShooterCANID);
   private final SparkMax kicker = new SparkMax(ShooterConstants.kickerCANID, MotorType.kBrushless);
 
   private final SparkMax transfer = new SparkMax(ShooterConstants.transferCANID, MotorType.kBrushless);
