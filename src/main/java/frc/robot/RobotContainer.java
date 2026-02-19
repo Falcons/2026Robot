@@ -20,6 +20,7 @@ import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.commands.AimHoodAndShoot;
 import frc.robot.commands.Drive.TeleopDrive;
+import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.AutoHoodSim;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
