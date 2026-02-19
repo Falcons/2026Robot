@@ -38,6 +38,9 @@ public class Shooter extends SubsystemBase {
   // need to connect to movement to see if its aligned
   private final Turret aimer;
 
+  // variables
+  public boolean shooterRunning = false;
+
   /** Creates a new Shooter. */
   public Shooter(Turret aimer) {
 
@@ -66,6 +69,7 @@ public class Shooter extends SubsystemBase {
     // wait until shooter is max speed than rotate transfer
     if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
       transfer.set(ShooterConstants.maxTransferSpeed);
+      shooterRunning = true;
     }
   }
 
@@ -79,5 +83,13 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
 
     SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getVelocity().getValueAsDouble());
+  }
+
+  public boolean shooterRPMlow() {
+    if (shooterRunning && rightShooter.getVelocity().getValueAsDouble() < ShooterConstants.maxShooterRPS) {
+      shooterRunning = false;
+      return true;
+    }
+    return false;
   }
 }
