@@ -7,6 +7,8 @@ package frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants; // DONT REMOVE
+import frc.robot.LimelightHelpers; 
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -52,6 +54,8 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("swerve/frontRight encoder", swerveDrive.getModules()[1].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backRight encoder", swerveDrive.getModules()[3].getAbsolutePosition());
+
+    // addVisionMeasurement(LimelightConstants.turretLimelight);
   }
 
   public SwerveDrive getSwerveDrive() {
@@ -236,6 +240,32 @@ public class Swerve extends SubsystemBase {
       e.printStackTrace();
     }
   }
+
+    /**
+  * Adds the vision estimations from a limelight to swerveDriveodometry 
+  * @param limelightNames name of limelight
+  */
+  public void addVisionMeasurement(String limelightName) {
+
+    LimelightHelpers.PoseEstimate visionPose = null;
+
+    // set the vision pose
+    if (DriverStation.getAlliance().isPresent()) {
+      visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    }
+    
+    // dont do anything if there isnt a tag
+    if (visionPose == null || visionPose.tagCount == 0) {
+      return;
+    }
+  
+    Pose2d pose = visionPose.pose;
+  
+    // Add vision measurement to swerve estimator
+    swerveDrive.addVisionMeasurement(pose,visionPose.timestampSeconds);
+  }
+
+
 
   /**
    * Command to drive the robot using translative values and heading as a setpoint.

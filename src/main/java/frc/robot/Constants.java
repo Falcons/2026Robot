@@ -17,7 +17,7 @@ public final class Constants {
 
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
-        public static final double maxSpeedMPS = 5;
+        public static final double maxSpeedMPS = 6.7;
         
         public static final double driveRatio = 6.75;
         public static final double driveSteeringRatio = 150/7;
@@ -30,7 +30,7 @@ public final class Constants {
     }
 
     public static final class LimelightConstants {
-        public static final String turretLimelight = "limelight-turret";
+        public static final String turretLimelight = "limelight-turret"; // TODO: limelight names
     }
 
     public static final class ControllerConstants {
