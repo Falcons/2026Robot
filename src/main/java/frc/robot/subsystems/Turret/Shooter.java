@@ -69,6 +69,8 @@ public class Shooter extends SubsystemBase {
     }
   }
 
+  public void pulseTransfer() {}
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Turret/Shooter/leftShooterSpeed", leftShooter.get());

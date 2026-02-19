@@ -13,12 +13,8 @@ import frc.robot.subsystems.Intake.Pivot;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PivotShake extends SequentialCommandGroup {
 
-  @SuppressWarnings("unused") // its complaining about pivot  never being used when it is
-  private final Pivot pivot;
   /** Creates a new PivotShake. */
   public PivotShake(Pivot pivot) {
-    this.pivot = pivot;
-
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(new PivotPid(pivot, PivotConstants.pivotShake), new PivotPid(pivot, PivotConstants.pivotOut));

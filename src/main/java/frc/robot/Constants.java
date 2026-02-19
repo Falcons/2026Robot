@@ -44,6 +44,10 @@ public final class Constants {
             public static final int turretRatio = 48; //48 motor rotations per 1 turret rotation
             public static final int hoodRatio = 100;
 
+            public static final double hoodDefault = 0;
+            public static final double hoodDownDistanceMaxM = 6; //TODO: change hood distances i think the middle is 8m?
+            public static final double hoodDownDistanceMinM = 10;
+
             public static final int turretCANID = 1000; // TODO: canids
             public static final int leftHoodActuatorPWM = 18; //TODO: set PWM channel
             public static final int rightHoodActuatorPWM = 19; //TODO: set PWM channel

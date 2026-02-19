@@ -4,7 +4,6 @@
 
 package frc.robot.subsystems.Hood;
 
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -100,9 +99,13 @@ public class Hood extends SubsystemBase {
   }
 
   /**
-   * @return true if hood is in range
+   * checks if the hood is far away from the trench
+   * @return true if its safe to move hood
    */
-  public boolean inRange() {
-    return true;
+  public boolean awayFromTrench() {
+    if (swerve.getPose().getX() < MovementConstants.hoodDownDistanceMinM && swerve.getPose().getX() > MovementConstants.hoodDownDistanceMaxM) {
+      return true;
+    }
+    return false;
   }
 }
