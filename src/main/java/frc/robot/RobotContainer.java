@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
+import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.commands.AimHoodAndShoot;
@@ -58,6 +59,7 @@ public class RobotContainer {
   private final Rollers rollers = new Rollers();
   
   private final CommandXboxController driver = new CommandXboxController(0);
+  private final CommandXboxController operator = new CommandXboxController(1);
 
   // make a chooser option to select autos
   SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -104,6 +106,9 @@ public class RobotContainer {
   private void configureBindings() {
     
     driver.b().onTrue(new InstantCommand(swerve::zeroGyro));
+    driver.start().toggleOnTrue(new InstantCommand(() -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS)));
+    driver.start().toggleOnFalse(new InstantCommand(() -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity())));
+
     // SIM CONTROLS:
     if (RobotBase.isReal()) return;
     // pivot toggle
