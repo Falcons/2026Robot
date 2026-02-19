@@ -19,6 +19,7 @@ import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
+import frc.robot.Constants.TurretConstants.ShooterConstants;
 import frc.robot.commands.AimHoodAndShoot;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.taxi;
@@ -105,9 +106,24 @@ public class RobotContainer {
   
   private void configureBindings() {
     
+    // DRIVER
     driver.b().onTrue(new InstantCommand(swerve::zeroGyro));
-    driver.start().toggleOnTrue(new InstantCommand(() -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS)));
-    driver.start().toggleOnFalse(new InstantCommand(() -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity())));
+    // slow mode toggle
+    driver.start().toggleOnTrue(new InstantCommand(
+      () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS)));
+    driver.start().toggleOnFalse(new InstantCommand(
+      () -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity())));
+    // slow mode hold
+    driver.rightBumper().whileTrue(Commands.startEnd(
+      () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS), 
+      () -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity()), swerve));
+
+    // OPERATOR
+    // move transfer backwards
+    operator.leftBumper().whileTrue(Commands.run(() -> shooter.setTransfer(-ShooterConstants.maxTransferSpeed), shooter));
+    // spin shooter
+    driver.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
+      Commands.run(() -> shooter.setShooterWithkicker(() -> driver.getLeftTriggerAxis(), ShooterConstants.maxKickerSpeed), shooter));
 
     // SIM CONTROLS:
     if (RobotBase.isReal()) return;

@@ -37,6 +37,7 @@ public final class Constants {
 
     public static final class ControllerConstants {
         public static final double deadBand = 0.05;
+        public static final double triggerDeadBand = 0.01;
     }
 
     public static final class TurretConstants {
@@ -75,6 +76,7 @@ public final class Constants {
             public static final double maxShooterRPS = 80;
             public static final double maxShooterSpeed = 1;
             public static final double maxTransferSpeed = 1;
+            public static final double maxKickerSpeed = 1;
         }
 
         // shoot on the move

@@ -5,6 +5,9 @@
 package frc.robot.subsystems.Turret;
 
 import com.revrobotics.spark.SparkMax;
+
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -65,7 +68,7 @@ public class Shooter extends SubsystemBase {
     if (!aimer.inRange()) return;
 
     rightShooter.set(ShooterConstants.maxShooterSpeed);
-    kicker.set(ShooterConstants.maxShooterSpeed);
+    kicker.set(ShooterConstants.maxKickerSpeed);
     // wait until shooter is max speed than rotate transfer
     if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
       transfer.set(ShooterConstants.maxTransferSpeed);
@@ -85,11 +88,57 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getVelocity().getValueAsDouble());
   }
 
+  /**
+   * check if the shooter rpm is too low to shoot
+   * @return true when rpm is too low
+   */
   public boolean shooterRPMlow() {
     if (shooterRunning && rightShooter.getVelocity().getValueAsDouble() < ShooterConstants.maxShooterRPS) {
       shooterRunning = false;
       return true;
     }
     return false;
+  }
+
+  /**
+   * set the transfer speed
+   * @param speed the speed to set
+   */
+  public void setTransfer(double speed) {
+    transfer.set(speed);
+  }
+  /**
+   * set the kicker speed
+   * @param speed the speed to set
+   */
+  public void setKicker(double speed) {
+    kicker.set(speed);
+  }
+  /**
+   * set the shooter speed
+   * @param speed the speed to set
+   */
+  public void setShooter(DoubleSupplier speed) {
+    rightShooter.set(speed.getAsDouble());
+  }
+  /**
+   * set the shooter and transfer speed
+   * @param transferSpeed transfer speed
+   * @param shooterSpeed shooter speed
+   * @param kickerSpeed kciker speed
+   */
+  public void fullShoot(double transferSpeed, double kickerSpeed, DoubleSupplier shooterSpeed) {
+    rightShooter.set(shooterSpeed.getAsDouble());
+    transfer.set(transferSpeed);
+    kicker.set(kickerSpeed);
+  }
+  /**
+   * set the shooter and kicker speed
+   * @param shooterSpeed shooter speed
+   * @param kickerSpeed kciker speed
+   */
+  public void setShooterWithkicker(DoubleSupplier shooterSpeed, double kickerSpeed) {
+    rightShooter.set(shooterSpeed.getAsDouble());
+    kicker.set(kickerSpeed);
   }
 }
