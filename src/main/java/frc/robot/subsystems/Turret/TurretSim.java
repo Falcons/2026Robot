@@ -27,7 +27,7 @@ public class TurretSim extends SubsystemBase {
   private final Field2d field = new Field2d();
 
   // simulated motor
-  private final SparkMax turret = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
+  private final SparkMax turret = new SparkMax(MovementConstants.turretCANID-200, MotorType.kBrushless);
   private final SparkMaxSim turretSim = new SparkMaxSim(turret, DCMotor.getNEO(1));
 
   // sim encoder

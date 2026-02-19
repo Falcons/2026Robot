@@ -28,7 +28,7 @@ public class PivotSim extends SubsystemBase {
   PIDController pivotPid = new PIDController(0.3, 0, 0);
 
   // Simulated motor
-  private final SparkMax pivotMotor = new SparkMax(PivotConstants.pivotCANID, MotorType.kBrushless);
+  private final SparkMax pivotMotor = new SparkMax(Math.abs(PivotConstants.pivotCANID-200), MotorType.kBrushless);
   private final SparkMaxSim pivotSim = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
 
   // Motor Encoder
