@@ -66,13 +66,13 @@ public class RobotContainer {
   public RobotContainer() {
 
     // silence joystick warning if simulation
-    if (Robot.isSimulation()){DriverStation.silenceJoystickConnectionWarning(true);}
-
+    if (Robot.isSimulation()) DriverStation.silenceJoystickConnectionWarning(true);
+    
     // add default commands (run when no other commands are running)
     swerve.setDefaultCommand(new TeleopDrive( 
       swerve, 
       () -> MathUtil.applyDeadband(-driver.getLeftX(), ControllerConstants.deadBand), 
-      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), //() -> 0,
+      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand),
       () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
       () -> !driver.getHID().getLeftBumper()));
 
@@ -82,7 +82,7 @@ public class RobotContainer {
     
     // Configure the button bindings
     configureBindings();
-    
+
     // Named Commands
     NamedCommands.registerCommand("Test", new InstantCommand(() -> System.out.println("test")));
     NamedCommands.registerCommand("AimAndShoot", new AimHoodAndShoot(hood, shooter));
@@ -93,7 +93,7 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // SIM CONTROLS:
-    if (RobotBase.isReal()){return;}
+    if (RobotBase.isReal()) return;
 
     // auto aim
     turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
@@ -103,10 +103,8 @@ public class RobotContainer {
   private void configureBindings() {
     
     driver.b().onTrue(new InstantCommand(swerve::zeroGyro));
-
     // SIM CONTROLS:
-    if (RobotBase.isReal()){return;}
-
+    if (RobotBase.isReal()) return;
     // pivot toggle
     driver.a().onTrue(new PivotPidToggleSim(pivotSim));
     driver.x().onTrue(new PivotShakeSim(pivotSim));
@@ -130,6 +128,11 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    try{
+      return autoChooser.getSelected();
+    }catch (Exception err){
+      System.err.println("error loading autonomous command | " + err);
+      return new taxi(swerve, 1);
+    }
   }
 }
