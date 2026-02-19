@@ -265,6 +265,15 @@ public class Swerve extends SubsystemBase {
     swerveDrive.addVisionMeasurement(pose,visionPose.timestampSeconds);
   }
 
+  /**
+   * sets the max alloweable speed of the swerve drive
+   * @param velocity in meters per second
+   * @param angularVelocity in radians per secnond
+   */
+  public void setMaxAllowableSpeed(double velocity, double angularVelocity) {
+    swerveDrive.setMaximumAllowableSpeeds(velocity, angularVelocity);
+  }
+
 
 
   /**

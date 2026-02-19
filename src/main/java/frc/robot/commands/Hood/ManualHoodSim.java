@@ -7,18 +7,18 @@ package frc.robot.commands.Hood;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Hood.Hood;
+import frc.robot.subsystems.Hood.HoodSim;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class SetHood extends Command {
-  private final Hood hood;
-  private final DoubleSupplier setpoint;
-  /** Creates a new SetHood. */
-  public SetHood(Hood hood, DoubleSupplier setpoint) {
-    this.hood = hood;
-    this.setpoint = setpoint;
+public class ManualHoodSim extends Command {
+  private final HoodSim hoodSim;
+  private DoubleSupplier speed;
+  /** Creates a new ManualHood. */
+  public ManualHoodSim(HoodSim hoodSim, DoubleSupplier speed) {
+    this.hoodSim = hoodSim;
+    this.speed = speed;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(hood);
+    addRequirements(hoodSim);
   }
 
   // Called when the command is initially scheduled.
@@ -28,7 +28,7 @@ public class SetHood extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    hood.setHood(setpoint.getAsDouble());
+    hoodSim.set(speed.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.
