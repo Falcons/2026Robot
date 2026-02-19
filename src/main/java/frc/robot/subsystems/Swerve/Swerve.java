@@ -20,7 +20,6 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
@@ -52,7 +51,7 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-    addVisionMeasurement();
+    addVisionMeasurement(DriveConstants.driveLimelight);
     SmartDashboard.putNumber("swerve/frontLeft encoder", swerveDrive.getModules()[0].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/frontRight encoder", swerveDrive.getModules()[1].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
@@ -61,11 +60,6 @@ public class Swerve extends SubsystemBase {
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
-  }
-
-  public void addVisionMeasurement(){
-    Pose2d visionPose = LimelightHelpers.getBotPose2d_wpiBlue(DriveConstants.driveLimelight);
-    swerveDrive.addVisionMeasurement(visionPose, Timer.getFPGATimestamp());
   }
 
   /**
@@ -309,5 +303,29 @@ public class Swerve extends SubsystemBase {
     //Preload PathPlanner Path finding
     // IF USING CUSTOM PATHFINDER ADD BEFORE THIS LINE
     PathfindingCommand.warmupCommand().schedule();
+  }
+
+  /**
+  * Adds the vision estimations from a limelight to swerveDriveodometry 
+  * @param limelightNames name of limelight
+  */
+  public void addVisionMeasurement(String limelightName) {
+
+    LimelightHelpers.PoseEstimate visionPose = null;
+
+    // set the vision pose
+    if (DriverStation.getAlliance().isPresent()) {
+      visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName); 
+    }
+    
+    // dont do anything if there isnt a tag
+    if (visionPose == null || visionPose.tagCount == 0) {
+      return;
+    }
+  
+    Pose2d pose = visionPose.pose;
+  
+    // Add vision measurement to swerve estimator
+    swerveDrive.addVisionMeasurement(pose, visionPose.timestampSeconds);
   }
 }
