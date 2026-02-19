@@ -17,13 +17,13 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.commands.Test;
 import frc.robot.commands.Drive.TeleopDrive;
+import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.AutoHood;
 import frc.robot.commands.Hood.AutoHoodMap;
 import frc.robot.commands.Hood.HoodSim.AutoHoodSim;
 import frc.robot.commands.Hood.HoodSim.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
-import frc.robot.commands.Turret.Shoot;
 import frc.robot.commands.Turret.TurretSim.AutoTurretSim;
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.PivotShake;
@@ -64,13 +64,13 @@ public class RobotContainer {
   public RobotContainer() {
 
     // silence joystick warning if simulation
-    if (Robot.isSimulation()){DriverStation.silenceJoystickConnectionWarning(true);}
-
+    if (Robot.isSimulation()) DriverStation.silenceJoystickConnectionWarning(true);
+    
     // add default commands (run when no other commands are running)
     swerve.setDefaultCommand(new TeleopDrive( 
       swerve, 
       () -> MathUtil.applyDeadband(-driver.getLeftX(), ControllerConstants.deadBand), 
-      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand), //() -> 0,
+      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand),
       () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
       () -> !driver.getHID().getLeftBumper()));
 
@@ -79,17 +79,17 @@ public class RobotContainer {
     
     // Configure the button bindings
     configureBindings();
-    
+
     // Named Commands
     NamedCommands.registerCommand("AimHood", new AutoHood(hood));
     NamedCommands.registerCommand("Test", new Test());
-    NamedCommands.registerCommand("Shoot", new Shoot(shooter));
     NamedCommands.registerCommand("Shake", new PivotShake(pivot));
+    NamedCommands.registerCommand("taxi", new taxi(swerve, 1));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
     // SIM CONTROLS:
-    if (RobotBase.isReal()){return;}
+    if (RobotBase.isReal()) return;
 
     // auto aim
     turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
@@ -99,10 +99,8 @@ public class RobotContainer {
   private void configureBindings() {
     
     driver.b().onTrue(new InstantCommand(swerve::zeroGyro));
-
     // SIM CONTROLS:
-    if (RobotBase.isReal()){return;}
-
+    if (RobotBase.isReal()) return;
     // pivot toggle
     driver.a().onTrue(new PivotPidToggleSim(pivotSim));
     driver.x().onTrue(new PivotShakeSim(pivotSim));
@@ -126,6 +124,11 @@ public class RobotContainer {
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    try{
+      return autoChooser.getSelected();
+    }catch (Exception err){
+      System.err.println("error loading autonomous command | " + err);
+      return new taxi(swerve, 1);
+    }
   }
 }
