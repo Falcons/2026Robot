@@ -104,8 +104,11 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
       (stream) -> isCompetition
         ? stream.filter(auto -> !auto.getName().startsWith("Test"))
-        : stream
-    );
+        : stream);
+
+    SmartDashboard.putData("auto Chooser" ,autoChooser);
+    autoChooser.addOption("timeout left", AutoBuilder.pathfindToPose(DriveConstants.timeoutPoseLeft, DriveConstants.pathFindingConstraints));
+    autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(DriveConstants.timeoutPoseRight, DriveConstants.pathFindingConstraints));
   }
   
   private void setupReal() {

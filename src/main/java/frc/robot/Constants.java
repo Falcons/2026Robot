@@ -2,6 +2,7 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -24,11 +25,23 @@ public final class Constants {
         public static final double driveRatio = 6.75;
         public static final double driveSteeringRatio = 150/7;
 
+        public static final PathConstraints pathFindingConstraints = new PathConstraints(5, 5, 540, 270);
+
          // starting position of bot
         public static final Pose2d startingPose = AllianceFlipUtil.apply(
             new Pose2d(new Translation2d(
             Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(0))
         );
+
+        // corrner hideing pose aka timeout
+        public static final Pose2d timeoutPoseLeft = 
+            new Pose2d(new Translation2d(
+                Meter.of(1), Meter.of(7)), Rotation2d.fromDegrees(180));
+
+        // corrner hideing pose aka timeout
+        public static final Pose2d timeoutPoseRight = 
+            new Pose2d(new Translation2d(
+                Meter.of(1), Meter.of(1)), Rotation2d.fromDegrees(180));
     }
 
     public static final class LimelightConstants {
