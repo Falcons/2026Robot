@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Hood;
 
+import java.util.function.DoubleSupplier;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
@@ -83,11 +86,11 @@ public class Hood extends SubsystemBase {
 
   /**
    * move hood based on commanded position + speed in degrees
-   * @param speed degrees * 20  /second
+   * @param speed degrees/second
    */
-  public void moveHood(double speed){
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
+  public void moveHood(DoubleSupplier speed){
+    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed.getAsDouble()/Constants.deltaTime);
+    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed.getAsDouble()/Constants.deltaTime);
   }
 
   /**

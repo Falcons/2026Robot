@@ -17,6 +17,8 @@ public class PivotIntake extends SequentialCommandGroup {
   public PivotIntake(Pivot pivot, Rollers rollers, double setpoint, double speed) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new PivotPid(pivot, setpoint), Commands.run(() -> rollers.set(speed), rollers));
+    addCommands(
+      new PivotPid(pivot, setpoint), 
+      Commands.run(() -> rollers.set(speed), rollers));
   }
 }

@@ -6,19 +6,18 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import frc.robot.commands.Turret.Shoot;
-import frc.robot.subsystems.Hood.Hood;
-import frc.robot.subsystems.Turret.Shooter;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.subsystems.Hood.HoodSim;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AimHoodAndShoot extends ParallelDeadlineGroup {
-  /** Creates a new AimHoodAndShoot. */
-  public AimHoodAndShoot(Hood hood, Shooter shooter) {
+public class AimHoodAndShootSim extends ParallelDeadlineGroup {
+  /** Creates a new AimHoodAndShootSim. */
+  public AimHoodAndShootSim(HoodSim hoodSim) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new Shoot(shooter));
-    addCommands(Commands.run(hood::autoAim, hood));
+    super(new WaitCommand(1));//TODO: get time to slow down
+    addCommands(Commands.run(hoodSim::autoAim, hoodSim));
   }
 }

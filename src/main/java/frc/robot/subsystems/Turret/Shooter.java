@@ -123,11 +123,11 @@ public class Shooter extends SubsystemBase {
   }
   /**
    * set the shooter and transfer speed
-   * @param transferSpeed transfer speed
-   * @param shooterSpeed shooter speed
+   * @param shooterSpeed transfer speed
+   * @param transferSpeed shooter speed
    * @param kickerSpeed kciker speed
    */
-  public void fullShoot(double transferSpeed, double kickerSpeed, DoubleSupplier shooterSpeed) {
+  public void fullShoot(DoubleSupplier shooterSpeed, double transferSpeed, double kickerSpeed) {
     rightShooter.set(shooterSpeed.getAsDouble());
     transfer.set(transferSpeed);
     kicker.set(kickerSpeed);
