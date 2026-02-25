@@ -4,24 +4,37 @@
 
 package frc.robot;
 
+import java.io.IOException;
+
+import org.json.simple.parser.ParseException;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
+import frc.robot.Util.AllianceFlipUtil;
 import frc.robot.commands.AimHoodAndShoot;
 import frc.robot.commands.AimHoodAndShootSim;
+import frc.robot.commands.Auto.shootAndPathToPathSim;
+import frc.robot.commands.Auto.shootAndPathToPoseSim;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.AutoHoodSim;
@@ -49,7 +62,7 @@ import frc.robot.subsystems.Turret.TurretSim;
 public class RobotContainer {
 
   // initialize robot's subsystems
-  private final Swerve swerve = new Swerve();
+  private Swerve swerve = new Swerve(); 
 
   // simulated classes
   private TurretSim turretSim;
@@ -67,7 +80,7 @@ public class RobotContainer {
   private final CommandXboxController operator = new CommandXboxController(1);
 
   // make a chooser option to select autos
-  SendableChooser<Command> autoChooser = new SendableChooser<Command>();
+  public static SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   // variables
 
@@ -99,16 +112,6 @@ public class RobotContainer {
       () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand),
       () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
       () -> !driver.getHID().getLeftBumper()));
-
-    boolean isCompetition = SmartDashboard.getBoolean("Input/is competition", false);
-    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-      (stream) -> isCompetition
-        ? stream.filter(auto -> !auto.getName().startsWith("Test"))
-        : stream);
-
-    SmartDashboard.putData("auto Chooser" ,autoChooser);
-    autoChooser.addOption("timeout left", AutoBuilder.pathfindToPose(DriveConstants.timeoutPoseLeft, DriveConstants.pathFindingConstraints));
-    autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(DriveConstants.timeoutPoseRight, DriveConstants.pathFindingConstraints));
   }
   
   private void setupReal() {
@@ -124,11 +127,28 @@ public class RobotContainer {
     hood.setDefaultCommand(Commands.run(() -> hood.setHood(0), hood));
 
     // Named Commands
-    NamedCommands.registerCommand("Test", new InstantCommand(() -> System.out.println("test")));
+    NamedCommands.registerCommand("Test", new PrintCommand("test"));
     NamedCommands.registerCommand("AimAndShoot", new AimHoodAndShoot(hood, shooter));
     NamedCommands.registerCommand("Shake", new PivotShake(pivot));
     NamedCommands.registerCommand("Intake", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed));
     NamedCommands.registerCommand("Outake", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
+    
+    //autos
+     DriverStation.waitForDsConnection(0);
+
+    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      (stream) -> Constants.isCompetition
+        ? stream.filter(auto -> !auto.getName().startsWith("Test")): stream);
+    autoChooser.addOption("timeout left", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseLeft), DriveConstants.pathFindingConstraints));
+    autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints));
+    autoChooser.addOption("preload shoot left", Commands.parallel(
+      AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), DriveConstants.pathFindingConstraints),
+      new AimHoodAndShoot(hood, shooter)));
+    autoChooser.addOption("preload shoot right", Commands.parallel(
+      AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), DriveConstants.pathFindingConstraints),
+      new AimHoodAndShoot(hood, shooter)));
+    
+    SmartDashboard.putData("auto Chooser" ,autoChooser);
   }
 
   private void configureRealBindings() {
@@ -141,8 +161,8 @@ public class RobotContainer {
     driver.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
       Commands.run(() -> shooter.setShooterWithkicker(driver::getRightTriggerAxis, 
       ShooterConstants.maxKickerSpeed), shooter));
-    
-    // intake out/in, shhake
+
+    // intake out/in, shake
     driver.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
     driver.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
     driver.povLeft().onTrue(new PivotShake(pivot));
@@ -184,7 +204,7 @@ public class RobotContainer {
     operator.povLeft().onTrue(new PivotShake(pivot));
   }
  
-  private void setupSim() {
+  private void setupSim(){
     // initializing sim  classes
     this.turretSim = new TurretSim(swerve);
     this.hoodSim = new HoodSim(swerve);
@@ -194,15 +214,38 @@ public class RobotContainer {
     DriverStation.silenceJoystickConnectionWarning(true);
 
     // Named Commands
-    NamedCommands.registerCommand("Test", new InstantCommand(() -> System.out.println("test")));
+    NamedCommands.registerCommand("Test", new PrintCommand("test"));
     NamedCommands.registerCommand("AimAndShoot", new AimHoodAndShootSim(hoodSim));
     NamedCommands.registerCommand("Shake", new PivotShakeSim(pivotSim));
     NamedCommands.registerCommand("Intake", new PivotPidSim(pivotSim, PivotConstants.pivotOut));
     NamedCommands.registerCommand("Outake", new PivotPidSim(pivotSim, PivotConstants.pivotIn));
 
+    // pathplaner events
+    new EventTrigger("Intake").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotOut));
+    new EventTrigger("Outake").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotIn));
+
     // auto aim
     turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
     hoodSim.setDefaultCommand(new AutoHoodSim(hoodSim));
+
+     DriverStation.waitForDsConnection(0);
+
+    /* autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      (stream) -> Constants.isCompetition ? stream.filter(auto -> !auto.getName().startsWith("Test")): stream); */
+    autoChooser.addOption("timeout left", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseLeft), DriveConstants.pathFindingConstraints));
+    autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints));
+    autoChooser.addOption("salvo: shoot left", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), hoodSim));
+    autoChooser.addOption("salvo: shoot right", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), hoodSim));
+    try{
+      autoChooser.addOption("reload: shoot left | storage", new shootAndPathToPathSim(PathPlannerPath.fromPathFile("left shoot to storage"), hoodSim));
+      autoChooser.addOption("reload: shoot right | storage", new shootAndPathToPathSim(PathPlannerPath.fromPathFile("right shoot to storage"), hoodSim));
+      autoChooser.addOption("reload: shoot left | pit", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), hoodSim).andThen(new WaitCommand(2), AutoBuilder.followPath(PathPlannerPath.fromPathFile("left shoot to pit"))));
+      autoChooser.addOption("reload: shoot right | pit", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), hoodSim).andThen(new WaitCommand(2), AutoBuilder.followPath(PathPlannerPath.fromPathFile("right shoot to pit"))));
+    }catch(Exception err){
+      System.err.println(err);
+    }
+    
+    SmartDashboard.putData("auto Chooser" ,autoChooser);
   }
 
   private void configureSimBindings(){
@@ -226,8 +269,14 @@ public class RobotContainer {
       new ManualHoodSim(
       hoodSim, 
       () -> driver.getRightY()));
+
+
   }
   
+  public void setupAuto(Object shooter){
+   
+  }
+
   public Command getAutonomousCommand() {
     try{
       return autoChooser.getSelected();

@@ -10,11 +10,11 @@ import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
-import frc.robot.Util.AllianceFlipUtil;
 
 public final class Constants {
     public static final double deltaTime = 0.02;
     public static final boolean disableHAL = false; // if tue alliance doesnt update in sim
+    public static final boolean isCompetition = false;
 
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
@@ -28,20 +28,34 @@ public final class Constants {
         public static final PathConstraints pathFindingConstraints = new PathConstraints(5, 5, 540, 270);
 
          // starting position of bot
-        public static final Pose2d startingPose = AllianceFlipUtil.apply(
-            new Pose2d(new Translation2d(
-            Meter.of(3),Meter.of(4)),Rotation2d.fromDegrees(0))
-        );
+        public static final Pose2d startingPose = new Pose2d(new Translation2d(
+            Meter.of(3),//X
+            Meter.of(4)), //Y
+            Rotation2d.fromDegrees(180));
+        
 
         // corrner hideing pose aka timeout
-        public static final Pose2d timeoutPoseLeft = 
-            new Pose2d(new Translation2d(
-                Meter.of(1), Meter.of(7)), Rotation2d.fromDegrees(180));
+        public static final Pose2d timeoutPoseLeft = new Pose2d(new Translation2d(
+                Meter.of(0.7), //X
+                Meter.of(7.3)), //Y
+                Rotation2d.fromDegrees(0));
 
         // corrner hideing pose aka timeout
         public static final Pose2d timeoutPoseRight = 
             new Pose2d(new Translation2d(
-                Meter.of(1), Meter.of(1)), Rotation2d.fromDegrees(180));
+                Meter.of(0.700), //X
+                Meter.of(2)), //Y
+                Rotation2d.fromDegrees(0));
+
+        public static final Pose2d ShootingStartLeft = new Pose2d(new Translation2d(
+            Meter.of(1.7), //X
+            Meter.of(5)), //Y
+            Rotation2d.fromDegrees(0));
+        
+        public static final Pose2d ShootingStartRight = new Pose2d(new Translation2d(
+            Meter.of(1.7), //X
+            Meter.of(2)), //Y
+            Rotation2d.fromDegrees(0));
     }
 
     public static final class LimelightConstants {

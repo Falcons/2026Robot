@@ -5,10 +5,12 @@
 package frc.robot.subsystems.Swerve;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants; // DONT REMOVE
-import frc.robot.LimelightHelpers; 
+import frc.robot.LimelightHelpers;
+import frc.robot.Util.AllianceFlipUtil;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -38,10 +40,10 @@ public class Swerve extends SubsystemBase {
   SwerveDrive swerveDrive;
 
   public Swerve() {
-
     try {
       // try to create a new swerve drive
-      swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, DriveConstants.startingPose);
+      DriverStation.waitForDsConnection(0);
+      swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }

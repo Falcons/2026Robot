@@ -6,6 +6,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.Hood.HoodSim;
 
@@ -17,7 +18,7 @@ public class AimHoodAndShootSim extends ParallelDeadlineGroup {
   public AimHoodAndShootSim(HoodSim hoodSim) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new WaitCommand(1));//TODO: get time to slow down
+    super(new PrintCommand("pretend this is shooting").andThen(new WaitCommand(1)));//TODO: get time to slow down
     addCommands(Commands.run(hoodSim::autoAim, hoodSim));
   }
 }
