@@ -54,6 +54,10 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
     SmartDashboard.putBoolean("Intake/Pivot/at min", atMin);
     pivotPid.reset();
+
+    // set max and min
+    atMax = pivotEncoder().getPosition() >= PivotConstants.pivotIn;
+    atMin = pivotEncoder().getPosition() <= PivotConstants.pivotOut;
   }
   
   public void setPivot(double speed) { 
