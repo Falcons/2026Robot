@@ -47,6 +47,7 @@ import frc.robot.subsystems.Hood.HoodSim;
 import frc.robot.subsystems.Intake.Pivot;
 import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Intake.Rollers;
+import frc.robot.subsystems.Intake.RollersSim;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.Shooter;
 import frc.robot.subsystems.Turret.ShooterSim;
@@ -62,7 +63,8 @@ public class RobotContainer {
   private TurretSim turretSim;
   private ShooterSim shooterSim;
   private HoodSim hoodSim;;
-  private PivotSim pivotSim;;
+  private PivotSim pivotSim;
+  private RollersSim rollersSim;
 
   // real classes
   private Turret turret;
@@ -204,7 +206,8 @@ public class RobotContainer {
     this.turretSim = new TurretSim(swerve);
     this.shooterSim = new ShooterSim(turretSim);
     this.hoodSim = new HoodSim(swerve);
-    this.pivotSim = new PivotSim();
+    this.rollersSim = new RollersSim();
+    this.pivotSim = new PivotSim(rollersSim);
 
     // silence joystick warning
     DriverStation.silenceJoystickConnectionWarning(true);

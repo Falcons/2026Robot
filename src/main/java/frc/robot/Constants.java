@@ -117,7 +117,7 @@ public final class Constants {
 
         public static final class RollersConstants {
             public static final double intakeRollersRatio = 3.2;
-            public static final int rollerCANID = 8087; // TODO: canid
+            public static final int rollerCANID = 553; // TODO: canid
             public static final double rollerSpeed = 1;
         }
 
