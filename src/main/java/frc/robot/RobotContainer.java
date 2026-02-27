@@ -251,7 +251,7 @@ public class RobotContainer {
     driver.a().onTrue(new PivotPidToggleSim(pivotSim));
     driver.x().onTrue(new PivotShakeSim(pivotSim));
     // shoot
-    driver.b().onTrue(new ShootSim(shooterSim));
+    driver.b().whileTrue(new ShootSim(shooterSim));
     
     // manual turret
     /* driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(

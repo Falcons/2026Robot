@@ -131,8 +131,4 @@ public final class Constants {
             public static final int intakePivotRatio = 48; // 48 motor rotations per 1 pivot rotation
         }
     }
-
-    public static final class ClimbConstants {
-        public static final int climbCANID = 1432; //TODO: canid
-    }
 }

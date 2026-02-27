@@ -77,7 +77,7 @@ public class ShooterSim extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker);
     SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
 
-    if (shotTimer.get() >= 5) {
+    if (shotTimer.get() >= 2) {
       rightShooter = MathUtil.clamp(rightShooter - shotTimer.get(), 0, 150);
       leftShooter = MathUtil.clamp(leftShooter - shotTimer.get(), 0, 150);
       kicker = MathUtil.clamp(kicker - shotTimer.get(), 0, 150);
