@@ -31,7 +31,7 @@ public final class Constants {
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
             Meter.of(3),//X
             Meter.of(4)), //Y
-            Rotation2d.fromDegrees(180));
+            Rotation2d.fromDegrees(0));
         
 
         // corrner hideing pose aka timeout
@@ -83,8 +83,8 @@ public final class Constants {
             public static final int rightHoodActuatorPWM = 19; //TODO: set PWM channel
             
             public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
-            public static final double turretMinRad = Math.toRadians(-180); // TODO: change min and max
-            public static final double turretMaxRad = Math.toRadians(180);
+            public static final double turretMinRad = Math.toRadians(-90); // TODO: change min and max
+            public static final double turretMaxRad = Math.toRadians(90);
 
             public static final double turretError = Math.toRadians(3); //TODO: turret error
 

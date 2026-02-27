@@ -4,44 +4,45 @@
 
 package frc.robot.commands.Turret;
 
-import java.util.function.DoubleSupplier;
-
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Turret.Turret;
+import frc.robot.subsystems.Turret.ShooterSim;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ManualTurret extends Command {
-  private final Turret turret;
-  private DoubleSupplier speed;
-  /** Creates a new ManualAim. */
-  public ManualTurret(Turret turret, DoubleSupplier speed) {
-    this.turret = turret;
-    this.speed = speed;
+public class ShootSim extends Command {
+  private final ShooterSim shooterSim;
+  /** Creates a new Shoot. */
+  public ShootSim(ShooterSim shooterSim) {
+    this.shooterSim = shooterSim;
     // Use addRequirements() here to declare subsystem dependencies.
-    addRequirements(turret);
+    addRequirements(shooterSim);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println(this.getName() + " start");
+    System.out.println(getName() + " start");
+    shooterSim.shooterRunning = false;
+    shooterSim.shotTimer.reset();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    turret.set(speed.getAsDouble());
+    shooterSim.shootWhenMaxSpeed();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println(this.getName() + " end");
+    shooterSim.shooterRunning = false;
+    shooterSim.shotTimer.stop();
+    shooterSim.shotTimer.reset();
+    System.out.println(interrupted ? getName()+ " interrupted" : getName() + " end");
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return shooterSim.shooterRPMlow();
   }
 }

@@ -8,17 +8,21 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
+import frc.robot.commands.Turret.ShootSim;
 import frc.robot.subsystems.Hood.HoodSim;
+import frc.robot.subsystems.Turret.ShooterSim;
+import frc.robot.subsystems.Turret.TurretSim;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AimHoodAndShootSim extends ParallelDeadlineGroup {
+public class AimAndShootSim extends ParallelDeadlineGroup {
   /** Creates a new AimHoodAndShootSim. */
-  public AimHoodAndShootSim(HoodSim hoodSim) {
+  public AimAndShootSim(HoodSim hoodSim, TurretSim turretSim, ShooterSim shooterSim) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new PrintCommand("pretend this is shooting").andThen(new WaitCommand(1)));//TODO: get time to slow down
-    addCommands(Commands.run(hoodSim::autoAim, hoodSim));
+    super(new ShootSim(shooterSim));//TODO: get time to slow down
+    addCommands(Commands.run(hoodSim::autoAim, hoodSim), Commands.run(turretSim::autoAim));
   }
 }
+

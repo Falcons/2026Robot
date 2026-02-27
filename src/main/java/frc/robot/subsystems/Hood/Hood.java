@@ -54,7 +54,7 @@ public class Hood extends SubsystemBase {
 
   public void autoAim(){
     double setpoint = MathUtil.clamp(getHoodAngle(), 0, 180);
-    setHoodDeg(setpoint);
+    setDeg(setpoint);
   }
 
   /**
@@ -70,7 +70,7 @@ public class Hood extends SubsystemBase {
    * Set the hood to the position
    * @param Position position 
    */
-  public void setHood(double Position){
+  public void setRad(double Position){
     leftHoodActuatorSim.set(Position);
     rightHoodActuatorSim.set(Position);
   }
@@ -79,7 +79,7 @@ public class Hood extends SubsystemBase {
    * Set the hood to the position
    * @param Position position in degrees
    */
-  public void setHoodDeg(double Position){
+  public void setDeg(double Position){
     leftHoodActuatorSim.setAngle(Position);
     rightHoodActuatorSim.setAngle(Position);
   }

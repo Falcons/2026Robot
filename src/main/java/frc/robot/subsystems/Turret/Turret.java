@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Turret;
 
+import java.util.function.DoubleSupplier;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.ResetMode;
@@ -37,7 +39,7 @@ public class Turret extends SubsystemBase {
     this.swerve = swerve;
 
     // turret configs 2048 ticks per revolution, convert to radians, divide by gear ratio
-    turretConfig.encoder.positionConversionFactor(2048 / Math.PI * 2 / MovementConstants.turretRatio); // 1 rotation = 2 pi
+    turretConfig.encoder.positionConversionFactor(0.5 / (Math.PI * 2)); // 360 degree of absolute = 180 degree on turret, convert to radians
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // turretPID.enableContinuousInput(-Math.PI, Math.PI);
@@ -90,6 +92,14 @@ public class Turret extends SubsystemBase {
     // move motor
     set(pid);
     turretPID.reset();
+  }
+
+  /**
+   * set the speed of the turret
+   * @param speed of turret
+   */
+  public void set(DoubleSupplier speed) {
+    set(speed.getAsDouble());
   }
 
   /**

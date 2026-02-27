@@ -4,8 +4,6 @@
 
 package frc.robot.subsystems.Turret;
 
-import com.revrobotics.spark.SparkMax;
-
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -13,30 +11,28 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   
-  // once shooters AND transfer are max speed than kicker
-  private final TalonFX leftShooter = new TalonFX(ShooterConstants.leftShooterCANID);
+  // once shooters AND kicker are max speed than transfer
+  private final TalonFX leftShooter = new TalonFX(ShooterConstants.leftShooterCANID); // Kraken x60
   private final TalonFX rightShooter = new TalonFX(ShooterConstants.rightShooterCANID);
-  private final SparkMax kicker = new SparkMax(ShooterConstants.kickerCANID, MotorType.kBrushless);
+  private final TalonFX kicker = new TalonFX(ShooterConstants.kickerCANID);
 
-  private final SparkMax transfer = new SparkMax(ShooterConstants.transferCANID, MotorType.kBrushless);
+  private final TalonFX transfer = new TalonFX(ShooterConstants.transferCANID);
+  private Timer timer = new Timer();
 
   // configs
   private final TalonFXConfiguration leftShooterConfig = new TalonFXConfiguration();
   private final TalonFXConfiguration rightShooterConfig = new TalonFXConfiguration();
-  private final SparkMaxConfig kickerConfig = new SparkMaxConfig();
+  private final TalonFXConfiguration kickerConfig = new TalonFXConfiguration();
 
-  private final SparkMaxConfig transferConfig = new SparkMaxConfig();
+  private final TalonFXConfiguration transferConfig = new TalonFXConfiguration();
 
   // need to connect to movement to see if its aligned
   private final Turret aimer;
@@ -46,18 +42,19 @@ public class Shooter extends SubsystemBase {
 
   /** Creates a new Shooter. */
   public Shooter(Turret aimer) {
-
+    timer.start();
     this.aimer = aimer;
 
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leftShooter.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Opposed));
+    kicker.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Aligned));
 
     // apply configs
     leftShooter.getConfigurator().apply(leftShooterConfig);
     rightShooter.getConfigurator().apply(rightShooterConfig);
-    transfer.configure(transferConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    transfer.getConfigurator().apply(transferConfig);
+    kicker.getConfigurator().apply(kickerConfig);
   }
 
   /**
@@ -71,12 +68,27 @@ public class Shooter extends SubsystemBase {
     kicker.set(ShooterConstants.maxKickerSpeed);
     // wait until shooter is max speed than rotate transfer
     if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
-      transfer.set(ShooterConstants.maxTransferSpeed);
+      pulseTransfer();
       shooterRunning = true;
     }
   }
 
-  public void pulseTransfer() {}
+  /**
+   * Pulse the transfer motor in half a second intravals
+   */
+  public void pulseTransfer() {
+    // move for half a second stop the other half
+    if (timer.hasElapsed(0.5)) {
+      transfer.set(0);
+    } else{
+      transfer.set(ShooterConstants.maxTransferSpeed);
+    }
+    
+    // reset timer
+    if (timer.hasElapsed(1)) {
+      timer.reset();
+    }
+  }
 
   @Override
   public void periodic() {

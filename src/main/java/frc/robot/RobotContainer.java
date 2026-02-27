@@ -4,26 +4,20 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
-import org.json.simple.parser.ParseException;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
@@ -31,17 +25,16 @@ import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
 import frc.robot.Util.AllianceFlipUtil;
-import frc.robot.commands.AimHoodAndShoot;
-import frc.robot.commands.AimHoodAndShootSim;
+import frc.robot.commands.AimAndShoot;
+import frc.robot.commands.AimAndShootSim;
 import frc.robot.commands.Auto.shootAndPathToPathSim;
 import frc.robot.commands.Auto.shootAndPathToPoseSim;
 import frc.robot.commands.Drive.TeleopDrive;
 import frc.robot.commands.Drive.taxi;
-import frc.robot.commands.Hood.AutoHoodSim;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
-import frc.robot.commands.Turret.ManualTurret;
+import frc.robot.commands.Turret.ShootSim;
 import frc.robot.commands.Turret.TurretSim.AutoTurretSim;
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.PivotIntake;
@@ -56,6 +49,7 @@ import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Intake.Rollers;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.Shooter;
+import frc.robot.subsystems.Turret.ShooterSim;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Turret.TurretSim;
 
@@ -66,6 +60,7 @@ public class RobotContainer {
 
   // simulated classes
   private TurretSim turretSim;
+  private ShooterSim shooterSim;
   private HoodSim hoodSim;;
   private PivotSim pivotSim;;
 
@@ -118,17 +113,17 @@ public class RobotContainer {
     //initializing real classes
     this.turret = new Turret(swerve);
     this.shooter = new Shooter(turret);
-    this.pivot = new Pivot();
-    this.hood = new Hood(swerve);
     this.rollers = new Rollers();
+    this.pivot = new Pivot(rollers );
+    this.hood = new Hood(swerve);
     
     // default hood to 0 and auto aim turret always
     turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
-    hood.setDefaultCommand(Commands.run(() -> hood.setHood(0), hood));
+    hood.setDefaultCommand(Commands.run(() -> hood.setDeg(0), hood));
 
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
-    NamedCommands.registerCommand("AimAndShoot", new AimHoodAndShoot(hood, shooter));
+    NamedCommands.registerCommand("AimAndShoot", new AimAndShoot(hood, shooter, turret));
     NamedCommands.registerCommand("Shake", new PivotShake(pivot));
     NamedCommands.registerCommand("Intake", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed));
     NamedCommands.registerCommand("Outake", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
@@ -143,10 +138,10 @@ public class RobotContainer {
     autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints));
     autoChooser.addOption("preload shoot left", Commands.parallel(
       AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), DriveConstants.pathFindingConstraints),
-      new AimHoodAndShoot(hood, shooter)));
+      new AimAndShoot(hood, shooter, turret)));
     autoChooser.addOption("preload shoot right", Commands.parallel(
       AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), DriveConstants.pathFindingConstraints),
-      new AimHoodAndShoot(hood, shooter)));
+      new AimAndShoot(hood, shooter, turret)));
     
     SmartDashboard.putData("auto Chooser" ,autoChooser);
   }
@@ -184,7 +179,7 @@ public class RobotContainer {
 
     // manual turret
     operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
-      new ManualTurret(turret, operator::getLeftX));
+      Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
       
     // manual hood
     operator.axisMagnitudeGreaterThan(2, ControllerConstants.deadBand).whileTrue(
@@ -207,6 +202,7 @@ public class RobotContainer {
   private void setupSim(){
     // initializing sim  classes
     this.turretSim = new TurretSim(swerve);
+    this.shooterSim = new ShooterSim(turretSim);
     this.hoodSim = new HoodSim(swerve);
     this.pivotSim = new PivotSim();
 
@@ -215,7 +211,7 @@ public class RobotContainer {
 
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
-    NamedCommands.registerCommand("AimAndShoot", new AimHoodAndShootSim(hoodSim));
+    NamedCommands.registerCommand("AimAndShoot", new AimAndShootSim(hoodSim, turretSim, shooterSim));
     NamedCommands.registerCommand("Shake", new PivotShakeSim(pivotSim));
     NamedCommands.registerCommand("Intake", new PivotPidSim(pivotSim, PivotConstants.pivotOut));
     NamedCommands.registerCommand("Outake", new PivotPidSim(pivotSim, PivotConstants.pivotIn));
@@ -226,7 +222,7 @@ public class RobotContainer {
 
     // auto aim
     turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
-    hoodSim.setDefaultCommand(new AutoHoodSim(hoodSim));
+    hoodSim.setDefaultCommand(Commands.run(() -> hoodSim.setDeg(0), hoodSim));
 
      DriverStation.waitForDsConnection(0);
 
@@ -234,13 +230,15 @@ public class RobotContainer {
       (stream) -> Constants.isCompetition ? stream.filter(auto -> !auto.getName().startsWith("Test")): stream); */
     autoChooser.addOption("timeout left", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseLeft), DriveConstants.pathFindingConstraints));
     autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints));
-    autoChooser.addOption("salvo: shoot left", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), hoodSim));
-    autoChooser.addOption("salvo: shoot right", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), hoodSim));
+    autoChooser.addOption("salvo: shoot left", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), hoodSim, turretSim, shooterSim));
+    autoChooser.addOption("salvo: shoot right", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), hoodSim, turretSim, shooterSim));
     try{
-      autoChooser.addOption("reload: shoot left | storage", new shootAndPathToPathSim(PathPlannerPath.fromPathFile("left shoot to storage"), hoodSim));
-      autoChooser.addOption("reload: shoot right | storage", new shootAndPathToPathSim(PathPlannerPath.fromPathFile("right shoot to storage"), hoodSim));
-      autoChooser.addOption("reload: shoot left | pit", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), hoodSim).andThen(new WaitCommand(2), AutoBuilder.followPath(PathPlannerPath.fromPathFile("left shoot to pit"))));
-      autoChooser.addOption("reload: shoot right | pit", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), hoodSim).andThen(new WaitCommand(2), AutoBuilder.followPath(PathPlannerPath.fromPathFile("right shoot to pit"))));
+      autoChooser.addOption("reload: shoot left | storage", new shootAndPathToPathSim(PathPlannerPath.fromPathFile("left shoot to storage"), hoodSim, turretSim, shooterSim));
+      autoChooser.addOption("reload: shoot right | storage", new shootAndPathToPathSim(PathPlannerPath.fromPathFile("right shoot to storage"), hoodSim, turretSim, shooterSim));
+      autoChooser.addOption("reload: shoot left | pit", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), hoodSim, turretSim, shooterSim).andThen(
+        new AimAndShootSim(hoodSim, turretSim, shooterSim).withTimeout(2), AutoBuilder.followPath(PathPlannerPath.fromPathFile("left shoot to pit"))));
+      autoChooser.addOption("reload: shoot right | pit", new shootAndPathToPoseSim(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), hoodSim, turretSim, shooterSim).andThen(
+        new AimAndShootSim(hoodSim, turretSim, shooterSim).withTimeout(2), AutoBuilder.followPath(PathPlannerPath.fromPathFile("right shoot to pit"))));
     }catch(Exception err){
       System.err.println(err);
     }
@@ -252,7 +250,9 @@ public class RobotContainer {
     // pivot toggle
     driver.a().onTrue(new PivotPidToggleSim(pivotSim));
     driver.x().onTrue(new PivotShakeSim(pivotSim));
-
+    // shoot
+    driver.b().onTrue(new ShootSim(shooterSim));
+    
     // manual turret
     /* driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
        new ManualTurretSim(
@@ -286,3 +286,12 @@ public class RobotContainer {
     }
   }
 }
+
+// Done:
+// kicker, tranfer, pivot
+// intake pivot takes encoder from rollers
+
+// kickerSim, transferSim,
+
+// TODO: talons
+//  pivotSim, intake pivot takes encoder from rollerSim

@@ -9,16 +9,17 @@ import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.commands.Turret.Shoot;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Turret.Shooter;
+import frc.robot.subsystems.Turret.Turret;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class AimHoodAndShoot extends ParallelDeadlineGroup {
+public class AimAndShoot extends ParallelDeadlineGroup {
   /** Creates a new AimHoodAndShoot. */
-  public AimHoodAndShoot(Hood hood, Shooter shooter) {
+  public AimAndShoot(Hood hood, Shooter shooter, Turret turret) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
     super(new Shoot(shooter));
-    addCommands(Commands.run(hood::autoAim, hood));
+    addCommands(Commands.run(hood::autoAim, hood), Commands.run(turret::autoAim));
   }
 }

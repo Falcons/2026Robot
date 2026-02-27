@@ -9,18 +9,20 @@ import com.pathplanner.lib.path.PathPlannerPath;
 
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.commands.AimHoodAndShootSim;
+import frc.robot.commands.AimAndShootSim;
 import frc.robot.subsystems.Hood.HoodSim;
+import frc.robot.subsystems.Turret.ShooterSim;
+import frc.robot.subsystems.Turret.TurretSim;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class shootAndPathToPathSim extends ParallelCommandGroup {
   /** Creates a new shootAndPathToPathSim. */
-  public shootAndPathToPathSim(PathPlannerPath goalPath, HoodSim hood) {
+  public shootAndPathToPathSim(PathPlannerPath goalPath, HoodSim hood, TurretSim turret, ShooterSim shooterSim) {
     addCommands(
       AutoBuilder.pathfindThenFollowPath(goalPath, DriveConstants.pathFindingConstraints),
-      new AimHoodAndShootSim(hood)
+      new AimAndShootSim(hood, turret, shooterSim)
     );
   }
 }

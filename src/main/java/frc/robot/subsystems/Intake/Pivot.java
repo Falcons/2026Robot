@@ -4,13 +4,11 @@
 
 package frc.robot.subsystems.Intake;
 
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.PersistMode;
-import com.revrobotics.ResetMode;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkAbsoluteEncoder;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -20,39 +18,39 @@ import frc.robot.Constants.IntakeConstants.PivotConstants;
 
 public class Pivot extends SubsystemBase {
   // pivot motor, encoder and config
-  private final SparkMax pivot = new SparkMax(PivotConstants.pivotCANID, MotorType.kBrushless);
-  private final SparkAbsoluteEncoder pivotEncoder = pivot.getAbsoluteEncoder();
-  private final SparkMaxConfig pivotConfig;
+  private final TalonFX pivot = new TalonFX(PivotConstants.pivotCANID); //kracken n44
+  private final TalonFXConfiguration pivotConfig;
+  private final Rollers rollers;
 
   PIDController pivotPid = new PIDController(0.3, 0, 0);
 
   private boolean atMin, atMax;
   /** Creates a new Pivot. */
-  public Pivot() {
+  public Pivot(Rollers rollers) {
+    this.rollers = rollers;
+
     // configs
-    pivotConfig = new SparkMaxConfig();
-    pivotConfig.idleMode(IdleMode.kBrake);
+    pivotConfig = new TalonFXConfiguration();
+    pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
 
     // convert to radians, 2048 ticks per full revolution, convert to radians divide by gear ratio
-    pivotConfig.encoder.positionConversionFactor(2048 / (2 * Math.PI) / PivotConstants.intakePivotRatio); // 1 rotation = 2 pi
+    pivotConfig.Feedback.withSensorToMechanismRatio(2048 / (2 * Math.PI) / PivotConstants.intakePivotRatio);// 1 rotation = 2 pi
 
-    pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    pivot.getConfigurator().apply(pivotConfig);
 
     // pid limits
     // pivotPid.enableContinuousInput(-Math.PI, Math.PI);
     pivotPid.setTolerance(0.05);
     pivotPid.setIntegratorRange(-0.01, 0.01);
   }
-
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Intake/Pivot/Speed", pivot.get());
     SmartDashboard.putNumber("Intake/Pivot/PID/error", pivotPid.getError());
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", pivotPid.getSetpoint());
-    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", pivot.getAbsoluteEncoder().getPosition());
-    SmartDashboard.putNumber("Intake/Pivot/current", getCurrent());
-    SmartDashboard.putNumber("Intake/Pivot/Bus Voltage", getBusVoltage());
+    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", pivotEncoder().getPosition());
     SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
     SmartDashboard.putBoolean("Intake/Pivot/at min", atMin);
     pivotPid.reset();
@@ -73,7 +71,7 @@ public class Pivot extends SubsystemBase {
    * @param setpoint the radians to set the pivot
    */
   public void setPivotPid(double setpoint) {
-    double pid = pivotPid.calculate(pivotEncoder.getPosition(), setpoint);
+    double pid = pivotPid.calculate(pivotEncoder().getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
     setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotOut, PivotConstants.pivotIn); // pivot in is max
     pid = MathUtil.clamp(pid, -0.5, 0.5);
@@ -84,15 +82,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public double getPivotDegrees() {
-    return Math.toDegrees(pivotEncoder.getPosition());
-  }
-
-  public double getCurrent() {
-    return pivot.getOutputCurrent();
-  }
-
-  public double getBusVoltage(){
-    return pivot.getBusVoltage();
+    return Math.toDegrees(pivotEncoder().getPosition());
   }
 
   public boolean atSetpoint(){
@@ -108,5 +98,12 @@ public class Pivot extends SubsystemBase {
    */
   public void stopPivot() {
     pivot.stopMotor();
+  }
+
+  /**
+   * returns the pivot encoder
+   */
+  public SparkAbsoluteEncoder pivotEncoder() {
+    return rollers.getPivotEncoder();
   }
 }
