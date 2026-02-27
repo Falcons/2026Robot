@@ -123,8 +123,8 @@ public class RobotContainer {
     this.rollers = new Rollers();
     
     // default hood to 0 and auto aim turret always
-    turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
-    hood.setDefaultCommand(Commands.run(() -> hood.setHood(0), hood));
+    // turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
+    // hood.setDefaultCommand(Commands.run(() -> hood.setHood(0), hood));
 
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
@@ -162,10 +162,10 @@ public class RobotContainer {
       Commands.run(() -> shooter.setShooterWithkicker(driver::getRightTriggerAxis, 
       ShooterConstants.maxKickerSpeed), shooter));
 
-    // intake out/in, shake
-    driver.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
-    driver.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    driver.povLeft().onTrue(new PivotShake(pivot));
+    // intake out/in, shake //TODO: turn back on
+    // driver.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
+    // driver.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
+    // driver.povLeft().onTrue(new PivotShake(pivot));
 
     // OPERATOR
     // move transfer backwards
@@ -182,13 +182,13 @@ public class RobotContainer {
       ShooterConstants.maxTransferSpeed, 
       ShooterConstants.maxKickerSpeed), shooter));
 
-    // manual turret
-    operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
-      new ManualTurret(turret, operator::getLeftX));
+    // manual turret TODO: TURN BACK ON 
+    // operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
+      // new ManualTurret(turret, operator::getLeftX));
       
-    // manual hood
-    operator.axisMagnitudeGreaterThan(2, ControllerConstants.deadBand).whileTrue(
-      Commands.run(() -> hood.moveHood(operator::getLeftY), hood));
+    // manual hood TODO: TURN BACK ON
+    // operator.axisMagnitudeGreaterThan(2, ControllerConstants.deadBand).whileTrue(
+      // Commands.run(() -> hood.moveHood(operator::getLeftY), hood));
 
     // main fire
     operator.b().whileTrue(
@@ -198,10 +198,10 @@ public class RobotContainer {
     operator.x().whileTrue(Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
     operator.povRight().whileTrue(Commands.run(() -> rollers.set(-RollersConstants.rollerSpeed)));
 
-    // intake out and in, and shake
-    operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
-    operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    operator.povLeft().onTrue(new PivotShake(pivot));
+    // intake out and in, and  TODO: turn back on
+    // operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
+    // operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
+    // operator.povLeft().onTrue(new PivotShake(pivot));
   }
  
   private void setupSim(){

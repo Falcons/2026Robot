@@ -78,7 +78,7 @@ public final class Constants {
             public static final double hoodDownDistanceMaxM = 6; //TODO: change hood distances i think the middle is 8m?
             public static final double hoodDownDistanceMinM = 10;
 
-            public static final int turretCANID = 1000; // TODO: canids
+            public static final int turretCANID = 14; // TODO: canids
             public static final int leftHoodActuatorPWM = 18; //TODO: set PWM channel
             public static final int rightHoodActuatorPWM = 19; //TODO: set PWM channel
             
@@ -97,8 +97,8 @@ public final class Constants {
 
             public static final int leftShooterCANID = 1001; // TODO: canid
             public static final int rightShooterCANID = 1002; // TODO: canid
-            public static final int transferCANID = 1004; // TODO: canid
-            public static final int kickerCANID = 1005; // TODO: canid
+            public static final int transferCANID = 13;
+            public static final int kickerCANID = 9; 
 
             public static final double maxShooterRPS = 80;
             public static final double maxShooterSpeed = 1;
@@ -117,12 +117,12 @@ public final class Constants {
 
         public static final class RollersConstants {
             public static final double intakeRollersRatio = 3.2;
-            public static final int rollerCANID = 8087; // TODO: canid
+            public static final int rollerCANID = 5;
             public static final double rollerSpeed = 1;
         }
 
         public static final class PivotConstants {
-            public static final int pivotCANID = 1050; // TODO: canid
+            public static final int pivotCANID = 6;
 
             public static final double pivotOut = Math.toRadians(0); // TODO: pivot setpoints
             public static final double pivotShake = Math.toRadians(45);
@@ -130,9 +130,5 @@ public final class Constants {
 
             public static final int intakePivotRatio = 48; // 48 motor rotations per 1 pivot rotation
         }
-    }
-
-    public static final class ClimbConstants {
-        public static final int climbCANID = 1432; //TODO: canid
     }
 }
