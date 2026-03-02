@@ -224,7 +224,7 @@ public class RobotContainer {
     new EventTrigger("Outake").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotIn));
 
     // auto aim
-    turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
+    // turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
     hoodSim.setDefaultCommand(Commands.run(() -> hoodSim.setDeg(0), hoodSim));
 
      DriverStation.waitForDsConnection(0);
@@ -255,6 +255,7 @@ public class RobotContainer {
     driver.x().onTrue(new PivotShakeSim(pivotSim));
     // shoot
     driver.b().whileTrue(new ShootSim(shooterSim));
+    driver.y().whileTrue(new AimAndShootSim(hoodSim, turretSim, shooterSim));
     
     // manual turret
     /* driver.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
