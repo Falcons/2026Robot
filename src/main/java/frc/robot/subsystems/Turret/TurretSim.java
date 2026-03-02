@@ -59,11 +59,10 @@ public class TurretSim extends SubsystemBase {
 
     field.getObject("turret").setPose(turretPose);
 
-    SmartDashboard.putBoolean("Turret/MovementSim/Turret/at max", atMax);
-    SmartDashboard.putBoolean("Turret/MovementSim/Turret/at min", atMin);
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/Auto hood angle", getHoodAngle());
-    SmartDashboard.putNumber("Turret/MovementSim/globalAngle", Math.toDegrees(getGlobalRad()));
-    SmartDashboard.putNumber("Turret/MovementSim/relativeAngle", Math.toDegrees(getRelativeRad()));
+    SmartDashboard.putBoolean("Turret/TurretSim/at max", atMax);
+    SmartDashboard.putBoolean("Turret/TurretSim/at min", atMin);
+    SmartDashboard.putNumber("Turret/TurretSim/globalAngle", Math.toDegrees(getGlobalRad()));
+    SmartDashboard.putNumber("Turret/TurretSim/relativeAngle", Math.toDegrees(getRelativeRad()));
   }
 
   /**
@@ -105,14 +104,6 @@ public class TurretSim extends SubsystemBase {
   public double getGlobalRad() {
     LaunchCalculator.getInstance().clearLaunchingParameters();
     return LaunchCalculator.getInstance().getParameters(swerve).turretAngle().getRadians();
-  }
-  /**
-   * @return the angle in which the hood should be aiming at 
-   */
-  public double getHoodAngle() {
-    // use the launch calulator to get hood angle
-    LaunchCalculator.getInstance().clearLaunchingParameters();
-    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve).hoodAngle());
   }
 
   /**

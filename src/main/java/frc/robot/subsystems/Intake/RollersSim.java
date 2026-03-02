@@ -23,7 +23,7 @@ public class RollersSim extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Roller velocity", rollerSim.getVelocity());
+    SmartDashboard.putNumber("Intake/RollersSim/Roller velocity", rollerSim.getVelocity());
   }
 
   /**

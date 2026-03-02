@@ -47,9 +47,9 @@ public class Hood extends SubsystemBase {
     field.getObject("hoodLeft").setPose(hoodPoseLeft);
     field.getObject("hoodRight").setPose(hoodPoseRight);
 
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/left actuators", leftHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/right actuators", rightHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/Auto hood angle", getHoodAngle());
+    SmartDashboard.putNumber("Hood/left actuators", leftHoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Hood/right actuators", rightHoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Hood/Auto hood angle", getHoodAngle());
   }
 
   public void autoAim(){

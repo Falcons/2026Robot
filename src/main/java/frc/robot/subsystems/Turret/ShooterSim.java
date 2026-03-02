@@ -71,11 +71,11 @@ public class ShooterSim extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Turret/Shooter/leftShooterSpeed", leftShooter);
-    SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter);
-    SmartDashboard.putNumber("Turret/Shooter/transferSpeed", transfer);
-    SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker);
-    SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
+    SmartDashboard.putNumber("Turret/ShooterSim/leftShooterSpeed", leftShooter);
+    SmartDashboard.putNumber("Turret/ShooterSim/rightShooterSpeed", rightShooter);
+    SmartDashboard.putNumber("Turret/ShooterSim/transferSpeed", transfer);
+    SmartDashboard.putNumber("Turret/ShooterSim/kickerSpeed", kicker);
+    SmartDashboard.putBoolean("Turret/ShooterSim/shooterRunning", shooterRunning);
 
     if (shotTimer.get() >= 2) {
       rightShooter = MathUtil.clamp(rightShooter - shotTimer.get(), 0, 150);

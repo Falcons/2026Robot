@@ -39,7 +39,7 @@ public class Turret extends SubsystemBase {
     this.swerve = swerve;
 
     // turret configs 2048 ticks per revolution, convert to radians, divide by gear ratio
-    turretConfig.encoder.positionConversionFactor(0.5 / (Math.PI * 2)); // 360 degree of absolute = 180 degree on turret, convert to radians
+    turretConfig.encoder.positionConversionFactor(Math.PI); // 360 degree of absolute = 180 degree on turret, convert to radians
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // turretPID.enableContinuousInput(-Math.PI, Math.PI);
@@ -52,10 +52,10 @@ public class Turret extends SubsystemBase {
     atMin = turretEncoder.getPosition() <= MovementConstants.turretMinRad;
 
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Turret/Movmement/Turret/Speed", turret.get());
-    SmartDashboard.putNumber("Turret/Movmement/Turret/Absolute Encoder", turretEncoder.getPosition());
-    SmartDashboard.putBoolean("Turret/Movment/Turret/at max", atMax);
-    SmartDashboard.putBoolean("Turret/Movment/Turret/at min", atMin);
+    SmartDashboard.putNumber("Turret/Turret/Speed", turret.get());
+    SmartDashboard.putNumber("Turret/Turret/Absolute Encoder", turretEncoder.getPosition());
+    SmartDashboard.putBoolean("Turret/Turret/at max", atMax);
+    SmartDashboard.putBoolean("Turret/Turret/at min", atMin);
   }
 
   /**

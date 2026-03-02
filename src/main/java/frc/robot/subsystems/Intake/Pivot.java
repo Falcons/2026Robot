@@ -48,8 +48,8 @@ public class Pivot extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Intake/Pivot/Speed", pivot.get());
-    SmartDashboard.putNumber("Intake/Pivot/PID/error", pivotPid.getError());
-    SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", pivotPid.getSetpoint());
+    SmartDashboard.putNumber("Intake/Pivot/PID error", pivotPid.getError());
+    SmartDashboard.putNumber("Intake/Pivot/PID setpoint", pivotPid.getSetpoint());
     SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", pivotEncoder().getPosition());
     SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
     SmartDashboard.putBoolean("Intake/Pivot/at min", atMin);

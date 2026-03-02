@@ -148,13 +148,17 @@ public class LaunchCalculator {
 
     // if limelight can see tag set distance to tz
     boolean correctTag = false;
-    for (int tagID : MovementConstants.hubTagIDs) {
-        // if not real ignore
-        if (!RobotBase.isReal()){break;}
-        correctTag = LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID;
-    }
-    if (correctTag) {
-        turretToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
+    if (LimelightHelpers.getTV(LimelightConstants.turretLimelight) && RobotBase.isReal()) {
+        for (int tagID : MovementConstants.hubTagIDs) {
+            // if not real ignore
+            if (LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID) {
+                correctTag = true;
+                break;
+            }
+        }
+        if (correctTag) {
+            turretToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
+        }
     }
     
     for (int i = 0; i < 20; i++) {
@@ -168,7 +172,7 @@ public class LaunchCalculator {
       lookaheadTurretToTargetDistance = target.getDistance(lookaheadPose.getTranslation());
     }
     
-    // Calculate parameters accounted for imparted velocity
+    // Calculate parameters accounted for velocity
     turretAngle = target.minus(lookaheadPose.getTranslation()).getAngle();
     // if limelight use that angle
     if (correctTag) {
