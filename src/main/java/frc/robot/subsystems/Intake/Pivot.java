@@ -8,7 +8,7 @@ import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.AbsoluteEncoder;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -32,9 +32,6 @@ public class Pivot extends SubsystemBase {
     // configs
     pivotConfig = new TalonFXConfiguration();
     pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
-
-    // convert to radians, 2048 ticks per full revolution, convert to radians divide by gear ratio
-    pivotConfig.Feedback.withSensorToMechanismRatio(Math.PI / 180);// 1 rotation = 2 pi
 
     pivot.getConfigurator().apply(pivotConfig);
 
@@ -107,7 +104,7 @@ public class Pivot extends SubsystemBase {
   /**
    * returns the pivot encoder
    */
-  public SparkAbsoluteEncoder pivotEncoder() {
+  public AbsoluteEncoder pivotEncoder() {
     return rollers.getPivotEncoder();
   }
 }

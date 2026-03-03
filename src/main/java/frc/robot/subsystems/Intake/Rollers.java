@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.Intake;
 
-import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -20,6 +20,7 @@ public class Rollers extends SubsystemBase {
   public Rollers() {
     this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless); 
     rollerConfig.smartCurrentLimit(20);
+    rollerConfig.encoder.positionConversionFactor(Math.PI / 2); // deg to rad is pi / 180
     roller.configure(rollerConfig, com.revrobotics.ResetMode.kResetSafeParameters,  com.revrobotics.PersistMode.kNoPersistParameters);
   }
 
@@ -46,7 +47,7 @@ public class Rollers extends SubsystemBase {
   /**
    * get encoder for the pivot, YES FOR THE PIVOT
    */
-  public SparkAbsoluteEncoder getPivotEncoder() {
+  public AbsoluteEncoder getPivotEncoder() {
     return roller.getAbsoluteEncoder();
   }
 }
