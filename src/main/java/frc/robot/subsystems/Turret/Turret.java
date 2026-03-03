@@ -25,6 +25,7 @@ import frc.robot.subsystems.Swerve.Swerve;
 public class Turret extends SubsystemBase {
 
   private final Swerve swerve;
+  private final Shooter shooter;
 
   private final SparkMax turret = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
   private final AbsoluteEncoder turretEncoder = turret.getAbsoluteEncoder();
@@ -35,8 +36,9 @@ public class Turret extends SubsystemBase {
   private boolean atMax, atMin;
 
   /** Creates a new Movement. */
-  public Turret(Swerve swerve) {
+  public Turret(Swerve swerve, Shooter shooter) {
     this.swerve = swerve;
+    this.shooter = shooter;
 
     // turret configs 2048 ticks per revolution, convert to radians, divide by gear ratio
     turretConfig.encoder.positionConversionFactor(Math.PI); // 360 degree of absolute = 180 degree on turret, convert to radians
@@ -122,7 +124,7 @@ public class Turret extends SubsystemBase {
   public double getGlobalRad() {
     // use the launch calulator to get global angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return LaunchCalculator.getInstance().getParameters(swerve).turretAngle().getRadians();
+    return LaunchCalculator.getInstance().getParameters(swerve, shooter.getShooterRPS()).turretAngle().getRadians();
   }
 
   /**

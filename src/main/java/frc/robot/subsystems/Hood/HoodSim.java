@@ -16,10 +16,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
+import frc.robot.subsystems.Turret.ShooterSim;
 
 public class HoodSim extends SubsystemBase {
 
   private final Swerve swerve;
+  private final ShooterSim shooterSim;
   private final Field2d field = new Field2d();
   
   private final Servo leftHoodActuatorSim = new Servo(MovementConstants.leftHoodActuatorPWM-10);
@@ -30,10 +32,11 @@ public class HoodSim extends SubsystemBase {
   private Pose2d hoodPoseRight = new Pose2d();
 
   /** Creates a new Movement. */
-  public HoodSim(Swerve swerve) {
+  public HoodSim(Swerve swerve, ShooterSim shooterSim) {
     // leftHoodActuator.createDouble("position", Direction.kBidir, 0);
     // rightHoodActuator.createDouble("position", Direction.kBidir, 0);
     this.swerve = swerve;
+    this.shooterSim = shooterSim;
     SmartDashboard.putData("Field", field);
     // turretPID.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -48,9 +51,9 @@ public class HoodSim extends SubsystemBase {
     field.getObject("hoodLeft").setPose(hoodPoseLeft);
     field.getObject("hoodRight").setPose(hoodPoseRight);
 
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/left actuators", leftHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/right actuators", rightHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Turret/MovementSim/Hood/Auto hood angle", getHoodAngle());
+    SmartDashboard.putNumber("Hood/HoodSim/left actuators", leftHoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Hood/HoodSim/right actuators", rightHoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Hood/HoodSim/Auto hood angle", getHoodAngle());
   }
 
   public void autoAim(){
@@ -64,7 +67,7 @@ public class HoodSim extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve).hoodAngle());
+    return LaunchCalculator.getInstance().getParameters(swerve, shooterSim.getShooterRPS()).hoodAngle();
   }
 
   /**

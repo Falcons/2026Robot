@@ -35,7 +35,6 @@ import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
 import frc.robot.commands.Turret.ShootSim;
-import frc.robot.commands.Turret.TurretSim.AutoTurretSim;
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
@@ -113,11 +112,11 @@ public class RobotContainer {
   
   private void setupReal() {
     //initializing real classes
-    this.turret = new Turret(swerve);
+    this.turret = new Turret(swerve, shooter);
     this.shooter = new Shooter(turret);
     this.rollers = new Rollers();
     this.pivot = new Pivot(rollers );
-    this.hood = new Hood(swerve);
+    this.hood = new Hood(swerve, shooter);
     
     // default hood to 0 and auto aim turret always
     turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
@@ -203,9 +202,13 @@ public class RobotContainer {
  
   private void setupSim(){
     // initializing sim  classes
-    this.turretSim = new TurretSim(swerve);
+
+    // need to do null shenangigans since they all depend on each other ._.
+    this.turretSim = new TurretSim(swerve, null); 
     this.shooterSim = new ShooterSim(turretSim);
-    this.hoodSim = new HoodSim(swerve);
+    this.turretSim.setShooterSim(shooterSim);
+
+    this.hoodSim = new HoodSim(swerve, shooterSim);
     this.rollersSim = new RollersSim();
     this.pivotSim = new PivotSim(rollersSim);
 

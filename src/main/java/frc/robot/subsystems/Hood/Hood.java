@@ -18,10 +18,12 @@ import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
+import frc.robot.subsystems.Turret.Shooter;
 
 public class Hood extends SubsystemBase {
 
   private final Swerve swerve;
+  private final Shooter shooter;
   private final Field2d field = new Field2d();
   
   private final Servo leftHoodActuatorSim = new Servo(MovementConstants.leftHoodActuatorPWM);
@@ -32,8 +34,9 @@ public class Hood extends SubsystemBase {
   private Pose2d hoodPoseRight = new Pose2d();
 
   /** Creates a new Movement. */
-  public Hood(Swerve swerve) {
+  public Hood(Swerve swerve, Shooter shooter) {
     this.swerve = swerve;
+    this.shooter = shooter;
     SmartDashboard.putData("Field", field);
   }
 
@@ -63,7 +66,7 @@ public class Hood extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve).hoodAngle());
+    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve, shooter.getShooterRPS()).hoodAngle());
   }
 
   /**

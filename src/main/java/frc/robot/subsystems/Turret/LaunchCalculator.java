@@ -16,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.RobotBase;
@@ -54,8 +55,7 @@ public class LaunchCalculator {
       Rotation2d turretAngle,
       double turretVelocity,
       double hoodAngle,
-      double hoodVelocity,
-      double flywheelSpeed) {}
+      double hoodVelocity) {}
 
   // Cache parameters
   private LaunchingParameters latestParameters = null;
@@ -63,10 +63,19 @@ public class LaunchCalculator {
   private static double minDistance;
   private static double maxDistance;
   private static double phaseDelay;
-  private static final InterpolatingTreeMap<Double, Rotation2d> launchHoodAngleMap =
-      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
-  private static final InterpolatingDoubleTreeMap launchFlywheelSpeedMap =
-      new InterpolatingDoubleTreeMap();
+
+  // < distance : < rps : hood angle > >
+  private static final InterpolatingTreeMap<Double, InterpolatingTreeMap<Double, Double>> hoodAngleMap =
+    // a (input), b (input), t (interpolation fraction) return a -> 
+    //doesnt interpolate because idk how to intrepertate an interpretation map ._.
+    new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), (a, b, t) -> a); 
+  // 3m
+  private static final InterpolatingTreeMap<Double, Double> speed3m = 
+    new InterpolatingTreeMap<Double, Double>(InverseInterpolator.forDouble(), Interpolator.forDouble());
+  // 4m
+  private static final InterpolatingTreeMap<Double, Double> speed4m = 
+    new InterpolatingTreeMap<Double, Double>(InverseInterpolator.forDouble(), Interpolator.forDouble());
+      
   private static final InterpolatingDoubleTreeMap timeOfFlightMap =
       new InterpolatingDoubleTreeMap();
 
@@ -74,28 +83,19 @@ public class LaunchCalculator {
     minDistance = 1.34;
     maxDistance = 5.6;
     phaseDelay = 0.03;
+    
+    // 3m
+    speed3m.put(80.0, 20.0); // RPM to hood deg
+    speed3m.put(90.0, 25.0);
+    speed3m.put(100.0, 30.0); 
+    hoodAngleMap.put(3.0, speed3m);
 
-    launchHoodAngleMap.put(1.34, Rotation2d.fromDegrees(19.0));
-    launchHoodAngleMap.put(1.78, Rotation2d.fromDegrees(19.0));
-    launchHoodAngleMap.put(2.17, Rotation2d.fromDegrees(24.0));
-    launchHoodAngleMap.put(2.81, Rotation2d.fromDegrees(27.0));
-    launchHoodAngleMap.put(3.82, Rotation2d.fromDegrees(29.0));
-    launchHoodAngleMap.put(4.09, Rotation2d.fromDegrees(30.0));
-    launchHoodAngleMap.put(4.40, Rotation2d.fromDegrees(31.0));
-    launchHoodAngleMap.put(4.77, Rotation2d.fromDegrees(32.0));
-    launchHoodAngleMap.put(5.57, Rotation2d.fromDegrees(32.0));
-    launchHoodAngleMap.put(5.60, Rotation2d.fromDegrees(35.0));
+    // 4m
+    speed4m.put(80.0, 25.0);
+    speed4m.put(90.0, 28.0);
+    speed4m.put(100.0, 32.0);
+    hoodAngleMap.put(4.0, speed4m);
 
-    launchFlywheelSpeedMap.put(1.34, 210.0);
-    launchFlywheelSpeedMap.put(1.78, 220.0);
-    launchFlywheelSpeedMap.put(2.17, 220.0);
-    launchFlywheelSpeedMap.put(2.81, 230.0);
-    launchFlywheelSpeedMap.put(3.82, 250.0);
-    launchFlywheelSpeedMap.put(4.09, 255.0);
-    launchFlywheelSpeedMap.put(4.40, 260.0);
-    launchFlywheelSpeedMap.put(4.77, 265.0);
-    launchFlywheelSpeedMap.put(5.57, 275.0);
-    launchFlywheelSpeedMap.put(5.60, 290.0);
 
     // Existing entries
     timeOfFlightMap.put(1.38, 0.90);
@@ -105,7 +105,7 @@ public class LaunchCalculator {
     timeOfFlightMap.put(5.68, 1.16);
   }
 
-  public LaunchingParameters getParameters(Swerve swerve) {
+  public LaunchingParameters getParameters(Swerve swerve, Double shooterSpeed) {
     if (latestParameters != null) {
       return latestParameters;
     }
@@ -182,7 +182,10 @@ public class LaunchCalculator {
         turretAngle = new Rotation2d(Math.atan2(aprilTagOffset[2], aprilTagOffset[0]));
     }
 
-    hoodAngle = launchHoodAngleMap.get(lookaheadTurretToTargetDistance).getRadians();
+    // get hood angle from maps
+    // use distance to get all speed maps and than use shooter speed to get hood angle
+    hoodAngle = hoodAngleMap.get(lookaheadTurretToTargetDistance).get(shooterSpeed);
+
     if (lastTurretAngle == null) lastTurretAngle = turretAngle;
     if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
     turretVelocity =
@@ -200,8 +203,7 @@ public class LaunchCalculator {
             turretAngle,
             turretVelocity,
             hoodAngle,
-            hoodVelocity,
-            launchFlywheelSpeedMap.get(lookaheadTurretToTargetDistance));
+            hoodVelocity);
 
     // Log calculated values
     // SmartDashboard.putNumber("Turret/LaunchCalculator/LookaheadPose", lookaheadPose);
