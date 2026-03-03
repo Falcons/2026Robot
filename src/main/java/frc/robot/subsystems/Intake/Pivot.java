@@ -34,7 +34,7 @@ public class Pivot extends SubsystemBase {
     pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
 
     // convert to radians, 2048 ticks per full revolution, convert to radians divide by gear ratio
-    pivotConfig.Feedback.withSensorToMechanismRatio(2048 / (2 * Math.PI) / PivotConstants.intakePivotRatio);// 1 rotation = 2 pi
+    pivotConfig.Feedback.withSensorToMechanismRatio(Math.PI / 180);// 1 rotation = 2 pi
 
     pivot.getConfigurator().apply(pivotConfig);
 
