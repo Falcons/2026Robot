@@ -50,10 +50,10 @@ public class Turret extends SubsystemBase {
     atMin = turretEncoder.getPosition() <= MovementConstants.turretMinRad;
 
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Turret/Movmement/Turret/Speed", turret.get());
-    SmartDashboard.putNumber("Turret/Movmement/Turret/Absolute Encoder", turretEncoder.getPosition());
-    SmartDashboard.putBoolean("Turret/Movment/Turret/at max", atMax);
-    SmartDashboard.putBoolean("Turret/Movment/Turret/at min", atMin);
+    SmartDashboard.putNumber("Turret/Turret/Speed", turret.get());
+    SmartDashboard.putNumber("Turret/Turret/Absolute Encoder", turretEncoder.getPosition());
+    SmartDashboard.putBoolean("Turret/Turret/at max", atMax);
+    SmartDashboard.putBoolean("Turret/Turret/at min", atMin);
   }
 
   /**
