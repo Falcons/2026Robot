@@ -6,8 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.commands.Turret.ShootSim;
 import frc.robot.subsystems.Hood.HoodSim;
 import frc.robot.subsystems.Turret.ShooterSim;

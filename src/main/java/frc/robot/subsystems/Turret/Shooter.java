@@ -96,6 +96,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/transferSpeed", transfer.get());
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
+    SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
 
     SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getVelocity().getValueAsDouble());
   }
@@ -152,5 +153,12 @@ public class Shooter extends SubsystemBase {
   public void setShooterWithkicker(DoubleSupplier shooterSpeed, double kickerSpeed) {
     rightShooter.set(shooterSpeed.getAsDouble());
     kicker.set(kickerSpeed);
+  }
+
+  /**
+   * get the rpm of the shooter
+   */
+  public Double getShooterRPS() {
+    return rightShooter.getVelocity().getValueAsDouble();
   }
 }

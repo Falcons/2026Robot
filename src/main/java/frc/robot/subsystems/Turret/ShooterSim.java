@@ -145,4 +145,11 @@ public class ShooterSim extends SubsystemBase {
     rightShooter += shooterSpeed.getAsDouble();
     kicker = kickerSpeed;
   }
+
+  /**
+   * get the rpm of the shooter
+   */
+  public Double getShooterRPS() {
+    return rightShooter;
+  }
 }

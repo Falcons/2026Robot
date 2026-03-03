@@ -80,8 +80,8 @@ public class PivotSim extends SubsystemBase {
     // check if above setpoint clamp, and clamp pid speed
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
-    SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
-    SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
+    SmartDashboard.putNumber("Intake/PivotSim/PID/setpoint", setpoint);
+    SmartDashboard.putNumber("Intake/PivotSim/PID/calc", pid);
     setPivot(pid);
     // pivotPid.reset();
   }
