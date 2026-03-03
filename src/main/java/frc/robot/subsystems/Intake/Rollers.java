@@ -4,7 +4,7 @@
 
 package frc.robot.subsystems.Intake;
 
-import com.revrobotics.spark.SparkAbsoluteEncoder;
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -14,7 +14,7 @@ import frc.robot.Constants.IntakeConstants.RollersConstants;
 
 public class Rollers extends SubsystemBase {
   private final SparkMax roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless);
-  private final SparkAbsoluteEncoder pivotEncoder = roller.getAbsoluteEncoder();
+  private final AbsoluteEncoder pivotEncoder = roller.getAbsoluteEncoder();
   private SparkMaxConfig rollerConfig = new SparkMaxConfig();
   /** Creates a new Rollers. */
   public Rollers() {
@@ -36,7 +36,7 @@ public class Rollers extends SubsystemBase {
     roller.stopMotor();
   }
 
-  public SparkAbsoluteEncoder getPivotEncoder() {
+  public AbsoluteEncoder getPivotEncoder() {
     return pivotEncoder;
   }
 }
