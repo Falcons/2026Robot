@@ -115,7 +115,7 @@ public class RobotContainer {
   }
   
   private void setupReal() {
-    //initializing real classes
+    //initializing real classes //TODO:turn back on
     this.turret = new Turret(swerve);
     this.shooter = new Shooter(turret);
     this.pivot = new Pivot();
@@ -126,27 +126,27 @@ public class RobotContainer {
     // turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
     // hood.setDefaultCommand(Commands.run(() -> hood.setHood(0), hood));
 
-    // Named Commands
-    NamedCommands.registerCommand("Test", new PrintCommand("test"));
-    NamedCommands.registerCommand("AimAndShoot", new AimHoodAndShoot(hood, shooter));
-    NamedCommands.registerCommand("Shake", new PivotShake(pivot));
-    NamedCommands.registerCommand("Intake", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed));
-    NamedCommands.registerCommand("Outake", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
+    // Named Commands TODO:TURN BACK ON
+    // NamedCommands.registerCommand("Test", new PrintCommand("test"));
+    // NamedCommands.registerCommand("AimAndShoot", new AimHoodAndShoot(hood, shooter));
+    // NamedCommands.registerCommand("Shake", new PivotShake(pivot));
+    // NamedCommands.registerCommand("Intake", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed));
+    // NamedCommands.registerCommand("Outake", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
     
     //autos
      DriverStation.waitForDsConnection(0);
 
-    autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
-      (stream) -> Constants.isCompetition
-        ? stream.filter(auto -> !auto.getName().startsWith("Test")): stream);
-    autoChooser.addOption("timeout left", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseLeft), DriveConstants.pathFindingConstraints));
-    autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints));
-    autoChooser.addOption("preload shoot left", Commands.parallel(
-      AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), DriveConstants.pathFindingConstraints),
-      new AimHoodAndShoot(hood, shooter)));
-    autoChooser.addOption("preload shoot right", Commands.parallel(
-      AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), DriveConstants.pathFindingConstraints),
-      new AimHoodAndShoot(hood, shooter)));
+    // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier( TODO:TURN BACK ON
+    //   (stream) -> Constants.isCompetition
+    //     ? stream.filter(auto -> !auto.getName().startsWith("Test")): stream);
+    // autoChooser.addOption("timeout left", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseLeft), DriveConstants.pathFindingConstraints));
+    // autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints));
+    // autoChooser.addOption("preload shoot left", Commands.parallel(
+    //   AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), DriveConstants.pathFindingConstraints),
+    //   new AimHoodAndShoot(hood, shooter)));
+    // autoChooser.addOption("preload shoot right", Commands.parallel(
+    //   AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), DriveConstants.pathFindingConstraints),
+    //   new AimHoodAndShoot(hood, shooter)));
     
     SmartDashboard.putData("auto Chooser" ,autoChooser);
   }
@@ -154,13 +154,13 @@ public class RobotContainer {
   private void configureRealBindings() {
     // DRIVER (secondary controls)
     // rollers
-    driver.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
+    // driver.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue( TODO: TURN BACK ON
+    //   Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
 
-    // charge fire
-    driver.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.run(() -> shooter.setShooterWithkicker(driver::getRightTriggerAxis, 
-      ShooterConstants.maxKickerSpeed), shooter));
+    // // charge fire
+    // driver.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
+    //   Commands.run(() -> shooter.setShooterWithkicker(driver::getRightTriggerAxis, 
+    //   ShooterConstants.maxKickerSpeed), shooter));
 
     // intake out/in, shake //TODO: turn back on
     // driver.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
@@ -168,19 +168,19 @@ public class RobotContainer {
     // driver.povLeft().onTrue(new PivotShake(pivot));
 
     // OPERATOR
-    // move transfer backwards
-    operator.leftBumper().whileTrue(Commands.run(() -> shooter.setTransfer(-ShooterConstants.maxTransferSpeed), shooter));
+    // move transfer backwards TODO:TURN BACK ON
+    // operator.leftBumper().whileTrue(Commands.run(() -> shooter.setTransfer(-ShooterConstants.maxTransferSpeed), shooter));
 
-    // spin shooter
-    operator.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.run(() -> shooter.setShooterWithkicker(driver::getLeftTriggerAxis, 
-      ShooterConstants.maxKickerSpeed), shooter));
+    // // spin shooter
+    // operator.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
+    //   Commands.run(() -> shooter.setShooterWithkicker(driver::getLeftTriggerAxis, 
+    //   ShooterConstants.maxKickerSpeed), shooter));
 
-    // actually shoot
-    operator.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.run(() -> shooter.fullShoot(driver::getRightTriggerAxis, 
-      ShooterConstants.maxTransferSpeed, 
-      ShooterConstants.maxKickerSpeed), shooter));
+    // // actually shoot
+    // operator.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
+    //   Commands.run(() -> shooter.fullShoot(driver::getRightTriggerAxis, 
+    //   ShooterConstants.maxTransferSpeed, 
+    //   ShooterConstants.maxKickerSpeed), shooter));
 
     // manual turret TODO: TURN BACK ON 
     // operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
@@ -191,12 +191,12 @@ public class RobotContainer {
       // Commands.run(() -> hood.moveHood(operator::getLeftY), hood));
 
     // main fire
-    operator.b().whileTrue(
-      Commands.runEnd(shooter::shootWhenMaxSpeed, () -> shooter.shooterRunning = false, shooter));
+    // operator.b().whileTrue( //TODO TURN BACK ON
+    //   Commands.runEnd(shooter::shootWhenMaxSpeed, () -> shooter.shooterRunning = false, shooter));
 
-    // spin intake - rollers 
-    operator.x().whileTrue(Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
-    operator.povRight().whileTrue(Commands.run(() -> rollers.set(-RollersConstants.rollerSpeed)));
+    // // spin intake - rollers 
+    // operator.x().whileTrue(Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
+    // operator.povRight().whileTrue(Commands.run(() -> rollers.set(-RollersConstants.rollerSpeed)));
 
     // intake out and in, and  TODO: turn back on
     // operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));

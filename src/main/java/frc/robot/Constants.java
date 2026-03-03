@@ -117,12 +117,12 @@ public final class Constants {
 
         public static final class RollersConstants {
             public static final double intakeRollersRatio = 3.2;
-            public static final int rollerCANID = 5;
+            public static final int rollerCANID = 6;
             public static final double rollerSpeed = 1;
         }
 
         public static final class PivotConstants {
-            public static final int pivotCANID = 6;
+            public static final int pivotCANID = 5;
 
             public static final double pivotOut = Math.toRadians(0); // TODO: pivot setpoints
             public static final double pivotShake = Math.toRadians(45);
