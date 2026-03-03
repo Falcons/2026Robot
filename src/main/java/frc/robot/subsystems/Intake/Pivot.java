@@ -33,8 +33,7 @@ public class Pivot extends SubsystemBase {
     pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(IdleMode.kBrake);
 
-    // convert to radians, 2048 ticks per full revolution, convert to radians divide by gear ratio
-    pivotConfig.encoder.positionConversionFactor(2048 / (2 * Math.PI) / PivotConstants.intakePivotRatio); // 1 rotation = 2 pi
+    pivotConfig.encoder.positionConversionFactor(Math.PI / 180); // degrees * (pi / 180) = radians
 
     pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
