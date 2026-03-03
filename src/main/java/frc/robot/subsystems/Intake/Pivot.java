@@ -19,21 +19,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 
 public class Pivot extends SubsystemBase {
+
+  private final Rollers rollers;
+
   // pivot motor, encoder and config
   private final SparkMax pivot = new SparkMax(PivotConstants.pivotCANID, MotorType.kBrushless);
-  private final SparkAbsoluteEncoder pivotEncoder = pivot.getAbsoluteEncoder();
   private final SparkMaxConfig pivotConfig;
 
   PIDController pivotPid = new PIDController(0.3, 0, 0);
 
   private boolean atMin, atMax;
   /** Creates a new Pivot. */
-  public Pivot() {
+  public Pivot(Rollers rollers) {
+    this.rollers = rollers;
     // configs
     pivotConfig = new SparkMaxConfig();
     pivotConfig.idleMode(IdleMode.kBrake);
-
-    pivotConfig.encoder.positionConversionFactor(Math.PI / 180); // degrees * (pi / 180) = radians
 
     pivot.configure(pivotConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -49,7 +50,8 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Pivot/Speed", pivot.get());
     SmartDashboard.putNumber("Intake/Pivot/PID/error", pivotPid.getError());
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", pivotPid.getSetpoint());
-    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", pivot.getAbsoluteEncoder().getPosition());
+    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", Math.toDegrees(pivotEncoder().getPosition()));
+    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder rad", pivotEncoder().getPosition());
     SmartDashboard.putNumber("Intake/Pivot/current", getCurrent());
     SmartDashboard.putNumber("Intake/Pivot/Bus Voltage", getBusVoltage());
     SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
@@ -72,7 +74,7 @@ public class Pivot extends SubsystemBase {
    * @param setpoint the radians to set the pivot
    */
   public void setPivotPid(double setpoint) {
-    double pid = pivotPid.calculate(pivotEncoder.getPosition(), setpoint);
+    double pid = pivotPid.calculate(pivotEncoder().getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
     setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotOut, PivotConstants.pivotIn); // pivot in is max
     pid = MathUtil.clamp(pid, -0.5, 0.5);
@@ -83,7 +85,7 @@ public class Pivot extends SubsystemBase {
   }
 
   public double getPivotDegrees() {
-    return Math.toDegrees(pivotEncoder.getPosition());
+    return Math.toDegrees(pivotEncoder().getPosition());
   }
 
   public double getCurrent() {
@@ -107,5 +109,9 @@ public class Pivot extends SubsystemBase {
    */
   public void stopPivot() {
     pivot.stopMotor();
+  }
+
+  public SparkAbsoluteEncoder pivotEncoder() {
+    return rollers.getPivotEncoder();
   }
 }

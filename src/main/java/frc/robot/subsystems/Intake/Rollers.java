@@ -4,28 +4,28 @@
 
 package frc.robot.subsystems.Intake;
 
+import com.revrobotics.spark.SparkAbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 
 public class Rollers extends SubsystemBase {
-  private final SparkMax roller;
+  private final SparkMax roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless);
+  private final SparkAbsoluteEncoder pivotEncoder = roller.getAbsoluteEncoder();
   private SparkMaxConfig rollerConfig = new SparkMaxConfig();
   /** Creates a new Rollers. */
   public Rollers() {
-    this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless);
+    rollerConfig.encoder.positionConversionFactor(Math.PI / 180); // convert from deg to rad
+
     rollerConfig.smartCurrentLimit(20);
     roller.configure(rollerConfig, com.revrobotics.ResetMode.kResetSafeParameters,  com.revrobotics.PersistMode.kNoPersistParameters);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Intake/Rollers/Velocity", roller.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Intake/Rollers/Speed", roller.get());
   }
 
   public void set(double roll) {
@@ -36,7 +36,7 @@ public class Rollers extends SubsystemBase {
     roller.stopMotor();
   }
 
-  public double getRollerVelocity() {
-    return roller.getEncoder().getVelocity()/3.0;
+  public SparkAbsoluteEncoder getPivotEncoder() {
+    return pivotEncoder;
   }
 }

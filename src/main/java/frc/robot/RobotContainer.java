@@ -4,19 +4,13 @@
 
 package frc.robot;
 
-import java.io.IOException;
-
-import org.json.simple.parser.ParseException;
-
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.util.FileVersionException;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -41,11 +35,9 @@ import frc.robot.commands.Hood.AutoHoodSim;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
-import frc.robot.commands.Turret.ManualTurret;
 import frc.robot.commands.Turret.TurretSim.AutoTurretSim;
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.PivotIntake;
-import frc.robot.commands.Intake.PivotPid;
 import frc.robot.commands.Intake.PivotShake;
 import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // DONT REMOVE
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
@@ -118,9 +110,9 @@ public class RobotContainer {
     //initializing real classes
     this.turret = new Turret(swerve);
     this.shooter = new Shooter(turret);
-    this.pivot = new Pivot();
-    this.hood = new Hood(swerve);
     this.rollers = new Rollers();
+    this.pivot = new Pivot(rollers);
+    this.hood = new Hood(swerve);
     
     // default hood to 0 and auto aim turret always
     // turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
