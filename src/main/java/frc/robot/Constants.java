@@ -95,8 +95,8 @@ public final class Constants {
             public static final double kickerRatio = 4;
             public static final int transferRatio = 4;
 
-            public static final int leftShooterCANID = 1001; // TODO: canid
-            public static final int rightShooterCANID = 1002; // TODO: canid
+            public static final int leftShooterCANID = 17;
+            public static final int rightShooterCANID = 16;
             public static final int transferCANID = 13;
             public static final int kickerCANID = 9; 
 
