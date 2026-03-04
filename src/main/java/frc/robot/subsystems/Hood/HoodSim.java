@@ -22,7 +22,7 @@ public class HoodSim extends SubsystemBase {
   private final Swerve swerve;
   private final Field2d field = new Field2d();
   
-  private final Servo rightHoodActuatorSim = new Servo(MovementConstants.rightHoodActuatorPWM-10);
+  private final Servo rightHoodActuatorSim = new Servo(MovementConstants.rightHoodActuatorPWM);
 
   // hood
   private Pose2d hoodPoseLeft = new Pose2d();
