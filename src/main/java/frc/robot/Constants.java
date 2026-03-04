@@ -97,7 +97,7 @@ public final class Constants {
             public static final int leftShooterCANID = 21;
             public static final int rightShooterCANID = 23;
             public static final int transferCANID = 20;
-            public static final int kickerCANID = 9; 
+            public static final int kickerCANID = 24; 
 
             public static final double maxShooterRPS = 80;
             public static final double maxShooterSpeed = 1;
