@@ -8,6 +8,7 @@ import com.revrobotics.spark.SparkMax;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -28,6 +29,7 @@ public class Shooter extends SubsystemBase {
   private final TalonFX leftShooter = new TalonFX(ShooterConstants.leftShooterCANID);
   private final TalonFX rightShooter = new TalonFX(ShooterConstants.rightShooterCANID);
   private final SparkMax kicker = new SparkMax(ShooterConstants.kickerCANID, MotorType.kBrushless);
+  Orchestra orchestra = new Orchestra();
 
   private final SparkMax transfer = new SparkMax(ShooterConstants.transferCANID, MotorType.kBrushless);
 
@@ -58,6 +60,10 @@ public class Shooter extends SubsystemBase {
     rightShooter.getConfigurator().apply(rightShooterConfig);
     transfer.configure(transferConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     kicker.configure(kickerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+    // music setup
+    orchestra.addInstrument(leftShooter);
+    orchestra.addInstrument(rightShooter);
   }
 
   /**

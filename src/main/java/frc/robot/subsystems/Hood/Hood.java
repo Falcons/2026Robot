@@ -24,12 +24,10 @@ public class Hood extends SubsystemBase {
   private final Swerve swerve;
   private final Field2d field = new Field2d();
   
-  private final Servo leftHoodActuatorSim = new Servo(MovementConstants.leftHoodActuatorPWM);
-  private final Servo rightHoodActuatorSim = new Servo(MovementConstants.rightHoodActuatorPWM);
+  private final Servo hoodActuator = new Servo(MovementConstants.rightHoodActuatorPWM);
 
   // simulated variables
-  private Pose2d hoodPoseLeft = new Pose2d();
-  private Pose2d hoodPoseRight = new Pose2d();
+  private Pose2d hoodPose = new Pose2d();
 
   /** Creates a new Movement. */
   public Hood(Swerve swerve) {
@@ -40,16 +38,12 @@ public class Hood extends SubsystemBase {
   @Override
   public void periodic() {
     // hood
-    hoodPoseLeft = new Pose2d(new Translation2d(5,0), 
-                   new Rotation2d(Math.toRadians(leftHoodActuatorSim.getAngle())));
-    hoodPoseRight = new Pose2d(new Translation2d(7,0), 
-                   new Rotation2d(Math.toRadians(rightHoodActuatorSim.getAngle())));
-    field.getObject("hoodLeft").setPose(hoodPoseLeft);
-    field.getObject("hoodRight").setPose(hoodPoseRight);
+    hoodPose = new Pose2d(new Translation2d(7,0), 
+                   new Rotation2d(Math.toRadians(hoodActuator.getAngle())));
+    field.getObject("hoodRight").setPose(hoodPose);
 
-    SmartDashboard.putNumber("Turret/Hood/left actuators", leftHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Turret/Hood/right actuators", rightHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Turret/Hood/Auto hood angle", getHoodAngle());
+    SmartDashboard.putNumber("Turret/Hood/actuators", hoodActuator.getAngle());
+    // SmartDashboard.putNumber("Turret/Hood/Auto hood angle", getHoodAngle());
   }
 
   public void autoAim(){
@@ -71,8 +65,7 @@ public class Hood extends SubsystemBase {
    * @param Position position 
    */
   public void setHood(double Position){
-    leftHoodActuatorSim.set(Position);
-    rightHoodActuatorSim.set(Position);
+    hoodActuator.set(Position);
   }
 
   /**
@@ -80,8 +73,7 @@ public class Hood extends SubsystemBase {
    * @param Position position in degrees
    */
   public void setHoodDeg(double Position){
-    leftHoodActuatorSim.setAngle(Position);
-    rightHoodActuatorSim.setAngle(Position);
+    hoodActuator.setAngle(Position);
   }
 
   /**
@@ -89,8 +81,7 @@ public class Hood extends SubsystemBase {
    * @param speed degrees/second
    */
   public void moveHood(DoubleSupplier speed){
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed.getAsDouble()/Constants.deltaTime);
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed.getAsDouble()/Constants.deltaTime);
+    hoodActuator.setAngle(hoodActuator.getAngle() + speed.getAsDouble()/Constants.deltaTime);
   }
 
   /**
@@ -98,7 +89,7 @@ public class Hood extends SubsystemBase {
    * @return the angle in degrees
    */
   public double getHoodPosition(){
-    return (leftHoodActuatorSim.getAngle() + rightHoodActuatorSim.getAngle())/2;
+    return (hoodActuator.getAngle() + hoodActuator.getAngle())/2;
   }
 
   /**

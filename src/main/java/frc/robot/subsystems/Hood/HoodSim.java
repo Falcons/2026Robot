@@ -22,7 +22,6 @@ public class HoodSim extends SubsystemBase {
   private final Swerve swerve;
   private final Field2d field = new Field2d();
   
-  private final Servo leftHoodActuatorSim = new Servo(MovementConstants.leftHoodActuatorPWM-10);
   private final Servo rightHoodActuatorSim = new Servo(MovementConstants.rightHoodActuatorPWM-10);
 
   // hood
@@ -42,13 +41,10 @@ public class HoodSim extends SubsystemBase {
   public void periodic() {
     // hood
     hoodPoseLeft = new Pose2d(new Translation2d(5,0), 
-                   new Rotation2d(Math.toRadians(leftHoodActuatorSim.getAngle())));
-    hoodPoseRight = new Pose2d(new Translation2d(7,0), 
                    new Rotation2d(Math.toRadians(rightHoodActuatorSim.getAngle())));
     field.getObject("hoodLeft").setPose(hoodPoseLeft);
     field.getObject("hoodRight").setPose(hoodPoseRight);
 
-    SmartDashboard.putNumber("Turret/HoodSim/left actuators", leftHoodActuatorSim.getAngle());
     SmartDashboard.putNumber("Turret/HoodSim/right actuators", rightHoodActuatorSim.getAngle());
     SmartDashboard.putNumber("Turret/HoodSim/Auto hood angle", getHoodAngle());
   }
@@ -72,7 +68,6 @@ public class HoodSim extends SubsystemBase {
    * @param Position position 
    */
   public void set(double Position){
-    leftHoodActuatorSim.set(Position);
     rightHoodActuatorSim.set(Position);
   }
 
@@ -81,7 +76,6 @@ public class HoodSim extends SubsystemBase {
    * @param Position position in degrees
    */
   public void setDeg(double Position){
-    leftHoodActuatorSim.setAngle(Position);
     rightHoodActuatorSim.setAngle(Position);
   }
 
@@ -90,8 +84,6 @@ public class HoodSim extends SubsystemBase {
    * @param speed degrees * 20  /second
    */
   public void move(double speed){
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
   }
 
   /**
@@ -99,7 +91,7 @@ public class HoodSim extends SubsystemBase {
    * @return the angle in degrees
    */
   public double getHoodPosition(){
-    return (leftHoodActuatorSim.getAngle() + rightHoodActuatorSim.getAngle())/2;
+    return (rightHoodActuatorSim.getAngle() + rightHoodActuatorSim.getAngle())/2;
   }
 
   /**

@@ -41,11 +41,12 @@ public class TeleopDrive extends Command {
   @Override
   public void execute() {
 
-    double limitedXControl = xSlewLimiter.calculate(controlX.getAsDouble());
-    double limitedYControl = ySlewLimiter.calculate(controlY.getAsDouble());
+    double controlXSpeed = controlX.getAsDouble();
+    double controlYSpeed = controlY.getAsDouble();
+
     swerve.drive(new Translation2d(
-      limitedYControl  * swerve.getMaximumVelocity(),
-      limitedXControl  * swerve.getMaximumVelocity()),
+      controlXSpeed  * swerve.getMaximumVelocity(),
+      controlYSpeed  * swerve.getMaximumVelocity()),
       rot.getAsDouble() * swerve.getMaximumAngularVelocity(),
       fieldRelative.getAsBoolean());
   }

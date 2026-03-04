@@ -29,6 +29,7 @@ import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 
@@ -52,10 +53,25 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("swerve/frontLeft encoder", swerveDrive.getModules()[0].getAbsolutePosition());
-    SmartDashboard.putNumber("swerve/frontRight encoder", swerveDrive.getModules()[1].getAbsolutePosition());
-    SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
-    SmartDashboard.putNumber("swerve/backRight encoder", swerveDrive.getModules()[3].getAbsolutePosition());
+    SmartDashboard.putNumber("swerve/frontLeft/offset abs encoder", swerveDrive.getModules()[0].getAbsolutePosition());
+    SmartDashboard.putNumber("swerve/frontLeft/abs encoder", swerveDrive.getModules()[0].getRawAbsolutePosition());
+    SmartDashboard.putNumber("swerve/frontLeft/rel encoder", swerveDrive.getModules()[0].getRelativePosition());
+    SmartDashboard.putNumber("swerve/frontLeft/drive encoder", swerveDrive.getModules()[0].getDriveMotor().getPosition());
+
+    SmartDashboard.putNumber("swerve/frontRight/offset abs encoder", swerveDrive.getModules()[1].getAbsolutePosition());
+    SmartDashboard.putNumber("swerve/frontRight/abs encoder", swerveDrive.getModules()[1].getRawAbsolutePosition());
+    SmartDashboard.putNumber("swerve/frontRight/rel encoder", swerveDrive.getModules()[1].getRelativePosition());
+    SmartDashboard.putNumber("swerve/frontRight/drive encoder", swerveDrive.getModules()[1].getDriveMotor().getPosition());
+
+    SmartDashboard.putNumber("swerve/backLeft/offset abs encoder", swerveDrive.getModules()[2].getAbsolutePosition());
+    SmartDashboard.putNumber("swerve/backLeft/abs encoder", swerveDrive.getModules()[2].getRawAbsolutePosition());
+    SmartDashboard.putNumber("swerve/backLeft/rel encoder", swerveDrive.getModules()[2].getRelativePosition());
+    SmartDashboard.putNumber("swerve/backLeft/drive encoder", swerveDrive.getModules()[2].getDriveMotor().getPosition());
+
+    SmartDashboard.putNumber("swerve/backRight/offset abs encoder", swerveDrive.getModules()[3].getAbsolutePosition());
+    SmartDashboard.putNumber("swerve/backRight/abs encoder", swerveDrive.getModules()[3].getRawAbsolutePosition());
+    SmartDashboard.putNumber("swerve/backRight/rel encoder", swerveDrive.getModules()[3].getRelativePosition());
+    SmartDashboard.putNumber("swerve/backRight/drive encoder", swerveDrive.getModules()[3].getDriveMotor().getPosition());
 
     // addVisionMeasurement(LimelightConstants.turretLimelight);
   }
@@ -173,6 +189,7 @@ public class Swerve extends SubsystemBase {
     swerveDrive.driveFieldOriented(velocity);
   }
   public void zeroGyro() {
+    System.out.println("reset swerve gyro");
     swerveDrive.zeroGyro();
   }
 

@@ -83,9 +83,10 @@ public class RobotContainer {
     }else {
       setupSim();
       configureSimBindings();
+    }
+    // DRIVER
+    driver.b().whileTrue(new InstantCommand(swerve::zeroGyro));
 
-      // DRIVER
-    driver.b().onTrue(new InstantCommand(swerve::zeroGyro));
     // slow mode toggle
     driver.start().toggleOnTrue(new InstantCommand(
       () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS)));
@@ -95,14 +96,13 @@ public class RobotContainer {
     driver.rightBumper().whileTrue(Commands.startEnd(
       () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS), 
       () -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity()), swerve));
-    }
-    
+
     // add default commands (run when no other commands are running)
     swerve.setDefaultCommand(new TeleopDrive( 
       swerve, 
-      () -> MathUtil.applyDeadband(-driver.getLeftX(), ControllerConstants.deadBand), 
+      () -> MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.deadBand), 
       () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand),
-      () -> MathUtil.applyDeadband(-driver.getRightX(), ControllerConstants.deadBand), 
+      () -> MathUtil.applyDeadband(driver.getRightX(), ControllerConstants.deadBand), 
       () -> !driver.getHID().getLeftBumper()));
   }
   
