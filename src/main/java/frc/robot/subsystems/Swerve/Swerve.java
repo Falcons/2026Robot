@@ -25,6 +25,8 @@ import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -44,6 +46,7 @@ public class Swerve extends SubsystemBase {
     try {
       // try to create a new swerve drive
       DriverStation.waitForDsConnection(0);
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH;//TODO: high will cause more lag
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -335,4 +338,6 @@ public class Swerve extends SubsystemBase {
     drive(scaledInputs, rotationValue, true);
     });
   }
+
+  
 }

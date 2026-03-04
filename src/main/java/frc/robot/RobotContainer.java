@@ -100,11 +100,26 @@ public class RobotContainer {
     // add default commands (run when no other commands are running)
     swerve.setDefaultCommand(new TeleopDrive( 
       swerve, 
-      () -> MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.deadBand), 
+      () -> -MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.deadBand), 
       () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand),
-      () -> MathUtil.applyDeadband(driver.getRightX(), ControllerConstants.deadBand), 
+      () -> -MathUtil.applyDeadband(driver.getRightX(), ControllerConstants.deadBand), 
       () -> !driver.getHID().getLeftBumper()));
+    // swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
   }
+
+    // Applies deadbands and inverts controls because joysticks
+    // are back-right positive while robot
+    // controls are front-left positive
+    // left stick controls translation
+    // right stick controls the desired angle NOT angular rotation
+    // Command driveFieldOrientedDirectAngle = swerve.driveCommand(
+    //     () -> -MathUtil.applyDeadband(driver.getLeftY(), ControllerConstants.deadBand),
+    //     () -> -MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.deadBand),
+    //     () -> -driver.getRightX(),
+    //     () -> -driver.getRightY());
+        
+    
+
   
   private void setupReal() {
     //initializing real classes //TODO:turn back on
