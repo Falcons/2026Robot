@@ -6,6 +6,7 @@ package frc.robot.subsystems.Turret;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -19,10 +20,12 @@ import frc.robot.Constants.TurretConstants.ShooterConstants;
 
 public class Shooter extends SubsystemBase {
   
+  Orchestra orchestra = new Orchestra();
+
   // once shooters AND kicker are max speed than transfer
   private final TalonFX leftShooter = new TalonFX(ShooterConstants.leftShooterCANID); // Kraken x60
   private final TalonFX rightShooter = new TalonFX(ShooterConstants.rightShooterCANID);
-  private final TalonFX kicker = new TalonFX(ShooterConstants.kickerCANID);
+  // private final TalonFX kicker = new TalonFX(ShooterConstants.kickerCANID);
 
   private final TalonFX transfer = new TalonFX(ShooterConstants.transferCANID);
   private Timer timer = new Timer();
@@ -48,14 +51,29 @@ public class Shooter extends SubsystemBase {
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leftShooter.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Opposed));
-    kicker.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Aligned));
+    // kicker.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Aligned));
 
     // apply configs
     leftShooter.getConfigurator().apply(leftShooterConfig);
     rightShooter.getConfigurator().apply(rightShooterConfig);
     transfer.getConfigurator().apply(transferConfig);
-    kicker.getConfigurator().apply(kickerConfig);
+    // kicker.getConfigurator().apply(kickerConfig);
+
+    /* music bs  
+    orchestra.addInstrument(leftShooter);
+    orchestra.addInstrument(rightShooter);
+    orchestra.addInstrument(transfer); */
   }
+
+  /*
+  public void playSong(String path){
+    orchestra.loadMusic(path);
+    orchestra.play();
+  }
+  public void stopSong(){
+    orchestra.stop();
+  }
+    */
 
   /**
    * turns on transfer motor when the shooter reaches max speed
@@ -65,7 +83,7 @@ public class Shooter extends SubsystemBase {
     if (!aimer.inRange()) return;
 
     rightShooter.set(ShooterConstants.maxShooterSpeed);
-    kicker.set(ShooterConstants.maxKickerSpeed);
+    // kicker.set(ShooterConstants.maxKickerSpeed);
     // wait until shooter is max speed than rotate transfer
     if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
       pulseTransfer();
@@ -78,14 +96,14 @@ public class Shooter extends SubsystemBase {
    */
   public void pulseTransfer() {
     // move for half a second stop the other half
-    if (timer.hasElapsed(0.5)) {
+    if (timer.hasElapsed(2)) {
       transfer.set(0);
     } else{
       transfer.set(ShooterConstants.maxTransferSpeed);
     }
     
     // reset timer
-    if (timer.hasElapsed(1)) {
+    if (timer.hasElapsed(2.5)) {
       timer.reset();
     }
   }
@@ -95,7 +113,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/leftShooterSpeed", leftShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/transferSpeed", transfer.get());
-    SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
+    // SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
     SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
 
     SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getVelocity().getValueAsDouble());
@@ -125,7 +143,7 @@ public class Shooter extends SubsystemBase {
    * @param speed the speed to set
    */
   public void setKicker(double speed) {
-    kicker.set(speed);
+    // kicker.set(speed);
   }
   /**
    * set the shooter speed
@@ -143,7 +161,7 @@ public class Shooter extends SubsystemBase {
   public void fullShoot(DoubleSupplier shooterSpeed, double transferSpeed, double kickerSpeed) {
     rightShooter.set(shooterSpeed.getAsDouble());
     transfer.set(transferSpeed);
-    kicker.set(kickerSpeed);
+    // kicker.set(kickerSpeed);
   }
   /**
    * set the shooter and kicker speed
@@ -152,7 +170,7 @@ public class Shooter extends SubsystemBase {
    */
   public void setShooterWithkicker(DoubleSupplier shooterSpeed, double kickerSpeed) {
     rightShooter.set(shooterSpeed.getAsDouble());
-    kicker.set(kickerSpeed);
+    // kicker.set(kickerSpeed);
   }
 
   /**

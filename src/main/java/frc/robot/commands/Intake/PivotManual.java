@@ -30,7 +30,7 @@ public class PivotManual extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    pivot.set(speed.getAsDouble());
+    pivot.setPivot(speed.getAsDouble());
   }
 
   // Called once the command ends or is interrupted.

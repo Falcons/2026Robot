@@ -123,9 +123,11 @@ public final class Constants {
         public static final class PivotConstants {
             public static final int pivotCANID = 22;
 
-            public static final double pivotOut = Math.toRadians(0); // TODO: pivot setpoints
+            public static final double pivotMin = Math.toRadians(207); // TODO: pivot setpoints
+            public static final double pivotOut = Math.toRadians(220); // TODO: pivot setpoints
             public static final double pivotShake = Math.toRadians(45);
-            public static final double pivotIn = Math.toRadians(90); // in is higher, out is lower
+            public static final double pivotIn = Math.toRadians(315); // in is higher, out is lower
+            public static final double pivotMax = Math.toRadians(331); // in is higher, out is lower
 
             public static final int intakePivotRatio = 48; // 48 motor rotations per 1 pivot rotation
         }

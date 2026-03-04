@@ -20,13 +20,12 @@ public class Rollers extends SubsystemBase {
   public Rollers() {
     this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless); 
     rollerConfig.smartCurrentLimit(20);
-    rollerConfig.encoder.positionConversionFactor(Math.PI / 2); // deg to rad is pi / 180
+    rollerConfig.absoluteEncoder.positionConversionFactor(360 * Math.PI / 180); // deg to rad is pi / 180
     roller.configure(rollerConfig, com.revrobotics.ResetMode.kResetSafeParameters,  com.revrobotics.PersistMode.kNoPersistParameters);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Intake/Rollers/Roller encoder", roller.getEncoder().getVelocity());
     SmartDashboard.putNumber("Intake/Rollers/Roller speed", roller.get());
   }
 

@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Intake;
 
+import java.util.function.DoubleSupplier;
+
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -14,6 +16,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.IntakeConstants;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 
 public class Pivot extends SubsystemBase {
@@ -31,7 +34,7 @@ public class Pivot extends SubsystemBase {
 
     // configs
     pivotConfig = new TalonFXConfiguration();
-    pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
+    pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
 
     pivot.getConfigurator().apply(pivotConfig);
 
@@ -47,14 +50,15 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Pivot/Speed", pivot.get());
     SmartDashboard.putNumber("Intake/Pivot/PID/error", pivotPid.getError());
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", pivotPid.getSetpoint());
-    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", pivotEncoder().getPosition());
+    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder rad", pivotEncoder().getPosition());
+    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", Math.toDegrees(pivotEncoder().getPosition()));
     SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
     SmartDashboard.putBoolean("Intake/Pivot/at min", atMin);
     pivotPid.reset();
 
     // set max and min
-    atMax = pivotEncoder().getPosition() >= PivotConstants.pivotIn;
-    atMin = pivotEncoder().getPosition() <= PivotConstants.pivotOut;
+    atMax = pivotEncoder().getPosition() >= PivotConstants.pivotMax;
+    atMin = pivotEncoder().getPosition() <= PivotConstants.pivotMin;
   }
   
   public void setPivot(double speed) { 
@@ -65,9 +69,20 @@ public class Pivot extends SubsystemBase {
     if (atMin && speed < 0) {
       speed = 0; stopPivot();
     }
-    set(speed);
+    pivot.set(speed);
   }
 
+  public void setPivot(DoubleSupplier speed) { 
+    double clampSpeed = speed.getAsDouble();
+    // clamp
+    if (atMax && speed.getAsDouble() < 0) {
+      clampSpeed = 0; stopPivot();
+    } 
+    if (atMin && speed.getAsDouble() > 0) {
+      clampSpeed = 0; stopPivot();
+    }
+    pivot.set(clampSpeed);
+  }
   /**
    * @param setpoint the radians to set the pivot
    */
@@ -88,10 +103,6 @@ public class Pivot extends SubsystemBase {
 
   public boolean atSetpoint(){
     return pivotPid.atSetpoint();
-  }
-
-  public void set(double speed) {
-    pivot.set(speed);
   }
 
   /**

@@ -119,8 +119,10 @@ public class RobotContainer {
     this.hood = new Hood(swerve, shooter);
     
     // default hood to 0 and auto aim turret always
-    turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
-    hood.setDefaultCommand(Commands.run(() -> hood.setDeg(0), hood));
+    // turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
+    // hood.setDefaultCommand(Commands.run(() -> hood.setDeg(0), hood));
+
+    pivot.setDefaultCommand(Commands.runEnd(() -> pivot.setPivot(operator::getRightY), () -> pivot.setPivot(0), pivot));
 
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
@@ -150,54 +152,58 @@ public class RobotContainer {
   private void configureRealBindings() {
     // DRIVER (secondary controls)
     // rollers
-    driver.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
+    // driver.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
+    //   Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
 
-    // charge fire
-    driver.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.run(() -> shooter.setShooterWithkicker(driver::getRightTriggerAxis, 
-      ShooterConstants.maxKickerSpeed), shooter));
+    // // charge fire
+    // driver.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
+    //   Commands.run(() -> shooter.setShooterWithkicker(driver::getRightTriggerAxis, 
+    //   ShooterConstants.maxKickerSpeed), shooter));
 
     // intake out/in, shake
-    driver.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
-    driver.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    driver.povLeft().onTrue(new PivotShake(pivot));
+    // driver.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
+    // driver.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
+    // driver.povLeft().onTrue(new PivotShake(pivot));
 
     // OPERATOR
     // move transfer backwards
+    operator.a().whileTrue(Commands.runEnd(shooter::pulseTransfer, () -> shooter.setTransfer(0), shooter));
     operator.leftBumper().whileTrue(Commands.run(() -> shooter.setTransfer(-ShooterConstants.maxTransferSpeed), shooter));
 
-    // spin shooter
-    operator.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.run(() -> shooter.setShooterWithkicker(driver::getLeftTriggerAxis, 
-      ShooterConstants.maxKickerSpeed), shooter));
+    // // spin shooter
+    // operator.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
+    //   Commands.run(() -> shooter.setShooterWithkicker(driver::getLeftTriggerAxis, 
+    //   ShooterConstants.maxKickerSpeed), shooter));
 
-    // actually shoot
-    operator.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.run(() -> shooter.fullShoot(driver::getRightTriggerAxis, 
-      ShooterConstants.maxTransferSpeed, 
-      ShooterConstants.maxKickerSpeed), shooter));
+    // // actually shoot
+    // operator.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
+    //   Commands.run(() -> shooter.fullShoot(driver::getRightTriggerAxis, 
+    //   ShooterConstants.maxTransferSpeed, 
+    //   ShooterConstants.maxKickerSpeed), shooter));
 
-    // manual turret
-    operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
-      Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
+    // // manual turret
+    // operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
+    //   Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
       
-    // manual hood
-    operator.axisMagnitudeGreaterThan(2, ControllerConstants.deadBand).whileTrue(
-      Commands.run(() -> hood.moveHood(operator::getLeftY), hood));
+    // // manual hood
+    // operator.axisMagnitudeGreaterThan(2, ControllerConstants.deadBand).whileTrue(
+    //   Commands.run(() -> hood.moveHood(operator::getLeftY), hood));
 
     // main fire
-    operator.b().whileTrue(
-      Commands.runEnd(shooter::shootWhenMaxSpeed, () -> shooter.shooterRunning = false, shooter));
+    // operator.b().whileTrue(
+    //   Commands.runEnd(shooter::shootWhenMaxSpeed, () -> shooter.shooterRunning = false, shooter));
 
     // spin intake - rollers 
-    operator.x().whileTrue(Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
-    operator.povRight().whileTrue(Commands.run(() -> rollers.set(-RollersConstants.rollerSpeed)));
+    operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
+    operator.povRight().whileTrue(Commands.runEnd(() -> rollers.set(-RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
 
     // intake out and in, and shake
-    operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
-    operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    operator.povLeft().onTrue(new PivotShake(pivot));
+    // operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
+    // operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
+    // operator.povLeft().onTrue(new PivotShake(pivot));
+    
+    // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
+      
   }
  
   private void setupSim(){
