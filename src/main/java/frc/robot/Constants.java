@@ -19,6 +19,7 @@ public final class Constants {
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
         public static final double maxSpeedMPS = 6.7;
+        public static final double maxAngularSpeedRPS = 18.85;
         public static final double slowModeMPS = 1;
         public static final double slowModeRPS = Math.toRadians(45);
         

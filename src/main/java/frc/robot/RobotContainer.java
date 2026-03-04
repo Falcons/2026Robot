@@ -88,14 +88,14 @@ public class RobotContainer {
     driver.b().whileTrue(new InstantCommand(swerve::zeroGyro));
 
     // slow mode toggle
-    driver.start().toggleOnTrue(new InstantCommand(
-      () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS)));
-    driver.start().toggleOnFalse(new InstantCommand(
-      () -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity())));
+    // driver.start().toggleOnTrue(new InstantCommand(
+    //   () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS)));
+    // driver.start().toggleOnFalse(new InstantCommand(
+    //   () -> swerve.setMaxAllowableSpeed(DriveConstants.maxSpeedMPS, DriveConstants.maxAngularSpeedRPS)));
     // slow mode hold
     driver.rightBumper().whileTrue(Commands.startEnd(
       () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS), 
-      () -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity()), swerve));
+      () -> swerve.setMaxAllowableSpeed(DriveConstants.maxSpeedMPS, DriveConstants.maxAngularSpeedRPS)));
 
     // add default commands (run when no other commands are running)
     swerve.setDefaultCommand(new TeleopDrive( 
