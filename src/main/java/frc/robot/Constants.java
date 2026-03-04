@@ -31,7 +31,7 @@ public final class Constants {
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
             Meter.of(3),//X
             Meter.of(4)), //Y
-            Rotation2d.fromDegrees(0));
+            Rotation2d.fromDegrees(180));
         
 
         // corrner hideing pose aka timeout
@@ -78,13 +78,12 @@ public final class Constants {
             public static final double hoodDownDistanceMaxM = 6; //TODO: change hood distances i think the middle is 8m?
             public static final double hoodDownDistanceMinM = 10;
 
-            public static final int turretCANID = 1000; // TODO: canids
-            public static final int leftHoodActuatorPWM = 18; //TODO: set PWM channel
-            public static final int rightHoodActuatorPWM = 19; //TODO: set PWM channel
+            public static final int turretCANID = 14; // TODO: canids
+            public static final int rightHoodActuatorPWM = 0;
             
             public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
-            public static final double turretMinRad = Math.toRadians(-90); // TODO: change min and max
-            public static final double turretMaxRad = Math.toRadians(90);
+            public static final double turretMinRad = Math.toRadians(-180); // TODO: change min and max
+            public static final double turretMaxRad = Math.toRadians(180);
 
             public static final double turretError = Math.toRadians(3); //TODO: turret error
 
@@ -95,10 +94,10 @@ public final class Constants {
             public static final double kickerRatio = 4;
             public static final int transferRatio = 4;
 
-            public static final int leftShooterCANID = 1001; // TODO: canid
-            public static final int rightShooterCANID = 1002; // TODO: canid
-            public static final int transferCANID = 1004; // TODO: canid
-            public static final int kickerCANID = 1005; // TODO: canid
+            public static final int leftShooterCANID = 21;
+            public static final int rightShooterCANID = 23;
+            public static final int transferCANID = 20;
+            public static final int kickerCANID = 24; 
 
             public static final double maxShooterRPS = 80;
             public static final double maxShooterSpeed = 1;
@@ -117,12 +116,12 @@ public final class Constants {
 
         public static final class RollersConstants {
             public static final double intakeRollersRatio = 3.2;
-            public static final int rollerCANID = 553; // TODO: canid
+            public static final int rollerCANID = 6;
             public static final double rollerSpeed = 1;
         }
 
         public static final class PivotConstants {
-            public static final int pivotCANID = 1050; // TODO: canid
+            public static final int pivotCANID = 22;
 
             public static final double pivotOut = Math.toRadians(0); // TODO: pivot setpoints
             public static final double pivotShake = Math.toRadians(45);

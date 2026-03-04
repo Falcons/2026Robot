@@ -18,46 +18,37 @@ import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
-import frc.robot.subsystems.Turret.Shooter;
 
 public class Hood extends SubsystemBase {
 
   private final Swerve swerve;
-  private final Shooter shooter;
   private final Field2d field = new Field2d();
   
-  private final Servo leftHoodActuatorSim = new Servo(MovementConstants.leftHoodActuatorPWM);
-  private final Servo rightHoodActuatorSim = new Servo(MovementConstants.rightHoodActuatorPWM);
+  private final Servo hoodActuator = new Servo(MovementConstants.rightHoodActuatorPWM);
 
   // simulated variables
-  private Pose2d hoodPoseLeft = new Pose2d();
-  private Pose2d hoodPoseRight = new Pose2d();
+  private Pose2d hoodPose = new Pose2d();
 
   /** Creates a new Movement. */
-  public Hood(Swerve swerve, Shooter shooter) {
+  public Hood(Swerve swerve) {
     this.swerve = swerve;
-    this.shooter = shooter;
     SmartDashboard.putData("Field", field);
   }
 
   @Override
   public void periodic() {
     // hood
-    hoodPoseLeft = new Pose2d(new Translation2d(5,0), 
-                   new Rotation2d(Math.toRadians(leftHoodActuatorSim.getAngle())));
-    hoodPoseRight = new Pose2d(new Translation2d(7,0), 
-                   new Rotation2d(Math.toRadians(rightHoodActuatorSim.getAngle())));
-    field.getObject("hoodLeft").setPose(hoodPoseLeft);
-    field.getObject("hoodRight").setPose(hoodPoseRight);
+    hoodPose = new Pose2d(new Translation2d(7,0), 
+                   new Rotation2d(Math.toRadians(hoodActuator.getAngle())));
+    field.getObject("hoodRight").setPose(hoodPose);
 
-    SmartDashboard.putNumber("Hood/left actuators", leftHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Hood/right actuators", rightHoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Hood/Auto hood angle", getHoodAngle());
+    SmartDashboard.putNumber("Turret/Hood/actuators", hoodActuator.getAngle());
+    // SmartDashboard.putNumber("Turret/Hood/Auto hood angle", getHoodAngle());
   }
 
   public void autoAim(){
     double setpoint = MathUtil.clamp(getHoodAngle(), 0, 180);
-    setDeg(setpoint);
+    setHoodDeg(setpoint);
   }
 
   /**
@@ -66,25 +57,23 @@ public class Hood extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve, shooter.getShooterRPS()).hoodAngle());
+    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve).hoodAngle());
   }
 
   /**
    * Set the hood to the position
    * @param Position position 
    */
-  public void setRad(double Position){
-    leftHoodActuatorSim.set(Position);
-    rightHoodActuatorSim.set(Position);
+  public void setHood(double Position){
+    hoodActuator.set(Position);
   }
 
   /**
    * Set the hood to the position
    * @param Position position in degrees
    */
-  public void setDeg(double Position){
-    leftHoodActuatorSim.setAngle(Position);
-    rightHoodActuatorSim.setAngle(Position);
+  public void setHoodDeg(double Position){
+    hoodActuator.setAngle(Position);
   }
 
   /**
@@ -92,8 +81,7 @@ public class Hood extends SubsystemBase {
    * @param speed degrees/second
    */
   public void moveHood(DoubleSupplier speed){
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed.getAsDouble()/Constants.deltaTime);
-    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed.getAsDouble()/Constants.deltaTime);
+    hoodActuator.setAngle(hoodActuator.getAngle() + speed.getAsDouble()/Constants.deltaTime);
   }
 
   /**
@@ -101,7 +89,7 @@ public class Hood extends SubsystemBase {
    * @return the angle in degrees
    */
   public double getHoodPosition(){
-    return (leftHoodActuatorSim.getAngle() + rightHoodActuatorSim.getAngle())/2;
+    return (hoodActuator.getAngle() + hoodActuator.getAngle())/2;
   }
 
   /**
