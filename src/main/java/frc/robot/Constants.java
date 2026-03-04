@@ -94,9 +94,9 @@ public final class Constants {
             public static final double kickerRatio = 4;
             public static final int transferRatio = 4;
 
-            public static final int leftShooterCANID = 17;
-            public static final int rightShooterCANID = 16;
-            public static final int transferCANID = 13;
+            public static final int leftShooterCANID = 21;
+            public static final int rightShooterCANID = 23;
+            public static final int transferCANID = 20;
             public static final int kickerCANID = 9; 
 
             public static final double maxShooterRPS = 80;
@@ -121,7 +121,7 @@ public final class Constants {
         }
 
         public static final class PivotConstants {
-            public static final int pivotCANID = 5;
+            public static final int pivotCANID = 22;
 
             public static final double pivotOut = Math.toRadians(0); // TODO: pivot setpoints
             public static final double pivotShake = Math.toRadians(45);
