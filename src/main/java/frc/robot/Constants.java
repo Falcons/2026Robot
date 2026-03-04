@@ -79,7 +79,7 @@ public final class Constants {
             public static final double hoodDownDistanceMinM = 10;
 
             public static final int turretCANID = 14; // TODO: canids
-            public static final int rightHoodActuatorPWM = 0;
+            public static final int HoodActuatorPWM = 0;
             
             public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
             public static final double turretMinRad = Math.toRadians(-180); // TODO: change min and max
