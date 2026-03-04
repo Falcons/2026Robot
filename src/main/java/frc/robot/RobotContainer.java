@@ -98,13 +98,13 @@ public class RobotContainer {
       () -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity()), swerve));
 
     // add default commands (run when no other commands are running)
-    // swerve.setDefaultCommand(new TeleopDrive( 
-    //   swerve, 
-    //   () -> MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.deadBand), 
-    //   () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand),
-    //   () -> MathUtil.applyDeadband(driver.getRightX(), ControllerConstants.deadBand), 
-    //   () -> !driver.getHID().getLeftBumper()));
-    swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
+    swerve.setDefaultCommand(new TeleopDrive( 
+      swerve, 
+      () -> -MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.deadBand), 
+      () -> MathUtil.applyDeadband(-driver.getLeftY(), ControllerConstants.deadBand),
+      () -> -MathUtil.applyDeadband(driver.getRightX(), ControllerConstants.deadBand), 
+      () -> !driver.getHID().getLeftBumper()));
+    // swerve.setDefaultCommand(driveFieldOrientedDirectAngle);
   }
 
     // Applies deadbands and inverts controls because joysticks
@@ -112,11 +112,11 @@ public class RobotContainer {
     // controls are front-left positive
     // left stick controls translation
     // right stick controls the desired angle NOT angular rotation
-    Command driveFieldOrientedDirectAngle = swerve.driveCommand(
-        () -> MathUtil.applyDeadband(driver.getLeftY(), ControllerConstants.deadBand),
-        () -> MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.deadBand),
-        () -> driver.getRightX(),
-        () -> driver.getRightY());
+    // Command driveFieldOrientedDirectAngle = swerve.driveCommand(
+    //     () -> -MathUtil.applyDeadband(driver.getLeftY(), ControllerConstants.deadBand),
+    //     () -> -MathUtil.applyDeadband(driver.getLeftX(), ControllerConstants.deadBand),
+    //     () -> -driver.getRightX(),
+    //     () -> -driver.getRightY());
         
     
 
