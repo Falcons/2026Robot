@@ -198,9 +198,9 @@ public class RobotContainer {
     operator.povRight().whileTrue(Commands.runEnd(() -> rollers.set(-RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
 
     // intake out and in, and shake
-    // operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
-    // operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    // operator.povLeft().onTrue(new PivotShake(pivot));
+    operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
+    operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
+    operator.povLeft().onTrue(new PivotShake(pivot));
     
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
       

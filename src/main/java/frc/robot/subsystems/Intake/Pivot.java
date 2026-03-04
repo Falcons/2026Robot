@@ -34,7 +34,7 @@ public class Pivot extends SubsystemBase {
 
     // configs
     pivotConfig = new TalonFXConfiguration();
-    pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
+    pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
 
     pivot.getConfigurator().apply(pivotConfig);
 
@@ -63,18 +63,19 @@ public class Pivot extends SubsystemBase {
   
   public void setPivot(double speed) { 
     // clamp
-    if (atMax && speed > 0) {
-      speed = 0; stopPivot();
+    double clampSpeed = speed;
+    if (atMax && speed < 0) {
+      clampSpeed = 0; stopPivot();
     } 
-    if (atMin && speed < 0) {
-      speed = 0; stopPivot();
+    if (atMin && speed > 0) {
+      clampSpeed = 0; stopPivot();
     }
-    pivot.set(speed);
+    pivot.set(clampSpeed);
   }
 
   public void setPivot(DoubleSupplier speed) { 
-    double clampSpeed = speed.getAsDouble();
     // clamp
+    double clampSpeed = speed.getAsDouble();
     if (atMax && speed.getAsDouble() < 0) {
       clampSpeed = 0; stopPivot();
     } 
