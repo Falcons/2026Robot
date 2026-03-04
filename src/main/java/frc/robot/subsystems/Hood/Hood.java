@@ -7,11 +7,7 @@ package frc.robot.subsystems.Hood;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.wpilibj.Servo;
-import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -24,28 +20,18 @@ public class Hood extends SubsystemBase {
 
   private final Swerve swerve;
   private final Shooter shooter;
-  private final Field2d field = new Field2d();
   
   private final Servo HoodActuator = new Servo(MovementConstants.HoodActuatorPWM);
-
-  // simulated variables
-  private Pose2d hoodPose = new Pose2d();
 
   /** Creates a new Movement. */
   public Hood(Swerve swerve, Shooter shooter) {
     this.swerve = swerve;
     this.shooter = shooter;
-    SmartDashboard.putData("Field", field);
   }
 
   @Override
   public void periodic() {
-    // hood
-    hoodPose = new Pose2d(new Translation2d(5,0), 
-                   new Rotation2d(Math.toRadians(HoodActuator.getAngle())));
-    field.getObject("hood").setPose(hoodPose);
-
-    SmartDashboard.putNumber("Hood/actuator", HoodActuator.getAngle());
+    SmartDashboard.putNumber("Hood/left actuators", HoodActuator.getAngle());
     SmartDashboard.putNumber("Hood/Auto hood angle", getHoodAngle());
   }
 
@@ -86,7 +72,7 @@ public class Hood extends SubsystemBase {
   public void moveHood(DoubleSupplier speed){
     HoodActuator.setAngle(HoodActuator.getAngle() + speed.getAsDouble()/Constants.deltaTime);
   }
-  
+
   /**
    * checks if the hood is far away from the trench
    * @return true if its safe to move hood
