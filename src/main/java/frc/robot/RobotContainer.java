@@ -34,7 +34,7 @@ import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
-import frc.robot.commands.Turret.ShootSim;
+import frc.robot.commands.Turret.ShootSim; 
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
@@ -182,8 +182,8 @@ public class RobotContainer {
     //   ShooterConstants.maxKickerSpeed), shooter));
 
     // // manual turret
-    // operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
-    //   Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
+    operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
+      Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
       
     // // manual hood
     // operator.axisMagnitudeGreaterThan(2, ControllerConstants.deadBand).whileTrue(

@@ -25,7 +25,7 @@ public class Shooter extends SubsystemBase {
   // once shooters AND kicker are max speed than transfer
   private final TalonFX leftShooter = new TalonFX(ShooterConstants.leftShooterCANID); // Kraken x60
   private final TalonFX rightShooter = new TalonFX(ShooterConstants.rightShooterCANID);
-  // private final TalonFX kicker = new TalonFX(ShooterConstants.kickerCANID);
+  private final TalonFX kicker = new TalonFX(ShooterConstants.kickerCANID);
 
   private final TalonFX transfer = new TalonFX(ShooterConstants.transferCANID);
   private Timer timer = new Timer();
@@ -51,13 +51,13 @@ public class Shooter extends SubsystemBase {
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     leftShooter.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Opposed));
-    // kicker.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Aligned));
+    kicker.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Aligned));
 
     // apply configs
     leftShooter.getConfigurator().apply(leftShooterConfig);
     rightShooter.getConfigurator().apply(rightShooterConfig);
     transfer.getConfigurator().apply(transferConfig);
-    // kicker.getConfigurator().apply(kickerConfig);
+    kicker.getConfigurator().apply(kickerConfig);
 
     /* music bs  
     orchestra.addInstrument(leftShooter);
@@ -83,7 +83,6 @@ public class Shooter extends SubsystemBase {
     if (!aimer.inRange()) return;
 
     rightShooter.set(ShooterConstants.maxShooterSpeed);
-    // kicker.set(ShooterConstants.maxKickerSpeed);
     // wait until shooter is max speed than rotate transfer
     if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
       pulseTransfer();
@@ -113,7 +112,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/leftShooterSpeed", leftShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/transferSpeed", transfer.get());
-    // SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
+    SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
     SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
 
     SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getVelocity().getValueAsDouble());
@@ -143,10 +142,10 @@ public class Shooter extends SubsystemBase {
    * @param speed the speed to set
    */
   public void setKicker(double speed) {
-    // kicker.set(speed);
+    kicker.set(speed);
   }
   /**
-   * set the shooter speed
+   * set the shooter and kicker speed
    * @param speed the speed to set
    */
   public void setShooter(DoubleSupplier speed) {
@@ -161,16 +160,6 @@ public class Shooter extends SubsystemBase {
   public void fullShoot(DoubleSupplier shooterSpeed, double transferSpeed, double kickerSpeed) {
     rightShooter.set(shooterSpeed.getAsDouble());
     transfer.set(transferSpeed);
-    // kicker.set(kickerSpeed);
-  }
-  /**
-   * set the shooter and kicker speed
-   * @param shooterSpeed shooter speed
-   * @param kickerSpeed kciker speed
-   */
-  public void setShooterWithkicker(DoubleSupplier shooterSpeed, double kickerSpeed) {
-    rightShooter.set(shooterSpeed.getAsDouble());
-    // kicker.set(kickerSpeed);
   }
 
   /**
