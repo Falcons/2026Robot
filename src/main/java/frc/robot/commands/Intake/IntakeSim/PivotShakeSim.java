@@ -16,6 +16,6 @@ public class PivotShakeSim extends SequentialCommandGroup {
   public PivotShakeSim(PivotSim pivotSim) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new PivotPidSim(pivotSim, PivotConstants.pivotShake), new PivotPidSim(pivotSim, PivotConstants.pivotOut));
+    addCommands(new PivotPidSim(pivotSim, PivotConstants.pivotIn), new PivotPidSim(pivotSim, PivotConstants.pivotOut));
   }
 }

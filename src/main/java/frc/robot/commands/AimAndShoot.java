@@ -8,8 +8,8 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import frc.robot.commands.Turret.Shoot;
 import frc.robot.subsystems.Hood.Hood;
-import frc.robot.subsystems.Turret.Shooter;
 import frc.robot.subsystems.Turret.Turret;
+import frc.robot.subsystems.Turret.Shooter.Shooter;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:

@@ -21,6 +21,7 @@ import frc.robot.LimelightHelpers;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
+import frc.robot.subsystems.Turret.Shooter.Shooter;
 
 public class Turret extends SubsystemBase {
 
@@ -43,7 +44,7 @@ public class Turret extends SubsystemBase {
     // turret configs 2048 ticks per revolution, convert to radians, divide by gear ratio
     turretConfig.encoder.positionConversionFactor(Math.PI); // 360 degree of absolute = 180 degree on turret, convert to radians
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
+    System.out.println(turretEncoder);
     // turretPID.enableContinuousInput(-Math.PI, Math.PI);
   }
 

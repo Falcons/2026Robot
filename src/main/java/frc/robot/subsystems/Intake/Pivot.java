@@ -90,7 +90,7 @@ public class Pivot extends SubsystemBase {
     double pid = pivotPid.calculate(pivotEncoder().getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
     setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotOut, PivotConstants.pivotIn); // pivot in is max
-    pid = MathUtil.clamp(pid, -0.5, 0.5);
+    pid = MathUtil.clamp(-pid, -0.5, 0.5);
 
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
     SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);

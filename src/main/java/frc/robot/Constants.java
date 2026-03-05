@@ -19,8 +19,9 @@ public final class Constants {
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
         public static final double maxSpeedMPS = 6.7;
+        public static final double maxRotationsRadPS = Math.toRadians(1080);
         public static final double slowModeMPS = 1;
-        public static final double slowModeRPS = Math.toRadians(45);
+        public static final double slowModeRotationsRadPS = Math.toRadians(45);
         
         public static final double driveRatio = 6.75;
         public static final double driveSteeringRatio = 150/7;
@@ -133,11 +134,10 @@ public final class Constants {
         public static final class PivotConstants {
             public static final int pivotCANID = 22;
 
-            public static final double pivotMin = Math.toRadians(207); // TODO: pivot setpoints
-            public static final double pivotOut = Math.toRadians(220); // TODO: pivot setpoints
-            public static final double pivotShake = Math.toRadians(45);
-            public static final double pivotIn = Math.toRadians(300); // in is higher, out is lower
-            public static final double pivotMax = Math.toRadians(305); // in is higher, out is lower
+            public static final double pivotMin = Math.toRadians(207);
+            public static final double pivotOut = Math.toRadians(220);
+            public static final double pivotIn = Math.toRadians(320); // in is higher, out is lower
+            public static final double pivotMax = Math.toRadians(325); // in is higher, out is lower
 
             public static final int intakePivotRatio = 48; // 48 motor rotations per 1 pivot rotation
         }

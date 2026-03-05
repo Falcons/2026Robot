@@ -34,6 +34,7 @@ import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
+import frc.robot.commands.Turret.Shoot;
 import frc.robot.commands.Turret.ShootSim; 
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.PivotIntake;
@@ -48,10 +49,11 @@ import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Intake.Rollers;
 import frc.robot.subsystems.Intake.RollersSim;
 import frc.robot.subsystems.Swerve.Swerve;
-import frc.robot.subsystems.Turret.Shooter;
-import frc.robot.subsystems.Turret.ShooterSim;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Turret.TurretSim;
+import frc.robot.subsystems.Turret.Shooter.Shooter;
+import frc.robot.subsystems.Turret.Shooter.ShooterSim;
+import frc.robot.subsystems.Turret.Shooter.Transfer;
 
 public class RobotContainer {
 
@@ -71,6 +73,7 @@ public class RobotContainer {
   private Pivot pivot;
   private Hood hood;
   private Rollers rollers;
+  private Transfer transfer;
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -87,19 +90,18 @@ public class RobotContainer {
     }else {
       setupSim();
       configureSimBindings();
+    }
 
-      // DRIVER
+    // DRIVER
     driver.b().onTrue(new InstantCommand(swerve::zeroGyro));
     // slow mode toggle
-    driver.start().toggleOnTrue(new InstantCommand(
-      () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS)));
-    driver.start().toggleOnFalse(new InstantCommand(
-      () -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity())));
+    driver.start().toggleOnTrue(Commands.startEnd(
+      () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRotationsRadPS),
+      () -> swerve.setMaxAllowableSpeed(DriveConstants.maxSpeedMPS, DriveConstants.maxRotationsRadPS)));
     // slow mode hold
     driver.rightBumper().whileTrue(Commands.startEnd(
-      () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRPS), 
-      () -> swerve.setMaxAllowableSpeed(swerve.getMaximumVelocity(), swerve.getMaximumAngularVelocity()), swerve));
-    }
+      () -> swerve.setMaxAllowableSpeed(DriveConstants.slowModeMPS, DriveConstants.slowModeRotationsRadPS), 
+      () -> swerve.setMaxAllowableSpeed(DriveConstants.maxSpeedMPS, DriveConstants.maxRotationsRadPS)));
     
     // add default commands (run when no other commands are running)
     swerve.setDefaultCommand(new TeleopDrive( 
@@ -113,9 +115,10 @@ public class RobotContainer {
   private void setupReal() {
     //initializing real classes
     this.turret = new Turret(swerve, shooter);
-    this.shooter = new Shooter(turret);
+    this.transfer = new Transfer();
+    this.shooter = new Shooter(turret, transfer);
     this.rollers = new Rollers();
-    this.pivot = new Pivot(rollers );
+    this.pivot = new Pivot(rollers);
     this.hood = new Hood(swerve, shooter);
     
     // default hood to 0 and auto aim turret always
@@ -167,30 +170,25 @@ public class RobotContainer {
 
     // OPERATOR
     // move transfer
-    operator.rightTrigger().whileTrue(Commands.runEnd(shooter::pulseTransfer, () -> shooter.setTransfer(0), shooter));
-    operator.leftBumper().whileTrue(Commands.run(() -> shooter.setTransfer(-ShooterConstants.maxTransferSpeed), shooter));
+    operator.rightTrigger().whileTrue(Commands.runEnd(transfer::pulse, () -> transfer.set(0), transfer));
+    operator.leftBumper().whileTrue(Commands.run(() -> transfer.set(-ShooterConstants.maxTransferSpeed), shooter));
 
-    // // spin shooter
+    // spin shooter
     operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(
       Commands.runEnd(() -> shooter.setShooter(operator::getLeftTriggerAxis), () -> shooter.setShooter(0.0), shooter));
-
-    // // actually shoot
-    // operator.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
-    //   Commands.run(() -> shooter.fullShoot(driver::getRightTriggerAxis, 
-    //   ShooterConstants.maxTransferSpeed, 
-    //   ShooterConstants.maxKickerSpeed), shooter));
 
     // // manual turret
     // operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
     //   Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
       
     // // manual hood
-    // operator.axisMagnitudeGreaterThan(2, ControllerConstants.deadBand).whileTrue(
-    //   Commands.run(() -> hood.moveHood(operator::getLeftY), hood));
+    operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
+      Commands.run(() -> hood.moveHood(() -> -operator.getLeftY()), hood));
+
+    operator.a().onTrue(new InstantCommand(() -> hood.setDeg(90)));
 
     // main fire
-    // operator.b().whileTrue(
-    //   Commands.runEnd(shooter::shootWhenMaxSpeed, () -> shooter.shooterRunning = false, shooter));
+    operator.b().whileTrue(new Shoot(shooter));
 
     // spin intake - rollers 
     operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
@@ -256,7 +254,6 @@ public class RobotContainer {
     
     SmartDashboard.putData("auto Chooser" ,autoChooser);
   }
-
   private void configureSimBindings(){
     // pivot toggle
     driver.a().onTrue(new PivotPidToggleSim(pivotSim));
@@ -285,9 +282,6 @@ public class RobotContainer {
 
   }
   
-  public void setupAuto(Object shooter){
-   
-  }
 
   public Command getAutonomousCommand() {
     try{

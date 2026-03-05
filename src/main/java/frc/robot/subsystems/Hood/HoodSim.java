@@ -16,7 +16,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
-import frc.robot.subsystems.Turret.ShooterSim;
+import frc.robot.subsystems.Turret.Shooter.ShooterSim;
 
 public class HoodSim extends SubsystemBase {
 

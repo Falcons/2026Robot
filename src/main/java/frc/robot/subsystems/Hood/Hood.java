@@ -10,11 +10,10 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
-import frc.robot.subsystems.Turret.Shooter;
+import frc.robot.subsystems.Turret.Shooter.Shooter;
 
 public class Hood extends SubsystemBase {
 
@@ -23,21 +22,24 @@ public class Hood extends SubsystemBase {
   
   private final Servo HoodActuator = new Servo(MovementConstants.HoodActuatorPWM);
 
+  
   /** Creates a new Movement. */
   public Hood(Swerve swerve, Shooter shooter) {
     this.swerve = swerve;
     this.shooter = shooter;
+
+    HoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Hood/left actuators", HoodActuator.getAngle());
-    SmartDashboard.putNumber("Hood/Auto hood angle", getHoodAngle());
+    SmartDashboard.putNumber("Hood/actuators", HoodActuator.getPosition());
+    // SmartDashboard.putNumber("Hood/Auto hood angle", getHoodAngle());
   }
 
   public void autoAim(){
     double setpoint = MathUtil.clamp(getHoodAngle(), 0, 180);
-    setDeg(setpoint);
+    set(setpoint);
   }
 
   /**
@@ -50,27 +52,28 @@ public class Hood extends SubsystemBase {
   }
 
   /**
-   * Set the hood to the position
+   * Set the hood to the position 0 - 1
    * @param Position position 
    */
-  public void setRad(double Position){
-    HoodActuator.set(Position);
+  public void set(double Position){
+    HoodActuator.setPosition(Position);
   }
 
   /**
    * Set the hood to the position
    * @param Position position in degrees
    */
-  public void setDeg(double Position){
-    HoodActuator.setAngle(Position);
+  public void setDeg(double angle){
+    double clampAngle = MathUtil.clamp(angle, 0, 180);
+    HoodActuator.setAngle(clampAngle);
   }
 
   /**
    * move hood based on commanded position + speed in degrees
-   * @param speed degrees/second
+   * @param speed
    */
   public void moveHood(DoubleSupplier speed){
-    HoodActuator.setAngle(HoodActuator.getAngle() + speed.getAsDouble()/Constants.deltaTime);
+    set(HoodActuator.get() + speed.getAsDouble()/10);
   }
 
   /**

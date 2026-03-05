@@ -17,6 +17,6 @@ public class PivotShake extends SequentialCommandGroup {
   public PivotShake(Pivot pivot) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new PivotPid(pivot, PivotConstants.pivotShake), new PivotPid(pivot, PivotConstants.pivotOut));
+    addCommands(new PivotPid(pivot, PivotConstants.pivotIn), new PivotPid(pivot, PivotConstants.pivotOut));
   }
 }
