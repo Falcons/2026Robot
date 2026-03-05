@@ -50,8 +50,8 @@ public class Shooter extends SubsystemBase {
 
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
-    leftShooter.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Opposed));
-    kicker.setControl(new Follower(ShooterConstants.rightShooterCANID, MotorAlignmentValue.Aligned));
+    rightShooter.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Opposed));
+    kicker.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Aligned));
 
     // apply configs
     leftShooter.getConfigurator().apply(leftShooterConfig);
@@ -82,9 +82,9 @@ public class Shooter extends SubsystemBase {
     // dont run if not in range
     if (!aimer.inRange()) return;
 
-    rightShooter.set(ShooterConstants.maxShooterSpeed);
+    leftShooter.set(ShooterConstants.maxShooterSpeed);
     // wait until shooter is max speed than rotate transfer
-    if (rightShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
+    if (leftShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
       pulseTransfer();
       shooterRunning = true;
     }
@@ -115,7 +115,8 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
     SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
 
-    SmartDashboard.putNumber("Turret/Shooter/rightShooterVelocity", rightShooter.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/leftShooterVel", leftShooter.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/leftShooterEncoder", leftShooter.getPosition().getValueAsDouble());
   }
 
   /**
@@ -123,7 +124,7 @@ public class Shooter extends SubsystemBase {
    * @return true when rpm is too low
    */
   public boolean shooterRPMlow() {
-    if (shooterRunning && rightShooter.getVelocity().getValueAsDouble() < ShooterConstants.maxShooterRPS) {
+    if (shooterRunning && leftShooter.getVelocity().getValueAsDouble() < ShooterConstants.maxShooterRPS) {
       shooterRunning = false;
       return true;
     }
@@ -149,8 +150,17 @@ public class Shooter extends SubsystemBase {
    * @param speed the speed to set
    */
   public void setShooter(DoubleSupplier speed) {
-    rightShooter.set(speed.getAsDouble());
+    leftShooter.set(speed.getAsDouble());
   }
+
+  /**
+   * set the shooter and kicker speed
+   * @param speed the speed to set
+   */
+  public void setShooter(Double speed) {
+    leftShooter.set(speed);
+  }
+
   /**
    * set the shooter and transfer speed
    * @param shooterSpeed transfer speed
@@ -158,7 +168,7 @@ public class Shooter extends SubsystemBase {
    * @param kickerSpeed kciker speed
    */
   public void fullShoot(DoubleSupplier shooterSpeed, double transferSpeed, double kickerSpeed) {
-    rightShooter.set(shooterSpeed.getAsDouble());
+    leftShooter.set(shooterSpeed.getAsDouble());
     transfer.set(transferSpeed);
   }
 
@@ -166,6 +176,6 @@ public class Shooter extends SubsystemBase {
    * get the rpm of the shooter
    */
   public Double getShooterRPS() {
-    return rightShooter.getVelocity().getValueAsDouble();
+    return leftShooter.getVelocity().getValueAsDouble();
   }
 }

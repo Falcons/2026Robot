@@ -166,14 +166,13 @@ public class RobotContainer {
     // driver.povLeft().onTrue(new PivotShake(pivot));
 
     // OPERATOR
-    // move transfer backwards
-    operator.a().whileTrue(Commands.runEnd(shooter::pulseTransfer, () -> shooter.setTransfer(0), shooter));
+    // move transfer
+    operator.rightTrigger().whileTrue(Commands.runEnd(shooter::pulseTransfer, () -> shooter.setTransfer(0), shooter));
     operator.leftBumper().whileTrue(Commands.run(() -> shooter.setTransfer(-ShooterConstants.maxTransferSpeed), shooter));
 
     // // spin shooter
-    // operator.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
-    //   Commands.run(() -> shooter.setShooterWithkicker(driver::getLeftTriggerAxis, 
-    //   ShooterConstants.maxKickerSpeed), shooter));
+    operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(
+      Commands.runEnd(() -> shooter.setShooter(operator::getLeftTriggerAxis), () -> shooter.setShooter(0.0), shooter));
 
     // // actually shoot
     // operator.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
@@ -182,8 +181,8 @@ public class RobotContainer {
     //   ShooterConstants.maxKickerSpeed), shooter));
 
     // // manual turret
-    operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
-      Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
+    // operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
+    //   Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
       
     // // manual hood
     // operator.axisMagnitudeGreaterThan(2, ControllerConstants.deadBand).whileTrue(
