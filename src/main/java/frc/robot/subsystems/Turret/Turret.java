@@ -58,6 +58,16 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Turret/Absolute Encoder", turretEncoder.getPosition());
     SmartDashboard.putBoolean("Turret/Turret/at max", atMax);
     SmartDashboard.putBoolean("Turret/Turret/at min", atMin);
+
+    //TODO: set limelight pos in turret periodic
+    // LimelightHelpers.setCameraPose_RobotSpace(
+    //   LimelightConstants.turretLimelight, 
+    //   getLimelightPos()[1], 
+    //   getLimelightPos()[0], 
+    //   LimelightConstants.up, 
+    //   LimelightConstants.roll, 
+    //   LimelightConstants.pitch,
+    //   LimelightConstants.yaw);
   }
 
   /**
@@ -139,5 +149,16 @@ public class Turret extends SubsystemBase {
    */
   public boolean inRange() {
     return getRelativeRad() - turretEncoder.getPosition() < MovementConstants.turretError;
+  }
+
+  /**
+   * Gets the position of the limelight based on turret angle
+   * @return x, y relative to the robot x, y
+   */
+  public Double[] getLimelightPos() {
+    return new Double[] {
+      LimelightConstants.xOffset + LimelightConstants.radius * Math.cos(turret.getAbsoluteEncoder().getPosition()),
+      LimelightConstants.yOffset + LimelightConstants.radius * Math.sin(turret.getAbsoluteEncoder().getPosition())
+    };
   }
 }
