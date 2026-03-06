@@ -60,7 +60,7 @@ public class Pivot extends SubsystemBase {
     atMin = pivotEncoder().getPosition() <= PivotConstants.pivotMin;
   }
   
-  public void setPivot(double speed) { 
+  public void set(double speed) { 
     // clamp
     double clampSpeed = speed;
     if (atMax && speed < 0) {
@@ -72,16 +72,8 @@ public class Pivot extends SubsystemBase {
     pivot.set(clampSpeed);
   }
 
-  public void setPivot(DoubleSupplier speed) { 
-    // clamp
-    double clampSpeed = speed.getAsDouble();
-    if (atMax && speed.getAsDouble() < 0) {
-      clampSpeed = 0; stopPivot();
-    } 
-    if (atMin && speed.getAsDouble() > 0) {
-      clampSpeed = 0; stopPivot();
-    }
-    pivot.set(clampSpeed);
+  public void set(DoubleSupplier speed) { 
+    set(speed.getAsDouble());
   }
   /**
    * @param setpoint the radians to set the pivot
@@ -94,7 +86,7 @@ public class Pivot extends SubsystemBase {
 
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
     SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
-    setPivot(pid);
+    set(pid);
   }
 
   public double getPivotDegrees() {

@@ -10,7 +10,7 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.TurretConstants.MovementConstants;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
 import frc.robot.subsystems.Turret.Shooter.Shooter;
@@ -20,7 +20,8 @@ public class Hood extends SubsystemBase {
   private final Swerve swerve;
   private final Shooter shooter;
   
-  private final Servo HoodActuator = new Servo(MovementConstants.HoodActuatorPWM);
+  private final Servo leftHoodActuator = new Servo(HoodConstants.leftHoodActuatorPWM);
+  private final Servo rightHoodActuator = new Servo(HoodConstants.rightHoodActuatorPWM);
 
   
   /** Creates a new Movement. */
@@ -28,12 +29,15 @@ public class Hood extends SubsystemBase {
     this.swerve = swerve;
     this.shooter = shooter;
 
-    HoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
+    leftHoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
+    rightHoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Hood/actuators", HoodActuator.getPosition());
+    SmartDashboard.putNumber("Hood/left actuators", getLeft());
+    SmartDashboard.putNumber("Hood/right actuators", getRight());
+    SmartDashboard.putNumber("Hood/actuators mean", get());
     // SmartDashboard.putNumber("Hood/Auto hood angle", getHoodAngle());
   }
 
@@ -56,7 +60,8 @@ public class Hood extends SubsystemBase {
    * @param Position position 
    */
   public void set(double Position){
-    HoodActuator.setPosition(Position);
+    leftHoodActuator.setPosition(Position);
+    rightHoodActuator.setPosition(Position);
   }
 
   /**
@@ -65,7 +70,8 @@ public class Hood extends SubsystemBase {
    */
   public void setDeg(double angle){
     double clampAngle = MathUtil.clamp(angle, 0, 180);
-    HoodActuator.setAngle(clampAngle);
+    leftHoodActuator.setAngle(clampAngle);
+    rightHoodActuator.setAngle(clampAngle);
   }
 
   /**
@@ -73,17 +79,16 @@ public class Hood extends SubsystemBase {
    * @param speed
    */
   public void moveHood(DoubleSupplier speed){
-    set(HoodActuator.get() + speed.getAsDouble()/10);
+    set(get() + speed.getAsDouble()/10);
   }
 
-  /**
-   * checks if the hood is far away from the trench
-   * @return true if its safe to move hood
-   */
-  public boolean awayFromTrench() {
-    if (swerve.getPose().getX() < MovementConstants.hoodDownDistanceMinM && swerve.getPose().getX() > MovementConstants.hoodDownDistanceMaxM) {
-      return true;
-    }
-    return false;
+  public double getLeft(){
+    return leftHoodActuator.get();
+  }
+  public double getRight(){
+    return rightHoodActuator.get();
+  }
+  public double get(){
+    return (getLeft() + getRight())/2;
   }
 }

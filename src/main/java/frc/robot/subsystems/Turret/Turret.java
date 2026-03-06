@@ -12,6 +12,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -41,22 +42,34 @@ public class Turret extends SubsystemBase {
     this.swerve = swerve;
     this.shooter = shooter;
 
-    // turret configs 2048 ticks per revolution, convert to radians, divide by gear ratio
-    turretConfig.encoder.positionConversionFactor(Math.PI); // 360 degree of absolute = 180 degree on turret, convert to radians
+    turretConfig.absoluteEncoder.positionConversionFactor(Math.PI);
+    turretConfig.idleMode(IdleMode.kBrake);
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     System.out.println(turretEncoder);
-    // turretPID.enableContinuousInput(-Math.PI, Math.PI);
   }
+
+  /* TODO: add to limelight
+   * shoot Limelight
+   * dx 11.93
+   * h 11.9 
+   */
 
   @Override
   public void periodic() {
-    // check if max or min;
-    atMax = turretEncoder.getPosition() >= MovementConstants.turretMaxRad;
-    atMin = turretEncoder.getPosition() <= MovementConstants.turretMinRad;
+    // max saffty
+    if(turretEncoder.getPosition() >= MovementConstants.turretMaxRad){
+      atMax = true;
+      // turret.set(-0.2);
+    } else atMax = false;
+    if(turretEncoder.getPosition() <= MovementConstants.turretMinRad){
+      atMin = true;
+      // turret.set(0.2);
+    }else atMin = false;
 
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Turret/Turret/Speed", turret.get());
-    SmartDashboard.putNumber("Turret/Turret/Absolute Encoder", turretEncoder.getPosition());
+    SmartDashboard.putNumber("Turret/Turret/Absolute Encoder Rad", turretEncoder.getPosition());
+    SmartDashboard.putNumber("Turret/Turret/Absolute Encoder Deg", Math.toDegrees(turretEncoder.getPosition()));
     SmartDashboard.putBoolean("Turret/Turret/at max", atMax);
     SmartDashboard.putBoolean("Turret/Turret/at min", atMin);
 
@@ -94,7 +107,7 @@ public class Turret extends SubsystemBase {
   /**
    * Aim with botpose
    */
-  public void aimToSetpoint(double setpoint) {
+  public void aimToSetpoint(double setpoint) { // TODO: pid needs to be done
     // clamp setpoint
     setpoint = MathUtil.clamp(setpoint, MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
     // calc pid
@@ -122,12 +135,12 @@ public class Turret extends SubsystemBase {
   public void set(double speed) { 
     // clamp
     if (atMax && speed > 0) {
-      speed = 0; turret.stopMotor();
+      speed = 0;
     } 
     if (atMin && speed < 0) {
-      speed = 0; turret.stopMotor();
+      speed = 0;
     }
-    turret.set(speed);
+    turret.set(speed * 0.3);
   }
   /**
    * @return the angle in which the shooter should be aiming at towards the goal in radians

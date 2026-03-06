@@ -13,7 +13,7 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.TurretConstants.MovementConstants;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
 import frc.robot.subsystems.Turret.Shooter.ShooterSim;
@@ -24,7 +24,8 @@ public class HoodSim extends SubsystemBase {
   private final ShooterSim shooterSim;
   private final Field2d field = new Field2d();
   
-  private final Servo HoodActuatorSim = new Servo(MovementConstants.HoodActuatorPWM);
+  private final Servo leftHoodActuatorSim = new Servo(HoodConstants.leftHoodActuatorPWM);
+  private final Servo rightHoodActuatorSim = new Servo(HoodConstants.rightHoodActuatorPWM);
 
   // hood
   private Pose2d hoodPose = new Pose2d();
@@ -43,11 +44,11 @@ public class HoodSim extends SubsystemBase {
   public void periodic() {
     // hood
     hoodPose = new Pose2d(new Translation2d(5,0), 
-                   new Rotation2d(Math.toRadians(HoodActuatorSim.getAngle())));
+                   new Rotation2d(Math.toRadians(leftHoodActuatorSim.getAngle())));
     field.getObject("hood").setPose(hoodPose);
 
-    SmartDashboard.putNumber("Hood/HoodSim/left actuators", HoodActuatorSim.getAngle());
-    SmartDashboard.putNumber("Hood/HoodSim/right actuators", HoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Hood/HoodSim/left actuators", leftHoodActuatorSim.getAngle());
+    SmartDashboard.putNumber("Hood/HoodSim/right actuators", rightHoodActuatorSim.getAngle());
     SmartDashboard.putNumber("Hood/HoodSim/Auto hood angle", getHoodAngle());
   }
 
@@ -70,8 +71,8 @@ public class HoodSim extends SubsystemBase {
    * @param Position position 
    */
   public void set(double Position){
-    HoodActuatorSim.set(Position);
-    HoodActuatorSim.set(Position);
+    leftHoodActuatorSim.set(Position);
+    rightHoodActuatorSim.set(Position);
   }
 
   /**
@@ -79,8 +80,8 @@ public class HoodSim extends SubsystemBase {
    * @param Position position in degrees
    */
   public void setDeg(double Position){
-    HoodActuatorSim.setAngle(Position);
-    HoodActuatorSim.setAngle(Position);
+    leftHoodActuatorSim.setAngle(Position);
+    rightHoodActuatorSim.setAngle(Position);
   }
 
   /**
@@ -88,8 +89,8 @@ public class HoodSim extends SubsystemBase {
    * @param speed degrees * 20  /second
    */
   public void move(double speed){
-    HoodActuatorSim.setAngle(HoodActuatorSim.getAngle() + speed);
-    HoodActuatorSim.setAngle(HoodActuatorSim.getAngle() + speed);
+    leftHoodActuatorSim.setAngle(leftHoodActuatorSim.getAngle() + speed);
+    rightHoodActuatorSim.setAngle(rightHoodActuatorSim.getAngle() + speed);
   }
 
   /**
@@ -97,7 +98,7 @@ public class HoodSim extends SubsystemBase {
    * @return the angle in degrees
    */
   public double getHoodPosition(){
-    return (HoodActuatorSim.getAngle() + HoodActuatorSim.getAngle())/2;
+    return (leftHoodActuatorSim.getAngle() + rightHoodActuatorSim.getAngle())/2;
   }
 
   /**

@@ -39,7 +39,6 @@ import frc.robot.commands.Turret.ShootSim;
 import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
 import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
-import frc.robot.commands.Intake.PivotShake;
 import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // DONT REMOVE
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
 import frc.robot.subsystems.Hood.Hood;
@@ -125,12 +124,11 @@ public class RobotContainer {
     // turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
     // hood.setDefaultCommand(Commands.run(() -> hood.setDeg(0), hood));
 
-    pivot.setDefaultCommand(Commands.runEnd(() -> pivot.setPivot(operator::getRightY), () -> pivot.setPivot(0), pivot));
+    // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
 
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
     NamedCommands.registerCommand("AimAndShoot", new AimAndShoot(hood, shooter, turret));
-    NamedCommands.registerCommand("Shake", new PivotShake(pivot));
     NamedCommands.registerCommand("Intake", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed));
     NamedCommands.registerCommand("Outake", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
     
@@ -177,15 +175,13 @@ public class RobotContainer {
     operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(
       Commands.runEnd(() -> shooter.setShooter(operator::getLeftTriggerAxis), () -> shooter.setShooter(0.0), shooter));
 
-    // // manual turret
-    // operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
-    //   Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
+    // manual turret
+    operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
+      Commands.run(() -> turret.set(() -> -operator.getLeftX()), turret));
       
-    // // manual hood
-    operator.axisMagnitudeGreaterThan(1, ControllerConstants.deadBand).whileTrue(
-      Commands.run(() -> hood.moveHood(() -> -operator.getLeftY()), hood));
-
-    operator.a().onTrue(new InstantCommand(() -> hood.setDeg(90)));
+    // manual hood
+    operator.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
+      Commands.run(() -> hood.moveHood(() -> -operator.getRightY()), hood));
 
     // main fire
     operator.b().whileTrue(new Shoot(shooter));
@@ -194,10 +190,12 @@ public class RobotContainer {
     operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
     operator.povRight().whileTrue(Commands.runEnd(() -> rollers.set(-RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
 
-    // intake out and in, and shake
+    // intake out and in
     operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
     operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    operator.povLeft().onTrue(new PivotShake(pivot));
+    // shake
+    operator.povLeft().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
+    operator.povLeft().onFalse(new PivotPid(pivot, PivotConstants.pivotOut));
     
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
       
@@ -292,12 +290,3 @@ public class RobotContainer {
     }
   }
 }
-
-// Done:
-// kicker, tranfer, pivot
-// intake pivot takes encoder from rollers
-
-// kickerSim, transferSim,
-
-// TODO: talons
-//  pivotSim, intake pivot takes encoder from rollerSim

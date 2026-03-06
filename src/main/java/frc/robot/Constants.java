@@ -78,23 +78,25 @@ public final class Constants {
         public static final double triggerDeadBand = 0.01;
     }
 
+    public static final class HoodConstants {
+        public static final int hoodRatio = 100;
+        public static final double hoodDefault = 0;
+
+        public static final int rightHoodActuatorPWM = 0;
+        public static final int leftHoodActuatorPWM = 1;
+    }
+
     public static final class TurretConstants {
 
         public static final class MovementConstants {
 
             public static final int turretRatio = 48; //48 motor rotations per 1 turret rotation
-            public static final int hoodRatio = 100;
 
-            public static final double hoodDefault = 0;
-            public static final double hoodDownDistanceMaxM = 6; //TODO: change hood distances i think the middle is 8m?
-            public static final double hoodDownDistanceMinM = 10;
-
-            public static final int turretCANID = 14; // TODO: canids
-            public static final int HoodActuatorPWM = 0;
+            public static final int turretCANID = 14;
             
-            public static final Translation2d goalPos = new Translation2d(3, 5); // TODO: goal pos and turret range
-            public static final double turretMinRad = Math.toRadians(-180); // TODO: change min and max
-            public static final double turretMaxRad = Math.toRadians(180);
+            public static final double turretMinRad = Math.toRadians(10); 
+            public static final double turretMidRad = Math.toRadians(90);
+            public static final double turretMaxRad = Math.toRadians(160);
 
             public static final double turretError = Math.toRadians(3); //TODO: turret error
 
@@ -117,7 +119,9 @@ public final class Constants {
         }
 
         // shoot on the move
-        public static Transform3d robotToTurret = new Transform3d(0, 0.0, 0, Rotation3d.kZero); //TODO: change these
+        public static Transform3d robotToTurret = new Transform3d(0.114, 0.381, 0, Rotation3d.kZero); //TODO: change these
+        // x: 4.5in
+        // y: 15in
         public static Transform3d turretToCamera =
         new Transform3d(
             0, 0.0, 0, new Rotation3d(0.0, Units.degreesToRadians(0), 0.0));
@@ -128,7 +132,7 @@ public final class Constants {
         public static final class RollersConstants {
             public static final double intakeRollersRatio = 3.2;
             public static final int rollerCANID = 6;
-            public static final double rollerSpeed = 1;
+            public static final double rollerSpeed = 0.6;
         }
 
         public static final class PivotConstants {
@@ -136,7 +140,7 @@ public final class Constants {
 
             public static final double pivotMin = Math.toRadians(207);
             public static final double pivotOut = Math.toRadians(220);
-            public static final double pivotIn = Math.toRadians(320); // in is higher, out is lower
+            public static final double pivotIn = Math.toRadians(322); // in is higher, out is lower
             public static final double pivotMax = Math.toRadians(325); // in is higher, out is lower
 
             public static final int intakePivotRatio = 48; // 48 motor rotations per 1 pivot rotation
