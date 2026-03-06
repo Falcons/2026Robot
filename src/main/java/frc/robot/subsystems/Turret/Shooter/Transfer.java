@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems.Turret.Shooter;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -38,7 +40,7 @@ public class Transfer extends SubsystemBase {
   public void pulse() {
     // move for half a second stop the other half
     if (timer.hasElapsed(2)) {
-      transfer.set(0);
+      transfer.set(-ShooterConstants.maxTransferSpeed);
     } else{
       transfer.set(ShooterConstants.maxTransferSpeed);
     }
@@ -46,6 +48,12 @@ public class Transfer extends SubsystemBase {
     // reset timer
     if (timer.hasElapsed(2.5)) {
       timer.reset();
+    }
+  }
+
+  public void pulse(BooleanSupplier run) {
+    if (run.getAsBoolean()) {
+      pulse();
     }
   }
   

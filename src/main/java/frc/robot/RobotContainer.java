@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
@@ -119,10 +121,10 @@ public class RobotContainer {
     this.rollers = new Rollers();
     this.pivot = new Pivot(rollers);
     this.hood = new Hood(swerve, shooter);
-    
-    // default hood to 0 and auto aim turret always
-    // turret.setDefaultCommand(Commands.run(turret::autoAim, turret));
-    // hood.setDefaultCommand(Commands.run(() -> hood.setDeg(0), hood));
+
+    transfer.setDefaultCommand(Commands.runEnd(() -> transfer.pulse(
+        () -> operator.getLeftTriggerAxis() > ControllerConstants.triggerDeadBand), 
+        () -> transfer.set(0), transfer));
 
     // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
 
@@ -168,7 +170,7 @@ public class RobotContainer {
 
     // OPERATOR
     // move transfer
-    operator.rightTrigger().whileTrue(Commands.runEnd(transfer::pulse, () -> transfer.set(0), transfer));
+    // operator.rightTrigger().whileTrue(Commands.runEnd(transfer::pulse, () -> transfer.set(0), transfer));
     operator.leftBumper().whileTrue(Commands.run(() -> transfer.set(-ShooterConstants.maxTransferSpeed), shooter));
 
     // spin shooter
@@ -194,7 +196,11 @@ public class RobotContainer {
     operator.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
     operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
     // shake
-    operator.povLeft().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
+    // operator.povLeft().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
+    operator.povLeft().onTrue(new ParallelDeadlineGroup(
+      new PivotPid(pivot, PivotConstants.pivotIn), 
+      Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers)));
+
     operator.povLeft().onFalse(new PivotPid(pivot, PivotConstants.pivotOut));
     
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
