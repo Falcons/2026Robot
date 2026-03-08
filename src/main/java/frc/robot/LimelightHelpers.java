@@ -10,7 +10,6 @@ import edu.wpi.first.networktables.TimestampedDoubleArray;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.RobotBase;
 import frc.robot.Constants.LimelightConstants;
-import frc.robot.Constants.TurretConstants.MovementConstants;
 // import frc.robot.LimelightHelpers.LimelightResults;
 // import frc.robot.LimelightHelpers.PoseEstimate;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,7 +27,6 @@ import java.net.URL;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
-import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonFormat.Shape;
 import com.fasterxml.jackson.annotation.JsonProperty;

@@ -91,8 +91,8 @@ public class Turret extends SubsystemBase {
     double setpoint;
     boolean correctTag = false;
     // loop through tags to set correct tag //TODO:LIMELIGHT
-    for (int tagID : MovementConstants.hubTagIDs) {
-      correctTag = LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID;
+    if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
+      correctTag = true;
     }
     // if the april tag id is in the hub tags than use april tag with tx
     if (correctTag) {
