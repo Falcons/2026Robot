@@ -57,14 +57,18 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
     // max saffty
-    if(turretEncoder.getPosition() >= MovementConstants.turretMaxRad){
-      atMax = true;
-      // turret.set(-0.2);
-    } else atMax = false;
-    if(turretEncoder.getPosition() <= MovementConstants.turretMinRad){
-      atMin = true;
-      // turret.set(0.2);
-    }else atMin = false;
+
+    atMax = turretEncoder.getPosition() >= MovementConstants.turretMaxRad; // TODO: this should work
+    atMin = turretEncoder.getPosition() <= MovementConstants.turretMinRad;
+
+    // if(turretEncoder.getPosition() >= MovementConstants.turretMaxRad){
+    //   atMax = true;
+    //   // turret.set(-0.2);
+    // } else atMax = false;
+    // if(turretEncoder.getPosition() <= MovementConstants.turretMinRad){
+    //   atMin = true;
+    //   // turret.set(0.2);
+    // }else atMin = false;
 
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Turret/Turret/Speed", turret.get());
@@ -90,13 +94,12 @@ public class Turret extends SubsystemBase {
   public void autoAim() {
     double setpoint;
     boolean correctTag = false;
-    // loop through tags to set correct tag //TODO:LIMELIGHT
-    if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
-      correctTag = true;
-    }
-    // if the april tag id is in the hub tags than use april tag with tx
+    // check if looking at correct tag
+    correctTag = LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight);
+    // if the april tag id is in the hub tags than use april tag with tx and tz
     if (correctTag) {
-      setpoint = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[0];
+      double tagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
+      setpoint = Math.atan2(tagOffset[0], tagOffset[2])  + turretEncoder.getPosition();
     } else { 
       // if there is no april tag use bot position, 
       setpoint = getRelativeRad();
@@ -111,13 +114,13 @@ public class Turret extends SubsystemBase {
     // clamp setpoint
     setpoint = MathUtil.clamp(setpoint, MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
     // calc pid
-    double pid = turretPID.calculate(turretEncoder.getPosition(), -setpoint);
+    double pid = turretPID.calculate(turretEncoder.getPosition(), setpoint);
     // clamp setpoint 
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
     // move motor
     set(pid);
-    turretPID.reset();
+    // turretPID.reset();
   }
 
   /**
