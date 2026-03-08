@@ -4,23 +4,21 @@
 
 package frc.robot.commands.Intake;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.subsystems.Intake.Pivot;
+import frc.robot.subsystems.Intake.Rollers;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PivotShake extends SequentialCommandGroup {
-
-  @SuppressWarnings("unused") // its complaining about pivot  never being used when it is
-  private final Pivot pivot;
-  /** Creates a new PivotShake. */
-  public PivotShake(Pivot pivot) {
-    this.pivot = pivot;
-
+public class PivotIntake extends SequentialCommandGroup {
+  /** Creates a new Intake. */
+  public PivotIntake(Pivot pivot, Rollers rollers, double setpoint, double speed) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new PivotPid(pivot, PivotConstants.pivotShake), new PivotPid(pivot, PivotConstants.pivotOut));
+    addCommands(
+      new PivotPid(pivot, setpoint), 
+      Commands.run(() -> rollers.set(speed), rollers));
   }
 }

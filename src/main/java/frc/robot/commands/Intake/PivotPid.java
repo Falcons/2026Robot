@@ -21,7 +21,7 @@ public class PivotPid extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println(this.getName() + " starts");
+    System.out.println(this.getName() + " start");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -33,7 +33,7 @@ public class PivotPid extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    System.out.println(this.getName() + " ends");
+    System.out.println(this.getName() + " end");
     pivot.stopPivot();
   }
 

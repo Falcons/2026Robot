@@ -24,15 +24,13 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class PivotSim extends SubsystemBase {
 
   private final Field2d field = new Field2d();
+  private RollersSim rollersSim;
 
   PIDController pivotPid = new PIDController(0.3, 0, 0);
 
   // Simulated motor
-  private final SparkMax pivotMotor = new SparkMax(PivotConstants.pivotCANID, MotorType.kBrushless);
-  private final SparkMaxSim pivotSim = new SparkMaxSim(pivotMotor, DCMotor.getNEO(1));
-
-  // Motor Encoder
-  private final SparkAbsoluteEncoderSim pivotEncoderSim = pivotSim.getAbsoluteEncoderSim();
+  private  SparkMax pivot = new SparkMax(Math.abs(PivotConstants.pivotCANID-200), MotorType.kBrushless);
+  private final SparkMaxSim pivotSim = new SparkMaxSim(pivot, DCMotor.getNEO(1));
 
   private boolean atMax = false, atMin = false;
 
@@ -41,7 +39,8 @@ public class PivotSim extends SubsystemBase {
   private Pose2d pivotPose = new Pose2d();
 
   /** Creates a new PivotSim. */
-  public PivotSim() {
+  public PivotSim(RollersSim rollersSim) {
+    this.rollersSim = rollersSim;
     SmartDashboard.putData("Field", field);
     // pivotPid.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -49,10 +48,10 @@ public class PivotSim extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    atMax = pivotEncoderSim.getPosition() >= PivotConstants.pivotIn;
-    atMin = pivotEncoderSim.getPosition() <= PivotConstants.pivotOut;
+    atMax = pivotEncoder().getPosition() >= PivotConstants.pivotIn;
+    atMin = pivotEncoder().getPosition() <= PivotConstants.pivotOut;
     
-    pivotDir = new Rotation2d(pivotEncoderSim.getPosition());
+    pivotDir = new Rotation2d(pivotEncoder().getPosition());
     pivotPose = new Pose2d(new Translation2d(0, 0), pivotDir);
     field.getObject("IntakePivot").setPose(pivotPose);
 
@@ -62,13 +61,13 @@ public class PivotSim extends SubsystemBase {
   public void setPivot(double speed) { 
     // clamp
     if (atMax && speed > 0) {
-      speed = 0; pivotMotor.stopMotor();
+      speed = 0; pivot.stopMotor();
     } 
     if (atMin && speed < 0) {
-      speed = 0; pivotMotor.stopMotor();
+      speed = 0; pivot.stopMotor();
     }
     pivotSim.setAppliedOutput(speed);
-    pivotEncoderSim.setPosition(pivotEncoderSim.getPosition() + speed);
+    pivotEncoder().setPosition(pivotEncoder().getPosition() + speed);
     SmartDashboard.putNumber("Intake/PivotSim/Speed", speed);
   }
 
@@ -77,20 +76,27 @@ public class PivotSim extends SubsystemBase {
    */
   public void setPivotPid(double setpoint) {
     setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotOut, PivotConstants.pivotIn);
-    double pid = pivotPid.calculate(pivotEncoderSim.getPosition(), setpoint);
+    double pid = pivotPid.calculate(pivotEncoder().getPosition(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
     pid = MathUtil.clamp(pid, -0.5, 0.5);
 
-    SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
-    SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
+    SmartDashboard.putNumber("Intake/PivotSim/PID/setpoint", setpoint);
+    SmartDashboard.putNumber("Intake/PivotSim/PID/calc", pid);
     setPivot(pid);
     // pivotPid.reset();
   }
   public double getPivotDegrees() {
-    return Math.toDegrees(pivotEncoderSim.getPosition());
+    return Math.toDegrees(pivotEncoder().getPosition());
   }
 
   public boolean atSetpoint() {
     return pivotPid.atSetpoint();
+  }
+
+  /**
+   * returns the pivot encoder
+   */
+  public SparkAbsoluteEncoderSim pivotEncoder() {
+    return rollersSim.getPivotEncoder();
   }
 }

@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems.Intake;
 
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -17,26 +18,35 @@ public class Rollers extends SubsystemBase {
   private SparkMaxConfig rollerConfig = new SparkMaxConfig();
   /** Creates a new Rollers. */
   public Rollers() {
-    this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless);
+    this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless); 
     rollerConfig.smartCurrentLimit(20);
+    rollerConfig.absoluteEncoder.positionConversionFactor(360 * Math.PI / 180); // deg to rad is pi / 180
     roller.configure(rollerConfig, com.revrobotics.ResetMode.kResetSafeParameters,  com.revrobotics.PersistMode.kNoPersistParameters);
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Roller encoder", roller.getEncoder().getVelocity());
-    SmartDashboard.putNumber("Roller speed", roller.get());
+    SmartDashboard.putNumber("Intake/Rollers/Roller speed", roller.get());
   }
 
+  /**
+   * set rollers
+   */
   public void set(double roll) {
     roller.set(roll);
   }
 
+  /**
+   * stop rollers
+   */
   public void stop() {
     roller.stopMotor();
   }
 
-  public double getRollerVelocity() {
-    return roller.getEncoder().getVelocity()/3.0;
+  /**
+   * get encoder for the pivot, YES FOR THE PIVOT
+   */
+  public AbsoluteEncoder getPivotEncoder() {
+    return roller.getAbsoluteEncoder();
   }
 }

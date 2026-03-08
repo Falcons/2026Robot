@@ -12,15 +12,10 @@ import frc.robot.subsystems.Intake.PivotSim;
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class PivotShakeSim extends SequentialCommandGroup {
-
-  @SuppressWarnings("unused") // its complaining about pivot sim never being used when it is
-  private final PivotSim pivotSim;
   /** Creates a new PivotShake. */
   public PivotShakeSim(PivotSim pivotSim) {
-    this.pivotSim = pivotSim;
-
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addCommands(new PivotPidSim(pivotSim, PivotConstants.pivotShake), new PivotPidSim(pivotSim, PivotConstants.pivotOut));
+    addCommands(new PivotPidSim(pivotSim, PivotConstants.pivotIn), new PivotPidSim(pivotSim, PivotConstants.pivotOut));
   }
 }

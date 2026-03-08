@@ -4,6 +4,7 @@
 // Use of this source code is governed by an MIT-style
 // license that can be found in the LICENSE file at
 // the root directory of this project.
+
 package frc.robot.Util;
 
 import edu.wpi.first.math.geometry.Pose2d;
@@ -169,5 +170,27 @@ public class GeomUtil {
    */
   public static Pose2d withRotation(Pose2d pose, Rotation2d rotation) {
     return new Pose2d(pose.getTranslation(), rotation);
+  }
+
+  /**
+   * Transforms a velocity along a translation.
+   *
+   * @param velocity The original velocity
+   * @param transform The transform to the new position
+   * @param currentRotation The current rotation of the robot
+   * @return The new velocity
+   */
+  public static ChassisSpeeds transformVelocity(
+      ChassisSpeeds velocity, Translation2d transform, Rotation2d currentRotation) {
+    return new ChassisSpeeds(
+        velocity.vxMetersPerSecond
+            + velocity.omegaRadiansPerSecond
+                * (transform.getY() * currentRotation.getCos()
+                    - transform.getX() * currentRotation.getSin()),
+        velocity.vyMetersPerSecond
+            + velocity.omegaRadiansPerSecond
+                * (transform.getX() * currentRotation.getCos()
+                    - transform.getY() * currentRotation.getSin()),
+        velocity.omegaRadiansPerSecond);
   }
 }

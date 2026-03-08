@@ -7,14 +7,25 @@ package frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants; // DONT REMOVE
+import frc.robot.LimelightHelpers;
+import frc.robot.Util.AllianceFlipUtil;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import swervelib.parser.SwerveDriveConfiguration;
 import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 import swervelib.SwerveDrive;
 import swervelib.math.SwerveMath;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -30,13 +41,15 @@ public class Swerve extends SubsystemBase {
   SwerveDrive swerveDrive;
 
   public Swerve() {
-
     try {
       // try to create a new swerve drive
-      swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, DriveConstants.startingPose);
+      DriverStation.waitForDsConnection(0);
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH; //TODO: high will cause more lag
+      swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+    setupPathPlanner();
   }
 
   @Override
@@ -45,6 +58,8 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("swerve/frontRight encoder", swerveDrive.getModules()[1].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backRight encoder", swerveDrive.getModules()[3].getAbsolutePosition());
+
+    // addVisionMeasurement(LimelightConstants.turretLimelight);
   }
 
   public SwerveDrive getSwerveDrive() {
@@ -121,6 +136,16 @@ public class Swerve extends SubsystemBase {
     return swerveDrive.getFieldVelocity();
   }
 
+  /**
+   * Gets the current velocity (x, y and omega) of the robot
+   *
+   * @return A {@link ChassisSpeeds} object of the current velocity
+   */
+  public ChassisSpeeds getRobotVelocity()
+  {
+    return swerveDrive.getRobotVelocity();
+  }
+
    /**
    * Get the {@link SwerveDriveConfiguration} object.
    *
@@ -162,6 +187,108 @@ public class Swerve extends SubsystemBase {
   public void zeroGyro() {
     swerveDrive.zeroGyro();
   }
+
+  /**
+   * Setup AutoBuilder for PathPlanner.
+   */
+  public void setupPathPlanner() {
+    // Load the RobotConfig from the GUI settings. You should probably
+    // store this in your Constants file
+    RobotConfig config;
+    try
+    {
+      config = RobotConfig.fromGUISettings();
+
+      final boolean enableFeedforward = true;
+      // Configure AutoBuilder last
+      AutoBuilder.configure(
+          swerveDrive::getPose,
+          // Robot pose supplier
+          swerveDrive::resetOdometry,
+          // Method to reset odometry (will be called if your auto has a starting pose)
+          swerveDrive::getRobotVelocity,
+          // ChassisSpeeds supplier. MUST BE ROBOT RELATIVE
+          (speedsRobotRelative, moduleFeedForwards) -> {
+            if (enableFeedforward)
+            {
+              swerveDrive.drive(
+                  speedsRobotRelative,
+                  swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
+                  moduleFeedForwards.linearForces()
+                               );
+            } else
+            {
+              swerveDrive.setChassisSpeeds(speedsRobotRelative);
+            }
+          },
+          // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
+          new PPHolonomicDriveController(
+              // TODO: pid
+              // PPHolonomicController is the built in path following controller for holonomic drive trains
+              new PIDConstants(5.0, 0.0, 0.0),
+              // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0)
+              // Rotation PID constants
+          ),
+          config,
+          // The robot configuration
+          () -> {
+            // Boolean supplier that controls when the path will be mirrored for the red alliance
+            // This will flip the path being followed to the red side of the field.
+            // THE ORIGIN WILL REMAIN ON THE BLUE SIDE
+
+            var alliance = DriverStation.getAlliance();
+            if (alliance.isPresent())
+            {
+              return alliance.get() == DriverStation.Alliance.Red;
+            }
+            return false;
+          },
+          this
+          // Reference to this subsystem to set requirements
+                           );
+
+    } catch (Exception e)
+    {
+      // Handle exception as needed
+      e.printStackTrace();
+    }
+  }
+
+    /**
+  * Adds the vision estimations from a limelight to swerveDriveodometry 
+  * @param limelightNames name of limelight
+  */
+  public void addVisionMeasurement(String limelightName) {
+
+    LimelightHelpers.PoseEstimate visionPose = null;
+
+    // set the vision pose
+    if (DriverStation.getAlliance().isPresent()) {
+      visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    }
+    
+    // dont do anything if there isnt a tag
+    if (visionPose == null || visionPose.tagCount == 0) {
+      return;
+    }
+  
+    Pose2d pose = visionPose.pose;
+  
+    // Add vision measurement to swerve estimator
+    swerveDrive.addVisionMeasurement(pose,visionPose.timestampSeconds);
+  }
+
+  /**
+   * sets the max alloweable speed of the swerve drive
+   * @param velocity in meters per second
+   * @param angularVelocity in radians per secnond
+   */
+  public void setMaxAllowableSpeed(double velocity, double angularVelocity) {
+    swerveDrive.setMaximumAllowableSpeeds(velocity, angularVelocity);
+  }
+
+
 
   /**
    * Command to drive the robot using translative values and heading as a setpoint.

@@ -7,6 +7,9 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotBase;
+import frc.robot.Constants.LimelightConstants;
 // import frc.robot.LimelightHelpers.LimelightResults;
 // import frc.robot.LimelightHelpers.PoseEstimate;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -1643,5 +1646,30 @@ public class LimelightHelpers {
         }
 
         return results;
+    }
+
+    /**
+     * checks if the liemlight sees an aprul tag on the hub 
+     * returns false always if in sim
+     * @param limeligtName name of the limelight
+     * @return true if limelight sees an april tag on the hub
+     */
+    public static boolean lookingAtHub(String limeligtName) {
+        if (RobotBase.isSimulation()) return false;
+        
+        // depending on team look at those limelights
+        int tagIDs[] = LimelightConstants.blueHubTagIDs;
+        if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+            tagIDs = LimelightConstants.redHubTagIDs;
+        }
+
+        // if current tag is tag return true
+        for (int tagID : tagIDs) {
+            if (LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
