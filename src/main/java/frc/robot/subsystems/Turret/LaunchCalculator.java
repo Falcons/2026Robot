@@ -103,7 +103,7 @@ public class LaunchCalculator {
     timeOfFlightMap.put(5.68, 1.16);
   }
 
-  public LaunchingParameters getParameters(Swerve swerve, Double shooterSpeed) {
+  public LaunchingParameters getParameters(Swerve swerve, Double shooterSpeed, Double turretRad) {
     if (latestParameters != null) {
       return latestParameters;
     }
@@ -149,6 +149,7 @@ public class LaunchCalculator {
     if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
         correctTag = true;
         turretToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
+        lookaheadTurretToTargetDistance = turretToTargetDistance;
     }
     
     for (int i = 0; i < 20; i++) {
@@ -164,12 +165,15 @@ public class LaunchCalculator {
     
     // Calculate parameters accounted for velocity
     turretAngle = target.minus(lookaheadPose.getTranslation()).getAngle();
-    // if limelight use that angle
-    if (correctTag) {
+    // if limelight use that angle and if turret radians is -1 its from hood
+    if (correctTag && turretRad != -1.0) {
         double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
-        turretToTargetDistance = aprilTagOffset[2]; // distance is tz
         // get angle
-        turretAngle = new Rotation2d(Math.atan2(aprilTagOffset[2], aprilTagOffset[0]));
+        turretAngle = new Rotation2d(
+          swerve.getHeading().getRadians() + // turret is facing where the bot is facing 
+          Math.toRadians(90) - turretRad + // + its angle -90d offset
+          Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
+        );
     }
 
     // get hood angle from maps

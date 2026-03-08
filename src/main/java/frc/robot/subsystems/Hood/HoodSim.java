@@ -63,7 +63,7 @@ public class HoodSim extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return LaunchCalculator.getInstance().getParameters(swerve, shooterSim.getShooterRPS()).hoodAngle();
+    return LaunchCalculator.getInstance().getParameters(swerve, shooterSim.getShooterRPS(), -1.0).hoodAngle();
   }
 
   /**

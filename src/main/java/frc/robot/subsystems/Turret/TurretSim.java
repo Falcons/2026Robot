@@ -106,7 +106,7 @@ public class TurretSim extends SubsystemBase {
      */
     public double getGlobalRad() {
       LaunchCalculator.getInstance().clearLaunchingParameters();
-      return LaunchCalculator.getInstance().getParameters(swerve, shooterSim.getShooterRPS()).turretAngle().getRadians();
+      return LaunchCalculator.getInstance().getParameters(swerve, shooterSim.getShooterRPS(), -1.0).turretAngle().getRadians();
     }
   
     /**

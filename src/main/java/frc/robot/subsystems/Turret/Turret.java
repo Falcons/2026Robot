@@ -92,23 +92,11 @@ public class Turret extends SubsystemBase {
    * call this to actually auto aim to the goal
    */
   public void autoAim() {
-    double setpoint;
-    boolean correctTag = false;
-    // check if looking at correct tag
-    correctTag = LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight);
-    // if the april tag id is in the hub tags than use april tag with tx and tz
-    if (correctTag) {
-      double tagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
-      setpoint = Math.atan2(tagOffset[0], tagOffset[2])  + turretEncoder.getPosition();
-    } else { 
-      // if there is no april tag use bot position, 
-      setpoint = getRelativeRad();
-    }
-    aimToSetpoint(setpoint);
+    aimToSetpoint(getRelativeRad());
   }
 
   /**
-   * Aim with botpose
+   * Aim with setpoint
    */
   public void aimToSetpoint(double setpoint) { // TODO: pid needs to be done
     // clamp setpoint
@@ -151,7 +139,7 @@ public class Turret extends SubsystemBase {
   public double getGlobalRad() {
     // use the launch calulator to get global angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return LaunchCalculator.getInstance().getParameters(swerve, shooter.getShooterRPS()).turretAngle().getRadians();
+    return LaunchCalculator.getInstance().getParameters(swerve, shooter.getShooterRPS(), turretEncoder.getPosition()).turretAngle().getRadians();
   }
 
   /**
