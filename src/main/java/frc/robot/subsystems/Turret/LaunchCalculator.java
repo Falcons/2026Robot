@@ -148,17 +148,9 @@ public class LaunchCalculator {
 
     // if limelight can see tag set distance to tz
     boolean correctTag = false;
-    if (LimelightHelpers.getTV(LimelightConstants.turretLimelight) && RobotBase.isReal()) {
-        for (int tagID : MovementConstants.hubTagIDs) {
-            // if not real ignore
-            if (LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight) == tagID) {
-                correctTag = true;
-                break;
-            }
-        }
-        if (correctTag) {
-            turretToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
-        }
+    if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
+        correctTag = true;
+        turretToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
     }
     
     for (int i = 0; i < 20; i++) {

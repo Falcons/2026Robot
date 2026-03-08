@@ -61,6 +61,8 @@ public final class Constants {
 
     public static final class LimelightConstants {
         public static final String turretLimelight = "limelight-turret"; // TODO: limelight names
+        public static final int blueHubTagIDs[] = {0};
+        public static final int redHubTagIDs[] = {0};
 
         // TODO: limelight pos
         public static final Double yOffset = 0.0; // the vertical offset (from centre of the bot to the centre of the circle)
@@ -70,7 +72,7 @@ public final class Constants {
         public static final Double up = 0.0; // up Up offset in meters
         public static final Double roll = 0.0; // roll Roll angle in degrees
         public static final Double pitch = 0.0 ;// pitch Pitch angle in degrees
-       public static final Double yaw = 0.0; // yaw Yaw angle in degrees
+        public static final Double yaw = 0.0; // yaw Yaw angle in degrees
     }
 
     public static final class ControllerConstants {
@@ -99,8 +101,6 @@ public final class Constants {
             public static final double turretMaxRad = Math.toRadians(160);
 
             public static final double turretError = Math.toRadians(3); //TODO: turret error
-
-            public static final int hubTagIDs[] = {0};
         }
         public static final class ShooterConstants {
 
