@@ -13,21 +13,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
-import frc.robot.subsystems.Turret.Shooter.Shooter;
+// import frc.robot.subsystems.Turret.Shooter.Shooter;
 
 public class Hood extends SubsystemBase {
 
   private final Swerve swerve;
-  private final Shooter shooter;
+  // private final Shooter shooter;
   
   private final Servo leftHoodActuator = new Servo(HoodConstants.leftHoodActuatorPWM);
   private final Servo rightHoodActuator = new Servo(HoodConstants.rightHoodActuatorPWM);
 
   
   /** Creates a new Movement. */
-  public Hood(Swerve swerve, Shooter shooter) {
+  public Hood(Swerve swerve) {
     this.swerve = swerve;
-    this.shooter = shooter;
+    // this.shooter = shooter;
 
     leftHoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
     rightHoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
@@ -52,7 +52,7 @@ public class Hood extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve, shooter.getShooterRPS(), -1.0).hoodAngle());
+    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve, -1.0).hoodAngle());
   }
 
   /**

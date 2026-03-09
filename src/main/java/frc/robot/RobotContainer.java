@@ -36,10 +36,10 @@ import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
 import frc.robot.commands.Turret.Shoot;
 import frc.robot.commands.Turret.ShootSim; 
-import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // DONT REMOVE
+// import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // just for sim
 import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
-import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // DONT REMOVE
+// import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // just for sim
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Hood.HoodSim;
@@ -113,12 +113,12 @@ public class RobotContainer {
   
   private void setupReal() {
     //initializing real classes
-    this.turret = new Turret(swerve, shooter);
+    this.turret = new Turret(swerve);
     this.transfer = new Transfer();
     this.shooter = new Shooter(turret, transfer);
     this.rollers = new Rollers();
     this.pivot = new Pivot(rollers);
-    this.hood = new Hood(swerve, shooter);
+    this.hood = new Hood(swerve);
 
     transfer.setDefaultCommand(Commands.runEnd(() -> transfer.pulse(
         () -> operator.getLeftTriggerAxis() > ControllerConstants.triggerDeadBand), 
@@ -209,11 +209,10 @@ public class RobotContainer {
     // initializing sim  classes
 
     // need to do null shenangigans since they all depend on each other ._.
-    this.turretSim = new TurretSim(swerve, null); 
+    this.turretSim = new TurretSim(swerve); 
     this.shooterSim = new ShooterSim(turretSim);
-    this.turretSim.setShooterSim(shooterSim);
 
-    this.hoodSim = new HoodSim(swerve, shooterSim);
+    this.hoodSim = new HoodSim(swerve);
     this.rollersSim = new RollersSim();
     this.pivotSim = new PivotSim(rollersSim);
 

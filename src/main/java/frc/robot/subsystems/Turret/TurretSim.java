@@ -20,12 +20,12 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
-import frc.robot.subsystems.Turret.Shooter.ShooterSim;
+// import frc.robot.subsystems.Turret.Shooter.ShooterSim;
 
 public class TurretSim extends SubsystemBase {
 
   private final Swerve swerve;
-  private ShooterSim shooterSim;
+  // private ShooterSim shooterSim;
     private final Field2d field = new Field2d();
   
     // simulated motor
@@ -44,9 +44,9 @@ public class TurretSim extends SubsystemBase {
     private Pose2d turretPose = new Pose2d();
   
     /** Creates a new Movement. */
-    public TurretSim(Swerve swerve, ShooterSim shooterSim) {
+    public TurretSim(Swerve swerve) {
       this.swerve = swerve;
-      this.shooterSim = shooterSim;
+      // this.shooterSim = shooterSim;
       SmartDashboard.putData("Field", field);
     }
   
@@ -106,7 +106,7 @@ public class TurretSim extends SubsystemBase {
      */
     public double getGlobalRad() {
       LaunchCalculator.getInstance().clearLaunchingParameters();
-      return LaunchCalculator.getInstance().getParameters(swerve, shooterSim.getShooterRPS(), -1.0).turretAngle().getRadians();
+      return LaunchCalculator.getInstance().getParameters(swerve, turretSim.getPosition()).turretAngle().getRadians();
     }
   
     /**
@@ -123,7 +123,7 @@ public class TurretSim extends SubsystemBase {
       return getGlobalRad() - getRelativeRad() < MovementConstants.turretError;
     }
   
-    public void setShooterSim(ShooterSim shooterSim) {
-      this.shooterSim = shooterSim;
-  }
+    // public void setShooterSim(ShooterSim shooterSim) {
+    //   this.shooterSim = shooterSim;
+    // }
 }

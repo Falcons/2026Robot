@@ -16,12 +16,12 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
-import frc.robot.subsystems.Turret.Shooter.ShooterSim;
+// import frc.robot.subsystems.Turret.Shooter.ShooterSim;
 
 public class HoodSim extends SubsystemBase {
 
   private final Swerve swerve;
-  private final ShooterSim shooterSim;
+  // private final ShooterSim shooterSim;
   private final Field2d field = new Field2d();
   
   private final Servo leftHoodActuatorSim = new Servo(HoodConstants.leftHoodActuatorPWM);
@@ -31,11 +31,11 @@ public class HoodSim extends SubsystemBase {
   private Pose2d hoodPose = new Pose2d();
 
   /** Creates a new Movement. */
-  public HoodSim(Swerve swerve, ShooterSim shooterSim) {
+  public HoodSim(Swerve swerve) {
     // leftHoodActuator.createDouble("position", Direction.kBidir, 0);
     // rightHoodActuator.createDouble("position", Direction.kBidir, 0);
     this.swerve = swerve;
-    this.shooterSim = shooterSim;
+    // this.shooterSim = shooterSim;
     SmartDashboard.putData("Field", field);
     // turretPID.enableContinuousInput(-Math.PI, Math.PI);
   }
@@ -63,7 +63,7 @@ public class HoodSim extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return LaunchCalculator.getInstance().getParameters(swerve, shooterSim.getShooterRPS(), -1.0).hoodAngle();
+    return LaunchCalculator.getInstance().getParameters(swerve, -1.0).hoodAngle();
   }
 
   /**

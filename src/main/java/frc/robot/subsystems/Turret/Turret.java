@@ -18,16 +18,15 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.LimelightHelpers;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TurretConstants.MovementConstants;
 import frc.robot.subsystems.Swerve.Swerve;
-import frc.robot.subsystems.Turret.Shooter.Shooter;
+// import frc.robot.subsystems.Turret.Shooter.Shooter;
 
 public class Turret extends SubsystemBase {
 
   private final Swerve swerve;
-  private final Shooter shooter;
+  // private final Shooter shooter;
 
   private final SparkMax turret = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
   private final AbsoluteEncoder turretEncoder = turret.getAbsoluteEncoder();
@@ -38,9 +37,9 @@ public class Turret extends SubsystemBase {
   private boolean atMax, atMin;
 
   /** Creates a new Movement. */
-  public Turret(Swerve swerve, Shooter shooter) {
+  public Turret(Swerve swerve) {
     this.swerve = swerve;
-    this.shooter = shooter;
+    // this.shooter = shooter;
 
     turretConfig.absoluteEncoder.positionConversionFactor(Math.PI);
     turretConfig.idleMode(IdleMode.kBrake);
@@ -139,7 +138,7 @@ public class Turret extends SubsystemBase {
   public double getGlobalRad() {
     // use the launch calulator to get global angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return LaunchCalculator.getInstance().getParameters(swerve, shooter.getShooterRPS(), turretEncoder.getPosition()).turretAngle().getRadians();
+    return LaunchCalculator.getInstance().getParameters(swerve, turretEncoder.getPosition()).turretAngle().getRadians();
   }
 
   /**
