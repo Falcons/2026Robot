@@ -75,11 +75,11 @@ public class Hood extends SubsystemBase {
   }
 
   /**
-   * move hood based on commanded position + speed in degrees
-   * @param speed
+   * move hood based on commanded position
+   * @param speed % of power
    */
   public void moveHood(DoubleSupplier speed){
-    set(get() + speed.getAsDouble()/10);
+    set(get() + speed.getAsDouble() * HoodConstants.hoodSpeedMultipier);
   }
 
   public double getLeft(){

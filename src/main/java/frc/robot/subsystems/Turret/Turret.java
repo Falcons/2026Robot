@@ -57,7 +57,7 @@ public class Turret extends SubsystemBase {
   public void periodic() {
     // max saffty
 
-    atMax = turretEncoder.getPosition() >= MovementConstants.turretMaxRad; // TODO: this should work
+    atMax = turretEncoder.getPosition() >= MovementConstants.turretMaxRad;
     atMin = turretEncoder.getPosition() <= MovementConstants.turretMinRad;
 
     // if(turretEncoder.getPosition() >= MovementConstants.turretMaxRad){

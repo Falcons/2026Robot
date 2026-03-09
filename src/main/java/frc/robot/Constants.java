@@ -86,6 +86,11 @@ public final class Constants {
 
         public static final int rightHoodActuatorPWM = 0;
         public static final int leftHoodActuatorPWM = 1;
+
+        // 35:1 gear ratio so 32mm per second and 100mm legnth
+        // 32/100 is our max speed so multiply that by joystick -1 - 1 will give speed\
+        // however there is load soooo divide by random number lol //TODO: speed multiplier
+        public static final double hoodSpeedMultipier = 32/100 / 10;
     }
 
     public static final class TurretConstants {

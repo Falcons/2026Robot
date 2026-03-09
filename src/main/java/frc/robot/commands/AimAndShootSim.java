@@ -19,7 +19,7 @@ public class AimAndShootSim extends ParallelDeadlineGroup {
   public AimAndShootSim(HoodSim hoodSim, TurretSim turretSim, ShooterSim shooterSim) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new ShootSim(shooterSim));//TODO: get time to slow down
+    super(new ShootSim(shooterSim));
     addCommands(Commands.run(hoodSim::autoAim, hoodSim), Commands.run(turretSim::autoAim));
   }
 }
