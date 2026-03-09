@@ -19,7 +19,7 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LimelightConstants;
-import frc.robot.Constants.TurretConstants.MovementConstants;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 // import frc.robot.subsystems.Turret.Shooter.Shooter;
 
@@ -28,7 +28,7 @@ public class Turret extends SubsystemBase {
   private final Swerve swerve;
   // private final Shooter shooter;
 
-  private final SparkMax turret = new SparkMax(MovementConstants.turretCANID, MotorType.kBrushless);
+  private final SparkMax turret = new SparkMax(TurretConstants.turretCANID, MotorType.kBrushless);
   private final AbsoluteEncoder turretEncoder = turret.getAbsoluteEncoder();
   private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 
@@ -57,8 +57,8 @@ public class Turret extends SubsystemBase {
   public void periodic() {
     // max saffty
 
-    atMax = turretEncoder.getPosition() >= MovementConstants.turretMaxRad;
-    atMin = turretEncoder.getPosition() <= MovementConstants.turretMinRad;
+    atMax = turretEncoder.getPosition() >= TurretConstants.turretMaxRad;
+    atMin = turretEncoder.getPosition() <= TurretConstants.turretMinRad;
 
     // if(turretEncoder.getPosition() >= MovementConstants.turretMaxRad){
     //   atMax = true;
@@ -99,7 +99,7 @@ public class Turret extends SubsystemBase {
    */
   public void aimToSetpoint(double setpoint) { // TODO: pid needs to be done
     // clamp setpoint
-    setpoint = MathUtil.clamp(setpoint, MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
+    setpoint = MathUtil.clamp(setpoint, TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
     // calc pid
     double pid = turretPID.calculate(turretEncoder.getPosition(), setpoint);
     // clamp setpoint 
@@ -152,7 +152,7 @@ public class Turret extends SubsystemBase {
    * @return true if turret is in range
    */
   public boolean inRange() {
-    return getRelativeRad() - turretEncoder.getPosition() < MovementConstants.turretError;
+    return getRelativeRad() - turretEncoder.getPosition() < TurretConstants.turretError;
   }
 
   /**

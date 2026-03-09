@@ -81,7 +81,6 @@ public final class Constants {
     }
 
     public static final class HoodConstants {
-        public static final int hoodRatio = 100;
         public static final double hoodDefault = 0;
 
         public static final int rightHoodActuatorPWM = 0;
@@ -95,22 +94,23 @@ public final class Constants {
 
     public static final class TurretConstants {
 
-        public static final class MovementConstants {
-
-            public static final int turretRatio = 48; //48 motor rotations per 1 turret rotation
-
-            public static final int turretCANID = 14;
+        public static final int turretCANID = 14;
             
-            public static final double turretMinRad = Math.toRadians(10); 
-            public static final double turretMidRad = Math.toRadians(90);
-            public static final double turretMaxRad = Math.toRadians(160);
+        public static final double turretMinRad = Math.toRadians(10); 
+        public static final double turretMidRad = Math.toRadians(90);
+        public static final double turretMaxRad = Math.toRadians(160);
 
-            public static final double turretError = Math.toRadians(3); //TODO: turret error
-        }
+        public static final double turretError = Math.toRadians(3); //TODO: turret error
+
+        // shoot on the move
+        public static Transform3d robotToTurret = new Transform3d(0.114, 0.381, 0, Rotation3d.kZero); //TODO: change these
+        // x: 4.5in
+        // y: 15in
+        public static Transform3d turretToCamera =
+        new Transform3d(
+            0, 0.0, 0, new Rotation3d(0.0, Units.degreesToRadians(0), 0.0));
+        
         public static final class ShooterConstants {
-
-            public static final double kickerRatio = 4;
-            public static final int transferRatio = 4;
 
             public static final int leftShooterCANID = 21;
             public static final int rightShooterCANID = 23;
@@ -122,20 +122,11 @@ public final class Constants {
             public static final double maxTransferSpeed = 1;
             public static final double maxKickerSpeed = 1;
         }
-
-        // shoot on the move
-        public static Transform3d robotToTurret = new Transform3d(0.114, 0.381, 0, Rotation3d.kZero); //TODO: change these
-        // x: 4.5in
-        // y: 15in
-        public static Transform3d turretToCamera =
-        new Transform3d(
-            0, 0.0, 0, new Rotation3d(0.0, Units.degreesToRadians(0), 0.0));
     }
 
     public static final class IntakeConstants {
 
         public static final class RollersConstants {
-            public static final double intakeRollersRatio = 3.2;
             public static final int rollerCANID = 6;
             public static final double rollerSpeed = 0.6;
         }
@@ -147,8 +138,6 @@ public final class Constants {
             public static final double pivotOut = Math.toRadians(220);
             public static final double pivotIn = Math.toRadians(322); // in is higher, out is lower
             public static final double pivotMax = Math.toRadians(325); // in is higher, out is lower
-
-            public static final int intakePivotRatio = 48; // 48 motor rotations per 1 pivot rotation
         }
     }
 }

@@ -18,7 +18,7 @@ import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.TurretConstants.MovementConstants;
+import frc.robot.Constants.TurretConstants;
 import frc.robot.subsystems.Swerve.Swerve;
 // import frc.robot.subsystems.Turret.Shooter.ShooterSim;
 
@@ -29,7 +29,7 @@ public class TurretSim extends SubsystemBase {
     private final Field2d field = new Field2d();
   
     // simulated motor
-    private final SparkMax turret = new SparkMax(MovementConstants.turretCANID-200, MotorType.kBrushless);
+    private final SparkMax turret = new SparkMax(TurretConstants.turretCANID-200, MotorType.kBrushless);
     private final SparkMaxSim turretSim = new SparkMaxSim(turret, DCMotor.getNEO(1));
   
     // sim encoder
@@ -53,8 +53,8 @@ public class TurretSim extends SubsystemBase {
     @Override
     public void periodic() {
       // check if max or min
-      atMax = turretEncoderSim.getPosition() >= MovementConstants.turretMaxRad;
-      atMin = turretEncoderSim.getPosition() <= MovementConstants.turretMinRad;
+      atMax = turretEncoderSim.getPosition() >= TurretConstants.turretMaxRad;
+      atMin = turretEncoderSim.getPosition() <= TurretConstants.turretMinRad;
   
       // for sim make a direction and a pose, add robot radians becuase turret rotates with bot
       turretPose = new Pose2d(swerve.getPose().getTranslation(), 
@@ -73,7 +73,7 @@ public class TurretSim extends SubsystemBase {
      */
     public void autoAim() {
       // clamp setpoint
-      double setpoint = MathUtil.clamp(getRelativeRad(), MovementConstants.turretMinRad, MovementConstants.turretMaxRad);
+      double setpoint = MathUtil.clamp(getRelativeRad(), TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
       
       // calc pid
       double pid = turretPID.calculate(turret.getAbsoluteEncoder().getPosition(), setpoint);
@@ -120,7 +120,7 @@ public class TurretSim extends SubsystemBase {
      * @return true if turret is in range
      */
     public boolean inRange() {
-      return getGlobalRad() - getRelativeRad() < MovementConstants.turretError;
+      return getGlobalRad() - getRelativeRad() < TurretConstants.turretError;
     }
   
     // public void setShooterSim(ShooterSim shooterSim) {
