@@ -34,7 +34,6 @@ import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
-import frc.robot.commands.Turret.Shoot;
 import frc.robot.commands.Turret.ShootSim; 
 // import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // just for sim
 import frc.robot.commands.Intake.PivotIntake;
@@ -184,7 +183,7 @@ public class RobotContainer {
       Commands.run(() -> hood.moveHood(() -> -operator.getRightY()), hood));
 
     // main fire
-    operator.b().whileTrue(new Shoot(shooter));
+    // operator.b().whileTrue(new AimAndShoot(hood, shooter, turret)); // TODO: auto aim
 
     // spin intake - rollers 
     operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
