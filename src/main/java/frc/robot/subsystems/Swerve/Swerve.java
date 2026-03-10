@@ -49,6 +49,7 @@ public class Swerve extends SubsystemBase {
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
+    swerveDrive.setMotorIdleMode(true);
     setupPathPlanner();
   }
 

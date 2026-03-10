@@ -45,6 +45,8 @@ public class Shooter extends SubsystemBase {
     this.aimer = aimer;
     this.transfer = transfer;
 
+    // smart current limits
+
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rightShooter.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Opposed));

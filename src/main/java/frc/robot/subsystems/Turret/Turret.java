@@ -42,6 +42,7 @@ public class Turret extends SubsystemBase {
     // this.shooter = shooter;
 
     turretConfig.absoluteEncoder.positionConversionFactor(Math.PI);
+    turretConfig.smartCurrentLimit(20);
     turretConfig.idleMode(IdleMode.kBrake);
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     System.out.println(turretEncoder);
