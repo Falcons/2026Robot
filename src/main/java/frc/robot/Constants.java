@@ -9,6 +9,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.util.Units;
 
 public final class Constants {
@@ -60,19 +61,14 @@ public final class Constants {
     }
 
     public static final class LimelightConstants {
-        public static final String turretLimelight = "limelight-turret"; // TODO: limelight names
-        public static final int blueHubTagIDs[] = {0};
-        public static final int redHubTagIDs[] = {0};
+        public static final String turretLimelight = "limelight-turret";
+        public static final String stillLimelight = "limelight-still";
+        public static final Translation3d turretLimelightPos = new Translation3d(0.303022, 0, 0.30226);
+        public static final Translation3d stillLimelightPos = new Translation3d(Units.inchesToMeters(7.76), Units.inchesToMeters(8.93), Units.inchesToMeters(10.135));
+        public static final int blueHubTagIDs[] = {10};
+        public static final int redHubTagIDs[] = {10};
 
-        // TODO: limelight pos
-        public static final Double yOffset = 0.0; // the vertical offset (from centre of the bot to the centre of the circle)
-        public static final Double xOffset = 0.0; // the horizontal offset (from centre of the bot to the centre of the circle)
-        public static final Double radius = 0.0; // the radius of the limelight circle
-
-        public static final Double up = 0.0; // up Up offset in meters
-        public static final Double roll = 0.0; // roll Roll angle in degrees
-        public static final Double pitch = 0.0 ;// pitch Pitch angle in degrees
-        public static final Double yaw = 0.0; // yaw Yaw angle in degrees
+        public static final Rotation3d turretLimelightRot = new Rotation3d(0, 26, 0);
     }
 
     public static final class ControllerConstants {
@@ -86,10 +82,13 @@ public final class Constants {
         public static final int rightHoodActuatorPWM = 0;
         public static final int leftHoodActuatorPWM = 1;
 
+        public static final int hoodAngleMin = 18;
+        public static final int hoodAngleMax = 126;
+
         // 35:1 gear ratio so 32mm per second and 100mm legnth
         // 32/100 is our max speed so multiply that by joystick -1 - 1 will give speed\
         // however there is load soooo divide by random number lol //TODO: speed multiplier
-        public static final double hoodSpeedMultipier = 32/100 / 10;
+        public static final double hoodSpeedMultipier = 0.32 / 10;
     }
 
     public static final class TurretConstants {
@@ -103,12 +102,11 @@ public final class Constants {
         public static final double turretError = Math.toRadians(3); //TODO: turret error
 
         // shoot on the move
-        public static Transform3d robotToTurret = new Transform3d(0.114, 0.381, 0, Rotation3d.kZero); //TODO: change these
+        public static Transform3d robotToTurret = new Transform3d(0.114, 0, 0.30226, Rotation3d.kZero);
         // x: 4.5in
-        // y: 15in
+        // y: 15in - using 11.9 cuz limelight
         public static Transform3d turretToCamera =
-        new Transform3d(
-            0, 0.0, 0, new Rotation3d(0.0, Units.degreesToRadians(0), 0.0));
+            new Transform3d(0, 0.0, 0, new Rotation3d(0.0, Units.degreesToRadians(0), 0.0));
         
         public static final class ShooterConstants {
 

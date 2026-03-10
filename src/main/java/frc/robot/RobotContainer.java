@@ -16,11 +16,13 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
@@ -34,7 +36,8 @@ import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
-import frc.robot.commands.Turret.ShootSim; 
+import frc.robot.commands.Turret.ShootSim;
+import frc.robot.commands.Turret.TurretPID;
 // import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // just for sim
 import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
@@ -119,9 +122,8 @@ public class RobotContainer {
     this.pivot = new Pivot(rollers);
     this.hood = new Hood(swerve);
 
-    transfer.setDefaultCommand(Commands.runEnd(() -> transfer.pulse(
-        () -> operator.getLeftTriggerAxis() > ControllerConstants.triggerDeadBand), 
-        () -> transfer.set(0), transfer));
+    transfer.setDefaultCommand(Commands.run(() -> transfer.pulse(
+        () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
 
     // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
 
@@ -150,22 +152,9 @@ public class RobotContainer {
   }
 
   private void configureRealBindings() {
-    // DRIVER (secondary controls)
-    // rollers
-    // driver.axisMagnitudeGreaterThan(3, ControllerConstants.triggerDeadBand).whileTrue(
-    //   Commands.run(() -> rollers.set(RollersConstants.rollerSpeed)));
-
-    // // charge fire
-    // driver.axisMagnitudeGreaterThan(4, ControllerConstants.triggerDeadBand).whileTrue(
-    //   Commands.run(() -> shooter.setShooterWithkicker(driver::getRightTriggerAxis, 
-    //   ShooterConstants.maxKickerSpeed), shooter));
-
-    // intake out/in, shake
-    // driver.povUp().onTrue(new PivotPid(pivot, PivotConstants.pivotOut));
-    // driver.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    // driver.povLeft().onTrue(new PivotShake(pivot));
-
+    
     // OPERATOR
+
     // move transfer
     // operator.rightTrigger().whileTrue(Commands.runEnd(transfer::pulse, () -> transfer.set(0), transfer));
     operator.leftBumper().whileTrue(Commands.run(() -> transfer.set(-ShooterConstants.maxTransferSpeed), shooter));
@@ -176,7 +165,7 @@ public class RobotContainer {
 
     // manual turret
     operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
-      Commands.run(() -> turret.set(() -> -operator.getLeftX()), turret));
+      Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
       
     // manual hood
     operator.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
@@ -199,6 +188,12 @@ public class RobotContainer {
       Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers)));
 
     operator.povLeft().onFalse(new PivotPid(pivot, PivotConstants.pivotOut));
+
+    // return home
+    operator.y().whileTrue(
+      new ParallelCommandGroup(
+        new TurretPID(turret, Math.toRadians(90)),
+        new InstantCommand(() -> hood.setDeg(HoodConstants.hoodAngleMin))));
     
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
       

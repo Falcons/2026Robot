@@ -7,7 +7,7 @@ package frc.robot.subsystems.Swerve;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.LimelightConstants; // DONT REMOVE
+import frc.robot.Constants.LimelightConstants;
 import frc.robot.LimelightHelpers;
 import frc.robot.Util.AllianceFlipUtil;
 
@@ -60,7 +60,7 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backRight encoder", swerveDrive.getModules()[3].getAbsolutePosition());
 
-    // addVisionMeasurement(LimelightConstants.turretLimelight);
+    addVisionMeasurement(LimelightConstants.stillLimelight);
   }
 
   public SwerveDrive getSwerveDrive() {

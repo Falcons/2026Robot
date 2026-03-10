@@ -6,6 +6,7 @@ package frc.robot.subsystems.Intake;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -21,8 +22,10 @@ import frc.robot.Constants.IntakeConstants.PivotConstants;
 public class Pivot extends SubsystemBase {
   // pivot motor, encoder and config
   private final TalonFX pivot = new TalonFX(PivotConstants.pivotCANID); //kracken n44
-  private final TalonFXConfiguration pivotConfig;
+  private final TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
   private final Rollers rollers;
+
+  private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
 
   PIDController pivotPid = new PIDController(0.3, 0, 0);
 
@@ -31,8 +34,12 @@ public class Pivot extends SubsystemBase {
   public Pivot(Rollers rollers) {
     this.rollers = rollers;
 
+    // smart current limits
+    limitsConfigs.StatorCurrentLimit = 40;
+    limitsConfigs.StatorCurrentLimitEnable = true;
+
     // configs
-    pivotConfig = new TalonFXConfiguration();
+    pivotConfig.withCurrentLimits(limitsConfigs);
     pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
 
     pivot.getConfigurator().apply(pivotConfig);
@@ -53,7 +60,6 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", Math.toDegrees(pivotEncoder().getPosition()));
     SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
     SmartDashboard.putBoolean("Intake/Pivot/at min", atMin);
-    pivotPid.reset();
 
     // set max and min
     atMax = pivotEncoder().getPosition() >= PivotConstants.pivotMax;
@@ -109,5 +115,12 @@ public class Pivot extends SubsystemBase {
    */
   public AbsoluteEncoder pivotEncoder() {
     return rollers.getPivotEncoder();
+  }
+
+  /**
+   * reset pivot pid
+   */
+  public void resetPID() {
+    pivotPid.reset();
   }
 }

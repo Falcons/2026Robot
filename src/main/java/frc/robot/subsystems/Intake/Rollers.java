@@ -8,6 +8,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -19,6 +20,7 @@ public class Rollers extends SubsystemBase {
   /** Creates a new Rollers. */
   public Rollers() {
     this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless); 
+    rollerConfig.idleMode(IdleMode.kCoast);
     rollerConfig.smartCurrentLimit(20);
     rollerConfig.absoluteEncoder.positionConversionFactor(360 * Math.PI / 180); // deg to rad is pi / 180
     roller.configure(rollerConfig, com.revrobotics.ResetMode.kResetSafeParameters,  com.revrobotics.PersistMode.kNoPersistParameters);

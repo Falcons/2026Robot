@@ -6,8 +6,10 @@ package frc.robot.subsystems.Turret.Shooter;
 
 import java.util.function.BooleanSupplier;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -18,12 +20,18 @@ public class Transfer extends SubsystemBase {
 
   private final TalonFX transfer = new TalonFX(ShooterConstants.transferCANID);
   private final TalonFXConfiguration transferConfig = new TalonFXConfiguration();
+  private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
 
   private Timer timer = new Timer();
 
   /** Creates a new Transfer. */
   public Transfer() {
     timer.start();
+    
+    limitsConfigs.StatorCurrentLimit = 40;
+
+    transferConfig.withCurrentLimits(limitsConfigs);
+    transferConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     transfer.getConfigurator().apply(transferConfig);
 
   }
@@ -54,6 +62,8 @@ public class Transfer extends SubsystemBase {
   public void pulse(BooleanSupplier run) {
     if (run.getAsBoolean()) {
       pulse();
+    } else {
+      transfer.set(0.0);
     }
   }
   

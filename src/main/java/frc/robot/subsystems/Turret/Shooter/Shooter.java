@@ -6,12 +6,14 @@ package frc.robot.subsystems.Turret.Shooter;
 
 import java.util.function.DoubleSupplier;
 
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 // import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +34,8 @@ public class Shooter extends SubsystemBase {
   private final TalonFXConfiguration rightShooterConfig = new TalonFXConfiguration();
   private final TalonFXConfiguration kickerConfig = new TalonFXConfiguration();
 
+  private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
+
 
   // need to connect to movement to see if its aligned
   private final Turret aimer;
@@ -46,6 +50,13 @@ public class Shooter extends SubsystemBase {
     this.transfer = transfer;
 
     // smart current limits
+    limitsConfigs.StatorCurrentLimit = 40;
+    limitsConfigs.StatorCurrentLimitEnable = true;
+
+    // coast
+    leftShooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    rightShooterConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
+    kickerConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
 
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -53,7 +64,10 @@ public class Shooter extends SubsystemBase {
     kicker.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Aligned));
 
     // apply configs
+    leftShooterConfig.withCurrentLimits(limitsConfigs);
     leftShooter.getConfigurator().apply(leftShooterConfig);
+    
+    rightShooterConfig.withCurrentLimits(limitsConfigs);
     rightShooter.getConfigurator().apply(rightShooterConfig);
     kicker.getConfigurator().apply(kickerConfig);
 

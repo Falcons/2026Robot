@@ -267,9 +267,9 @@ public class LaunchCalculator {
     Pose2d launcherPosition = estimatedPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurret));
     double launcherToTargetDistance = target.getDistance(launcherPosition.getTranslation());
     // if limelight can see tag set distance to tz // TODO: my limelight shenanigans
-    if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
-        launcherToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
-    }
+    // if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
+    //     launcherToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
+    // }
 
     // Calculate field relative launcher velocity
     var robotVelocity = swerve.getFieldVelocity();
@@ -364,16 +364,16 @@ public class LaunchCalculator {
 
   private static Rotation2d getturretAngleWithLauncherOffset(Pose2d robotPose, Translation2d target, double turretRad) {
 
-    // TODO: my limelight shenanigans
-    if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
-        double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
-        // get angle
-        return new Rotation2d(
-          robotPose.getRotation().getRadians() + // turret is facing where the bot is facing 
-          Math.toRadians(90) - turretRad + // + its angle -90d offset
-          Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
-        );
-    }
+    // // TODO: my limelight shenanigans
+    // if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
+    //     double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
+    //     // get angle
+    //     return new Rotation2d(
+    //       robotPose.getRotation().getRadians() + // turret is facing where the bot is facing 
+    //       Math.toRadians(90) - turretRad + // + its angle -90d offset
+    //       Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
+    //     );
+    // }
 
     Rotation2d fieldToHubAngle = target.minus(robotPose.getTranslation()).getAngle();
     Rotation2d hubAngle =

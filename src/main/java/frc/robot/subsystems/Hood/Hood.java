@@ -42,7 +42,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void autoAim(){
-    double setpoint = MathUtil.clamp(getHoodAngle(), 0, 180);
+    double setpoint = MathUtil.clamp(getHoodAngle(), HoodConstants.hoodAngleMin, HoodConstants.hoodAngleMax);
     set(setpoint);
   }
 
@@ -79,7 +79,7 @@ public class Hood extends SubsystemBase {
    * @param speed % of power
    */
   public void moveHood(DoubleSupplier speed){
-    set(get() + speed.getAsDouble() * HoodConstants.hoodSpeedMultipier);
+    set(get() + (speed.getAsDouble() * HoodConstants.hoodSpeedMultipier));
   }
 
   public double getLeft(){

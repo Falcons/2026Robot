@@ -17,8 +17,6 @@ public class TeleopDrive extends Command {
   /** Creates a new TeleopDrivee. */
   private final Swerve swerve;
   private final DoubleSupplier  controlX, controlY, rot;
-  private final SlewRateLimiter xSlewLimiter = new SlewRateLimiter(0.5);
-  private final SlewRateLimiter ySlewLimiter = new SlewRateLimiter(0.5);
   private final BooleanSupplier fieldRelative;
 
   public TeleopDrive(Swerve swerve, DoubleSupplier controlX, DoubleSupplier controlY, DoubleSupplier rot, BooleanSupplier fieldRelative) {
@@ -40,12 +38,9 @@ public class TeleopDrive extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-
-    double limitedXControl = xSlewLimiter.calculate(controlX.getAsDouble());
-    double limitedYControl = ySlewLimiter.calculate(controlY.getAsDouble());
     swerve.drive(new Translation2d(
-      limitedYControl  * swerve.getMaximumVelocity(),
-      limitedXControl  * swerve.getMaximumVelocity()),
+      controlY.getAsDouble()  * swerve.getMaximumVelocity(),
+      controlX.getAsDouble()  * swerve.getMaximumVelocity()),
       rot.getAsDouble() * swerve.getMaximumAngularVelocity(),
       fieldRelative.getAsBoolean());
   }
