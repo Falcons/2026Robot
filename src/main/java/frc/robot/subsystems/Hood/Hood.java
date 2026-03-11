@@ -57,11 +57,14 @@ public class Hood extends SubsystemBase {
 
   /**
    * Set the hood to the position 0 - 1
-   * @param Position position 
+   * @param position position 
    */
-  public void set(double Position){
-    leftHoodActuator.setPosition(Position);
-    rightHoodActuator.setPosition(Position);
+  public void set(double position){
+    leftHoodActuator.setPosition(position);
+    rightHoodActuator.setPosition(position);
+  }
+  public void set(DoubleSupplier position){
+    set(position.getAsDouble());
   }
 
   /**
@@ -72,6 +75,10 @@ public class Hood extends SubsystemBase {
     double clampAngle = MathUtil.clamp(angle, 0, 180);
     leftHoodActuator.setAngle(clampAngle);
     rightHoodActuator.setAngle(clampAngle);
+  }
+
+  public void setDeg(DoubleSupplier angle){
+    setDeg(angle.getAsDouble());
   }
 
   /**

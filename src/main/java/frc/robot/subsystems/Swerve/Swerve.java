@@ -60,7 +60,7 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backRight encoder", swerveDrive.getModules()[3].getAbsolutePosition());
 
-    addVisionMeasurement(LimelightConstants.stillLimelight);
+    // addVisionMeasurement(LimelightConstants.stillLimelight);
   }
 
   public SwerveDrive getSwerveDrive() {

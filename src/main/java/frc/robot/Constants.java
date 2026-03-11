@@ -65,8 +65,8 @@ public final class Constants {
         public static final String stillLimelight = "limelight-still";
         public static final Translation3d turretLimelightPos = new Translation3d(0.303022, 0, 0.30226);
         public static final Translation3d stillLimelightPos = new Translation3d(Units.inchesToMeters(7.76), Units.inchesToMeters(8.93), Units.inchesToMeters(10.135));
-        public static final int blueHubTagIDs[] = {10};
-        public static final int redHubTagIDs[] = {10};
+        public static final int blueHubTagIDs[] = {18, 19, 29, 21, 24, 25, 26, 27};
+        public static final int redHubTagIDs[] = {2, 3, 4, 5, 8, 9, 10, 11};
 
         public static final Rotation3d turretLimelightRot = new Rotation3d(0, 26, 0);
     }
@@ -126,7 +126,7 @@ public final class Constants {
 
         public static final class RollersConstants {
             public static final int rollerCANID = 6;
-            public static final double rollerSpeed = 0.6;
+            public static final double rollerSpeed = 1;
         }
 
         public static final class PivotConstants {

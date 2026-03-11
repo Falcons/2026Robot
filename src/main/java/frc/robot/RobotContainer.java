@@ -122,6 +122,9 @@ public class RobotContainer {
     this.pivot = new Pivot(rollers);
     this.hood = new Hood(swerve);
 
+    SmartDashboard.putNumber("Hood/set angle", 0.1);
+    SmartDashboard.putNumber("shooter/Fire speed", 1);
+
     transfer.setDefaultCommand(Commands.run(() -> transfer.pulse(
         () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
 
@@ -161,16 +164,16 @@ public class RobotContainer {
 
     // spin shooter
     operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.runEnd(() -> shooter.setShooter(operator::getLeftTriggerAxis), () -> shooter.setShooter(0.0), shooter));
+      Commands.runEnd(() -> shooter.setShooter(() -> SmartDashboard.getNumber("shooter/Fire speed", 1)), () -> shooter.setShooter(0.0), shooter));
 
     // manual turret
     operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
       Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
       
     // manual hood
-    operator.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
-      Commands.run(() -> hood.moveHood(() -> -operator.getRightY()), hood));
-
+    // operator.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
+    //   Commands.run(() -> hood.moveHood(() -> -operator.getRightY()), hood));
+    hood.setDefaultCommand(Commands.run(() -> hood.set(() -> SmartDashboard.getNumber("Hood/set angle", 0.1)), hood));
     // main fire
     // operator.b().whileTrue(new AimAndShoot(hood, shooter, turret)); // TODO: auto aim
 
@@ -196,7 +199,6 @@ public class RobotContainer {
         new InstantCommand(() -> hood.setDeg(HoodConstants.hoodAngleMin))));
     
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
-      
   }
  
   private void setupSim(){
