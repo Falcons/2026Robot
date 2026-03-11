@@ -33,7 +33,7 @@ public final class Constants {
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
             Meter.of(3),//X
             Meter.of(4)), //Y
-            Rotation2d.fromDegrees(180));
+            Rotation2d.fromDegrees(0));
         
 
         // corrner hideing pose aka timeout

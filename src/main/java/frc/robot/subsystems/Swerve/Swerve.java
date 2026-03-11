@@ -60,7 +60,7 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
     SmartDashboard.putNumber("swerve/backRight encoder", swerveDrive.getModules()[3].getAbsolutePosition());
 
-    // addVisionMeasurement(LimelightConstants.stillLimelight); // TODO: pos
+    addVisionMeasurement(LimelightConstants.stillLimelight); // TODO: pos
   }
 
   public SwerveDrive getSwerveDrive() {
@@ -266,9 +266,8 @@ public class Swerve extends SubsystemBase {
     LimelightHelpers.PoseEstimate visionPose = null;
 
     // set the vision pose
-    if (DriverStation.getAlliance().isPresent()) {
-      visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-    }
+    visionPose = getPoseBasedOnPhase(limelightName);
+
     
     // dont do anything if there isnt a tag
     if (visionPose == null || visionPose.tagCount == 0) {
@@ -279,6 +278,18 @@ public class Swerve extends SubsystemBase {
   
     // Add vision measurement to swerve estimator
     swerveDrive.addVisionMeasurement(pose,visionPose.timestampSeconds);
+  }
+
+  /**
+   * get pose estimation based for pathplanner and yagsl
+   * @param limelightName
+   * @return a limelight pose estimate
+   */
+  public LimelightHelpers.PoseEstimate getPoseBasedOnPhase(String limelightName) {
+    if (!DriverStation.getAlliance().isPresent()) return null;
+    if (DriverStation.isAutonomous()) return LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) return LimelightHelpers.getBotPoseEstimate_wpiRed(limelightName);
+    return LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
   }
 
   /**
