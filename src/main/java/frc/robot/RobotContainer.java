@@ -36,6 +36,8 @@ import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
+import frc.robot.commands.Turret.Shoot;
+import frc.robot.commands.Turret.ShootAndHood;
 import frc.robot.commands.Turret.ShootSim;
 import frc.robot.commands.Turret.TurretPID;
 // import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // just for sim
@@ -131,11 +133,11 @@ public class RobotContainer {
     // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
 
     // manual hood
-    hood.setDefaultCommand(Commands.run(() -> hood.set(() -> SmartDashboard.getNumber("Hood/set angle", 0.1)), hood));
+    // hood.setDefaultCommand(Commands.run(() -> hood.set(() -> SmartDashboard.getNumber("Hood/set angle", 0.1)), hood));
 
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
-    NamedCommands.registerCommand("AimAndShoot", new AimAndShoot(hood, shooter, turret, 1.0)); // TODO: Shooter Time
+    NamedCommands.registerCommand("AimAndShoot", new AimAndShoot(hood, shooter, turret)); // TODO: Shooter Time
     NamedCommands.registerCommand("Intake", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed));
     NamedCommands.registerCommand("Outake", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
     
@@ -149,10 +151,10 @@ public class RobotContainer {
     autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints));
     autoChooser.addOption("preload shoot left", Commands.parallel(
       AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), DriveConstants.pathFindingConstraints),
-      new AimAndShoot(hood, shooter, turret, 1.0))); // TODO: Shoot Time
+      new AimAndShoot(hood, shooter, turret)));
     autoChooser.addOption("preload shoot right", Commands.parallel(
       AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), DriveConstants.pathFindingConstraints),
-      new AimAndShoot(hood, shooter, turret, 1.0)));
+      new AimAndShoot(hood, shooter, turret)));
     
     SmartDashboard.putData("auto Chooser" ,autoChooser);
   }
@@ -161,27 +163,21 @@ public class RobotContainer {
     
     // OPERATOR
 
-    // move transfer
-    // operator.rightTrigger().whileTrue(Commands.runEnd(transfer::pulse, () -> transfer.set(0), transfer));
-    operator.leftBumper().whileTrue(Commands.run(() -> transfer.set(-ShooterConstants.maxTransferSpeed), shooter));
-
     // spin shooter
-    operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(
-      Commands.runEnd(() -> shooter.setShooter(() -> SmartDashboard.getNumber("shooter/Fire speed", 1)), () -> shooter.setShooter(0.0), shooter));
+    operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(new ShootAndHood(shooter, hood, ShooterConstants.highShooterSpeed, ShooterConstants.highShooterHoodAngle));
+    operator.leftBumper().whileTrue(new ShootAndHood(shooter, hood, ShooterConstants.lowShooterSpeed, ShooterConstants.lowShooterHoodAngle));
+      // operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(Commands.runEnd(() -> shooter.setShooter(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed", 1)), () -> shooter.setShooter(0.0), shooter));
 
     // manual turret
     operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
-      Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
-      
-    // manual hood
-    hood.setDefaultCommand(Commands.run(() -> hood.set(() -> SmartDashboard.getNumber("Hood/set angle", 0.1)), hood));
+      Commands.runEnd(() -> turret.set(() -> operator.getLeftX()), () -> turret.set(0), turret));
 
-    // main fire
-    // operator.b().whileTrue(new AimAndShoot(hood, shooter, turret)); // TODO: auto aim
+    // auto turret only
+    operator.b().whileTrue(Commands.runEnd(turret::autoLimelightAim, turret::stop, turret)); // TODO: auto aim
 
     // hood
-    operator.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).onTrue(
-      new InstantCommand(() -> hood.set(operator.getRightY()), hood));
+    operator.axisMagnitudeGreaterThan(5, 0.95).onTrue(
+      new InstantCommand(() -> hood.moveHood(operator::getRightY), hood));
 
     // spin intake - rollers 
     operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));

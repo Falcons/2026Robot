@@ -20,6 +20,7 @@ import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TurretConstants;
@@ -142,45 +143,46 @@ public class LaunchCalculator {
     passingMinDistance = 5.4;
     passingMaxDistance = 17.16;
     phaseDelay = 0.03;
+    double hubOffset = 0.584;
 
-    hoodAngleMap.put(1.1, 0.1);
-    hoodAngleMap.put(1.3, 0.1);
-    hoodAngleMap.put(1.7, 0.0);
-    hoodAngleMap.put(2.0, 0.0);
-    hoodAngleMap.put(2.3, 0.0);
-    hoodAngleMap.put(2.6, 0.0);
-    hoodAngleMap.put(2.9, 0.25);
-    hoodAngleMap.put(3.2, 0.4);
-    hoodAngleMap.put(3.62, 0.45);
-    hoodAngleMap.put(3.92, 0.5);
-    hoodAngleMap.put(4.23, 0.55);
-    hoodAngleMap.put(4.5, 0.58);
+    hoodAngleMap.put(1.1 + hubOffset, 0.1);
+    hoodAngleMap.put(1.3 + hubOffset, 0.1);
+    hoodAngleMap.put(1.7 + hubOffset, 0.0);
+    hoodAngleMap.put(2.0 + hubOffset, 0.0);
+    hoodAngleMap.put(2.3 + hubOffset, 0.0);
+    hoodAngleMap.put(2.6 + hubOffset, 0.0);
+    hoodAngleMap.put(2.9 + hubOffset, 0.25);
+    hoodAngleMap.put(3.2 + hubOffset, 0.4);
+    hoodAngleMap.put(3.62 + hubOffset, 0.45);
+    hoodAngleMap.put(3.92 + hubOffset, 0.5);
+    hoodAngleMap.put(4.23 + hubOffset, 0.55);
+    hoodAngleMap.put(4.5 + hubOffset, 0.58);
+    
+    flywheelSpeedMap.put(1.1 + hubOffset, 0.55);
+    flywheelSpeedMap.put(1.3 + hubOffset, 0.55);
+    flywheelSpeedMap.put(1.7 + hubOffset, 0.6);
+    flywheelSpeedMap.put(2.0 + hubOffset, 0.65);
+    flywheelSpeedMap.put(2.3 + hubOffset, 0.7);
+    flywheelSpeedMap.put(2.6 + hubOffset, 0.77);
+    flywheelSpeedMap.put(2.9 + hubOffset, 0.7);
+    flywheelSpeedMap.put(3.2 + hubOffset, 0.68);
+    flywheelSpeedMap.put(3.62 + hubOffset, 0.72);
+    flywheelSpeedMap.put(3.92 + hubOffset, 0.77);
+    flywheelSpeedMap.put(4.23 + hubOffset, 0.8);
+    flywheelSpeedMap.put(4.5 + hubOffset, 0.83);
 
-    flywheelSpeedMap.put(1.1, 0.55);
-    flywheelSpeedMap.put(1.3, 0.55);
-    flywheelSpeedMap.put(1.7, 0.6);
-    flywheelSpeedMap.put(2.0, 0.65);
-    flywheelSpeedMap.put(2.3, 0.7);
-    flywheelSpeedMap.put(2.6, 0.77);
-    flywheelSpeedMap.put(2.9, 0.7);
-    flywheelSpeedMap.put(3.2, 0.68);
-    flywheelSpeedMap.put(3.62, 0.72);
-    flywheelSpeedMap.put(3.92, 0.77);
-    flywheelSpeedMap.put(4.23, 0.8);
-    flywheelSpeedMap.put(4.5, 0.83);
-
-    flywheelSpeedMap.put(1.1, 0.89);
-    flywheelSpeedMap.put(1.3, 0.88);
-    flywheelSpeedMap.put(1.7, 1.08);
-    flywheelSpeedMap.put(2.0, 1.11);
-    flywheelSpeedMap.put(2.3, 1.19);
-    flywheelSpeedMap.put(2.6, 1.35);
-    flywheelSpeedMap.put(2.9, 1.26);
-    flywheelSpeedMap.put(3.2, 1.03);
-    flywheelSpeedMap.put(3.62, 1.01);
-    flywheelSpeedMap.put(3.92, 1.11);
-    flywheelSpeedMap.put(4.23, 1.01);
-    flywheelSpeedMap.put(4.5, 0.95);
+    timeOfFlightMap.put(1.1+ hubOffset, 0.89);
+    timeOfFlightMap.put(1.3+ hubOffset, 0.88);
+    timeOfFlightMap.put(1.7+ hubOffset, 1.08);
+    timeOfFlightMap.put(2.0+ hubOffset, 1.11);
+    timeOfFlightMap.put(2.3+ hubOffset, 1.19);
+    timeOfFlightMap.put(2.6+ hubOffset, 1.35);
+    timeOfFlightMap.put(2.9+ hubOffset, 1.26);
+    timeOfFlightMap.put(3.2+ hubOffset, 1.03);
+    timeOfFlightMap.put(3.62+ hubOffset, 1.01);
+    timeOfFlightMap.put(3.92+ hubOffset, 1.11);
+    timeOfFlightMap.put(4.23+ hubOffset, 1.01);
+    timeOfFlightMap.put(4.5+ hubOffset, 0.95);
 
     // TODO: passing
     passingHoodAngleMap.put(5.46, 38.0);
@@ -254,6 +256,7 @@ public class LaunchCalculator {
     boolean passing =
         AllianceFlipUtil.applyX(swerve.getPose().getX())
             > FieldConstants.LinesVertical.hubCenter;
+    passing = false; //TODO: we r not always passing
     if (latestParameters != null) {
       return latestParameters;
     }
@@ -276,9 +279,12 @@ public class LaunchCalculator {
     Pose2d launcherPosition = estimatedPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurret));
     double launcherToTargetDistance = target.getDistance(launcherPosition.getTranslation());
     // if limelight can see tag set distance to tz // TODO: my limelight shenanigans
-    if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
-        launcherToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2]; // distance is tz
-    }
+    // if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
+    //     Math.hypot(
+    //         launcherToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2],
+    //         launcherToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[0]
+    //     );
+    // }
 
     // Calculate field relative launcher velocity
     var robotVelocity = swerve.getFieldVelocity();
@@ -290,10 +296,11 @@ public class LaunchCalculator {
                 robotVelocity, TurretConstants.robotToTurret.getTranslation().toTranslation2d(), robotAngle);
 
     // Account for imparted velocity by robot (launcher) to offset
-    double timeOfFlight =
-        passing
-            ? passingTimeOfFlightMap.get(launcherToTargetDistance)
-            : timeOfFlightMap.get(launcherToTargetDistance);
+    double timeOfFlight = timeOfFlightMap.get(launcherToTargetDistance);
+    if (passing) {
+        passingTimeOfFlightMap.get(launcherToTargetDistance);
+    }
+
     Pose2d lookaheadPose = launcherPosition;
     double lookaheadLauncherToTargetDistance = launcherToTargetDistance;
 
@@ -354,7 +361,7 @@ public class LaunchCalculator {
                     <= (passing ? passingMaxDistance : maxDistance),
             turretAngle,
             driveVelocity,
-            hoodAngle + Units.degreesToRadians(hoodAngleOffsetDeg),
+            hoodAngle + hoodAngleOffsetDeg,
             hoodVelocity,
             flywheelVelocity,
             lookaheadLauncherToTargetDistance,
@@ -367,21 +374,25 @@ public class LaunchCalculator {
     // Logger.recordOutput("LaunchCalculator/LookaheadPose", lookaheadRobotPose);
     // Logger.recordOutput(
     //     "LaunchCalculator/LauncherToTargetDistance", lookaheadLauncherToTargetDistance);
+    SmartDashboard.putNumber("Turret/Turret/LaunchCalc/distance", launcherToTargetDistance);
+    SmartDashboard.putNumber("Turret/Turret/LaunchCalc/look ahead distance", lookaheadLauncherToTargetDistance);
 
     return latestParameters;
   }
 
   private static Rotation2d getturretAngleWithLauncherOffset(Pose2d robotPose, Translation2d target, double turretRad) {
 
-    // // TODO: my limelight shenanigans
+    // TODO: my limelight shenanigans
     if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
+
         double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
         // get angle
-        return new Rotation2d(
-          robotPose.getRotation().getRadians() + // turret is facing where the bot is facing 
-          turretRad - Math.toRadians(90) + // + its angle -90d offset
-          Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
-        );
+        return new Rotation2d(-MathUtil.angleModulus(
+            robotPose.getRotation().getRadians() + // turret is facing where the bot is facing 
+            (turretRad - Math.toRadians(90)) + // + its angle -90d offset
+            Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) + //(TURRET ANGLE) + (APRIL TAG ANGLE)
+            + Math.toRadians(180)
+        ));
     }
 
     Rotation2d fieldToHubAngle = target.minus(robotPose.getTranslation()).getAngle();

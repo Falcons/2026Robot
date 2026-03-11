@@ -34,16 +34,20 @@ public class TeleopDrive extends Command {
   @Override
   public void initialize() {
     System.out.println(this.getName() + " start");
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
-      inversion = -1.0;
-    } else {
-      inversion = 1.0;
-    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if(!fieldRelative.getAsBoolean()){
+      inversion = 1.0;
+    } else {
+      if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+        inversion = -1.0;
+      }else{ 
+        inversion = 1.0;
+      }
+    }
     swerve.drive(new Translation2d(
       controlY.getAsDouble() * swerve.getMaximumVelocity() * inversion,
       controlX.getAsDouble() * swerve.getMaximumVelocity() * inversion),
