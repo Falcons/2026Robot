@@ -18,6 +18,8 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
+import frc.robot.subsystems.Swerve.Swerve;
+import frc.robot.subsystems.Turret.LaunchCalculator;
 import frc.robot.subsystems.Turret.Turret;
 
 public class Shooter extends SubsystemBase {
@@ -40,14 +42,16 @@ public class Shooter extends SubsystemBase {
   // need to connect to movement to see if its aligned
   private final Turret aimer;
   private final Transfer transfer;
+  private final Swerve swerve;
 
   // variables
   public boolean shooterRunning = false;
 
   /** Creates a new Shooter. */
-  public Shooter(Turret aimer, Transfer transfer) {
+  public Shooter(Turret aimer, Transfer transfer, Swerve swerve) {
     this.aimer = aimer;
     this.transfer = transfer;
+    this.swerve = swerve;
 
     // smart current limits
     limitsConfigs.StatorCurrentLimit = 40;
@@ -102,7 +106,13 @@ public class Shooter extends SubsystemBase {
     }
   }
 
-  
+  /**
+   * shoot based on what launch calc spits out
+   */
+  public void autoShoot() {
+    LaunchCalculator.getInstance().clearLaunchingParameters();
+    leftShooter.set(LaunchCalculator.getInstance().getParameters(swerve, -1.0).flywheelSpeed());
+  }
 
   @Override
   public void periodic() {

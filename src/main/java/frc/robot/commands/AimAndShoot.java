@@ -6,7 +6,6 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
-import frc.robot.commands.Turret.Shoot;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Turret.Shooter.Shooter;
@@ -16,10 +15,10 @@ import frc.robot.subsystems.Turret.Shooter.Shooter;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AimAndShoot extends ParallelDeadlineGroup {
   /** Creates a new AimHoodAndShoot. */
-  public AimAndShoot(Hood hood, Shooter shooter, Turret turret) {
+  public AimAndShoot(Hood hood, Shooter shooter, Turret turret, Double shootTime) {
     // Add the deadline command in the super() call. Add other commands using
     // addCommands().
-    super(new Shoot(shooter));
+    super(Commands.runEnd(shooter::autoShoot, () -> shooter.setShooter(0.0), shooter).withTimeout(shootTime));
     addCommands(Commands.run(hood::autoAim, hood), Commands.run(turret::autoAim));
   }
 }

@@ -10,6 +10,7 @@ import frc.robot.subsystems.Turret.Shooter.Shooter;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class Shoot extends Command {
   private final Shooter shooter;
+  
   /** Creates a new Shoot. */
   public Shoot(Shooter shooter) {
     this.shooter = shooter;

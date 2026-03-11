@@ -75,8 +75,13 @@ public class Turret extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Turret/Limelight/TY", LimelightHelpers.getTargetPose_RobotSpace(LimelightConstants.turretLimelight)[1]);
     SmartDashboard.putNumber("Turret/Turret/Limelight/TZ", LimelightHelpers.getTargetPose_RobotSpace(LimelightConstants.turretLimelight)[2]);
 
+    // MATH
     SmartDashboard.putNumber("Turret/Turret/MATH/field rel degrees", Math.toDegrees(limelightGlobalRad()));
     SmartDashboard.putNumber("Turret/Turret/MATH/turret rel degrees", Math.toDegrees(limelightRelativeRad()));
+    SmartDashboard.putNumber("Turret/Turret/MATH/turret angle + angle", Math.toDegrees(limelightDirectRad()));
+    // launch calculator
+    SmartDashboard.putNumber("Turret/Turret/LaunchCalc/global deg", Math.toDegrees(getGlobalRad()));
+    SmartDashboard.putNumber("Turret/Turret/LaunchCalc/rel deg", Math.toDegrees(getRelativeRad()));
 
     // set limelight pos in turret periodic // TODO: test movement
     Translation3d rotatedLimelightTranslation = LimelightConstants.turretLimelightPos.rotateAround(TurretConstants.robotToTurret.getTranslation(), new Rotation3d(0, 0, turretEncoder.getPosition() - Math.toRadians(90)));
@@ -179,7 +184,7 @@ public class Turret extends SubsystemBase {
   }
 
   /**
-   * get the angle absed on limelight
+   * get the angle based on limelight
    */
   public double limelightGlobalRad() { // TODO: global rad
     if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
@@ -197,7 +202,23 @@ public class Turret extends SubsystemBase {
    * @return the relative abgle the shooter should point at in radians
    */
   public double limelightRelativeRad() {
-    return MathUtil.angleModulus(
-      swerve.getHeading().getRadians() - limelightGlobalRad() + Math.toRadians(90));
+    return MathUtil.clamp(MathUtil.angleModulus(
+      swerve.getHeading().getRadians() - limelightGlobalRad() + Math.toRadians(90)),
+      TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
+  }
+
+  /**
+   * @return the relative abgle the shooter should point at in radians
+   */
+  public double limelightDirectRad() {
+    if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
+        double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
+        // get angle
+        return MathUtil.angleModulus(
+          (turretEncoder.getPosition() - Math.toRadians(90)) + // + its angle -90d offset
+          Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
+        );
+    }
+    return 0.0;
   }
 }

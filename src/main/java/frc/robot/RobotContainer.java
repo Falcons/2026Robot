@@ -117,7 +117,7 @@ public class RobotContainer {
     //initializing real classes
     this.turret = new Turret(swerve);
     this.transfer = new Transfer();
-    this.shooter = new Shooter(turret, transfer);
+    this.shooter = new Shooter(turret, transfer, swerve);
     this.rollers = new Rollers();
     this.pivot = new Pivot(rollers);
     this.hood = new Hood(swerve);
@@ -132,7 +132,7 @@ public class RobotContainer {
 
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
-    NamedCommands.registerCommand("AimAndShoot", new AimAndShoot(hood, shooter, turret));
+    NamedCommands.registerCommand("AimAndShoot", new AimAndShoot(hood, shooter, turret, 1.0)); // TODO: Shooter Time
     NamedCommands.registerCommand("Intake", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed));
     NamedCommands.registerCommand("Outake", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
     
@@ -146,10 +146,10 @@ public class RobotContainer {
     autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints));
     autoChooser.addOption("preload shoot left", Commands.parallel(
       AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartLeft), DriveConstants.pathFindingConstraints),
-      new AimAndShoot(hood, shooter, turret)));
+      new AimAndShoot(hood, shooter, turret, 1.0))); // TODO: Shoot Time
     autoChooser.addOption("preload shoot right", Commands.parallel(
       AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), DriveConstants.pathFindingConstraints),
-      new AimAndShoot(hood, shooter, turret)));
+      new AimAndShoot(hood, shooter, turret, 1.0)));
     
     SmartDashboard.putData("auto Chooser" ,autoChooser);
   }

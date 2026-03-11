@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.interpolation.InterpolatingDoubleTreeMap;
 import edu.wpi.first.math.interpolation.InterpolatingTreeMap;
+import edu.wpi.first.math.interpolation.Interpolator;
 import edu.wpi.first.math.interpolation.InverseInterpolator;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.util.Units;
@@ -70,16 +71,16 @@ public class LaunchCalculator {
   private static final double phaseDelay;
 
   // Launching Maps
-  private static final InterpolatingTreeMap<Double, Rotation2d> hoodAngleMap =
-      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
+  private static final InterpolatingTreeMap<Double, Double> hoodAngleMap =
+      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Interpolator.forDouble());
   private static final InterpolatingDoubleTreeMap flywheelSpeedMap =
       new InterpolatingDoubleTreeMap();
   private static final InterpolatingDoubleTreeMap timeOfFlightMap =
       new InterpolatingDoubleTreeMap();
 
   // Passing Maps
-  private static final InterpolatingTreeMap<Double, Rotation2d> passingHoodAngleMap =
-      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Rotation2d::interpolate);
+  private static final InterpolatingTreeMap<Double, Double> passingHoodAngleMap =
+      new InterpolatingTreeMap<>(InverseInterpolator.forDouble(), Interpolator.forDouble());
   private static final InterpolatingDoubleTreeMap passingFlywheelSpeedMap =
       new InterpolatingDoubleTreeMap();
   private static final InterpolatingDoubleTreeMap passingTimeOfFlightMap =
@@ -142,42 +143,50 @@ public class LaunchCalculator {
     passingMaxDistance = 17.16;
     phaseDelay = 0.03;
 
-    hoodAngleMap.put(0.96, Rotation2d.fromDegrees(10.0));
-    hoodAngleMap.put(1.16, Rotation2d.fromDegrees(12.0));
-    hoodAngleMap.put(1.58, Rotation2d.fromDegrees(14.0));
-    hoodAngleMap.put(2.07, Rotation2d.fromDegrees(18.5));
-    hoodAngleMap.put(2.37, Rotation2d.fromDegrees(22.0));
-    hoodAngleMap.put(2.47, Rotation2d.fromDegrees(23.0));
-    hoodAngleMap.put(2.70, Rotation2d.fromDegrees(24.0));
-    hoodAngleMap.put(2.94, Rotation2d.fromDegrees(25.0));
-    hoodAngleMap.put(3.48, Rotation2d.fromDegrees(27.0));
-    hoodAngleMap.put(3.92, Rotation2d.fromDegrees(32.0));
-    hoodAngleMap.put(4.35, Rotation2d.fromDegrees(34.0));
-    hoodAngleMap.put(4.84, Rotation2d.fromDegrees(38.0));
+    hoodAngleMap.put(1.1, 0.1);
+    hoodAngleMap.put(1.3, 0.1);
+    hoodAngleMap.put(1.7, 0.0);
+    hoodAngleMap.put(2.0, 0.0);
+    hoodAngleMap.put(2.3, 0.0);
+    hoodAngleMap.put(2.6, 0.0);
+    hoodAngleMap.put(2.9, 0.25);
+    hoodAngleMap.put(3.2, 0.4);
+    hoodAngleMap.put(3.62, 0.45);
+    hoodAngleMap.put(3.92, 0.5);
+    hoodAngleMap.put(4.23, 0.55);
+    hoodAngleMap.put(4.5, 0.58);
 
-    flywheelSpeedMap.put(0.96, 150.0);
-    flywheelSpeedMap.put(1.16, 155.0);
-    flywheelSpeedMap.put(1.58, 160.0);
-    flywheelSpeedMap.put(2.07, 165.0);
-    flywheelSpeedMap.put(2.37, 170.0);
-    flywheelSpeedMap.put(2.47, 170.0);
-    flywheelSpeedMap.put(2.70, 170.0);
-    flywheelSpeedMap.put(2.94, 175.0);
-    flywheelSpeedMap.put(3.48, 175.0);
-    flywheelSpeedMap.put(3.92, 180.0);
-    flywheelSpeedMap.put(4.35, 185.0);
-    flywheelSpeedMap.put(4.84, 190.0);
+    flywheelSpeedMap.put(1.1, 0.55);
+    flywheelSpeedMap.put(1.3, 0.55);
+    flywheelSpeedMap.put(1.7, 0.6);
+    flywheelSpeedMap.put(2.0, 0.65);
+    flywheelSpeedMap.put(2.3, 0.7);
+    flywheelSpeedMap.put(2.6, 0.77);
+    flywheelSpeedMap.put(2.9, 0.7);
+    flywheelSpeedMap.put(3.2, 0.68);
+    flywheelSpeedMap.put(3.62, 0.72);
+    flywheelSpeedMap.put(3.92, 0.77);
+    flywheelSpeedMap.put(4.23, 0.8);
+    flywheelSpeedMap.put(4.5, 0.83);
 
-    timeOfFlightMap.put(5.68, 1.16);
-    timeOfFlightMap.put(4.55, 1.12);
-    timeOfFlightMap.put(3.15, 1.11);
-    timeOfFlightMap.put(1.88, 1.09);
-    timeOfFlightMap.put(1.38, 0.90);
+    flywheelSpeedMap.put(1.1, 0.89);
+    flywheelSpeedMap.put(1.3, 0.88);
+    flywheelSpeedMap.put(1.7, 1.08);
+    flywheelSpeedMap.put(2.0, 1.11);
+    flywheelSpeedMap.put(2.3, 1.19);
+    flywheelSpeedMap.put(2.6, 1.35);
+    flywheelSpeedMap.put(2.9, 1.26);
+    flywheelSpeedMap.put(3.2, 1.03);
+    flywheelSpeedMap.put(3.62, 1.01);
+    flywheelSpeedMap.put(3.92, 1.11);
+    flywheelSpeedMap.put(4.23, 1.01);
+    flywheelSpeedMap.put(4.5, 0.95);
 
-    passingHoodAngleMap.put(5.46, Rotation2d.fromDegrees(38.0));
-    passingHoodAngleMap.put(6.62, Rotation2d.fromDegrees(38.0));
-    passingHoodAngleMap.put(7.80, Rotation2d.fromDegrees(38.0));
-    passingHoodAngleMap.put(17.16, Rotation2d.fromDegrees(38.0));
+    // TODO: passing
+    passingHoodAngleMap.put(5.46, 38.0);
+    passingHoodAngleMap.put(6.62, 38.0);
+    passingHoodAngleMap.put(7.80, 38.0);
+    passingHoodAngleMap.put(17.16, 38.0);
 
     passingFlywheelSpeedMap.put(5.46, 160.0);
     passingFlywheelSpeedMap.put(6.62, 180.0);
@@ -312,8 +321,8 @@ public class LaunchCalculator {
     // Calculate remaining parameters
     double hoodAngle =
         passing
-            ? passingHoodAngleMap.get(lookaheadLauncherToTargetDistance).getDegrees()
-            : hoodAngleMap.get(lookaheadLauncherToTargetDistance).getDegrees();
+            ? passingHoodAngleMap.get(lookaheadLauncherToTargetDistance)
+            : hoodAngleMap.get(lookaheadLauncherToTargetDistance);
     if (lastturretAngle == null) lastturretAngle = turretAngle;
     if (Double.isNaN(lastHoodAngle)) lastHoodAngle = hoodAngle;
     double hoodVelocity =

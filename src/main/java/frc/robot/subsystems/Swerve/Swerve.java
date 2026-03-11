@@ -44,7 +44,7 @@ public class Swerve extends SubsystemBase {
     try {
       // try to create a new swerve drive
       DriverStation.waitForDsConnection(0);
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH; //TODO: high will cause more lag
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.LOW; //TODO: high will cause more lag
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
     } catch (Exception e) {
       throw new RuntimeException(e);
