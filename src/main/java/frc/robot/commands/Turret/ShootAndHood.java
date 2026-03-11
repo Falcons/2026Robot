@@ -4,7 +4,10 @@
 
 package frc.robot.commands.Turret;
 
+import java.time.Instant;
+
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Turret.Shooter.Shooter;
@@ -16,8 +19,8 @@ public class ShootAndHood extends ParallelCommandGroup {
   /** Creates a new ShootAndHood. */
   public ShootAndHood(Shooter shooter, Hood hood, Double FireSpeed, double hoodAngle) {
     addCommands(
-      Commands.run(() -> shooter.setShooter(FireSpeed), shooter),
-      Commands.run(() -> hood.set(hoodAngle))
+      Commands.runEnd(() -> shooter.setShooter(FireSpeed), shooter::stopShooter, shooter),
+      new InstantCommand(() -> hood.set(hoodAngle))
     );
   }
 }

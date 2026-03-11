@@ -118,9 +118,9 @@ public final class Constants {
             public static final double maxKickerSpeed = 1;
 
             public static final double highShooterSpeed = 0.8;
-            public static final double highShooterHoodAngle = 0.8;
+            public static final double highShooterHoodAngle = 0.1;
             public static final double lowShooterSpeed = 0.6;
-            public static final double lowShooterHoodAngle = 0.6;
+            public static final double lowShooterHoodAngle = 0.8;
         }
     }
 

@@ -160,6 +160,10 @@ public class Shooter extends SubsystemBase {
     leftShooter.set(speed);
   }
 
+  public void stopShooter(){
+    leftShooter.stopMotor();
+    rightShooter.stopMotor();
+  }
   /**
    * get the rpm of the shooter
    */
