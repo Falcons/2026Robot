@@ -376,6 +376,7 @@ public class LaunchCalculator {
     //     "LaunchCalculator/LauncherToTargetDistance", lookaheadLauncherToTargetDistance);
     SmartDashboard.putNumber("Turret/Turret/LaunchCalc/distance", launcherToTargetDistance);
     SmartDashboard.putNumber("Turret/Turret/LaunchCalc/look ahead distance", lookaheadLauncherToTargetDistance);
+    SmartDashboard.putNumber("Turret/Turret/LaunchCalc/angle", turretAngle.getDegrees());
 
     return latestParameters;
   }
