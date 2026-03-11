@@ -68,7 +68,7 @@ public final class Constants {
         public static final int blueHubTagIDs[] = {18, 19, 29, 21, 24, 25, 26, 27};
         public static final int redHubTagIDs[] = {2, 3, 4, 5, 8, 9, 10, 11};
 
-        public static final Rotation3d turretLimelightRot = new Rotation3d(0, 26, 0);
+        public static final Rotation3d turretLimelightRot = new Rotation3d(0, Math.toRadians(26), 0);
     }
 
     public static final class ControllerConstants {
