@@ -52,7 +52,7 @@ public class Hood extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return  Math.toDegrees(LaunchCalculator.getInstance().getParameters(swerve, -1.0).hoodAngle());
+    return  LaunchCalculator.getInstance().getParameters(swerve, -1.0).hoodAngle();
   }
 
   /**
