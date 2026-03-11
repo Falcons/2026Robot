@@ -38,7 +38,7 @@ public class Hood extends SubsystemBase {
     SmartDashboard.putNumber("Hood/left actuators", getLeft());
     SmartDashboard.putNumber("Hood/right actuators", getRight());
     SmartDashboard.putNumber("Hood/actuators mean", get());
-    // SmartDashboard.putNumber("Hood/Auto hood angle", getHoodAngle());
+    SmartDashboard.putNumber("Hood/Auto hood angle", getHoodAngle());
   }
 
   public void autoAim(){

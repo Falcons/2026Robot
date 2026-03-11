@@ -130,6 +130,9 @@ public class RobotContainer {
 
     // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
 
+    // manual hood
+    hood.setDefaultCommand(Commands.run(() -> hood.set(() -> SmartDashboard.getNumber("Hood/set angle", 0.1)), hood));
+
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
     NamedCommands.registerCommand("AimAndShoot", new AimAndShoot(hood, shooter, turret, 1.0)); // TODO: Shooter Time
@@ -171,11 +174,14 @@ public class RobotContainer {
       Commands.run(() -> turret.set(() -> operator.getLeftX()), turret));
       
     // manual hood
-    // operator.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).whileTrue(
-    //   Commands.run(() -> hood.moveHood(() -> -operator.getRightY()), hood));
     hood.setDefaultCommand(Commands.run(() -> hood.set(() -> SmartDashboard.getNumber("Hood/set angle", 0.1)), hood));
+
     // main fire
     // operator.b().whileTrue(new AimAndShoot(hood, shooter, turret)); // TODO: auto aim
+
+    // hood
+    operator.axisMagnitudeGreaterThan(5, ControllerConstants.deadBand).onTrue(
+      new InstantCommand(() -> hood.set(operator.getRightY()), hood));
 
     // spin intake - rollers 
     operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
@@ -279,7 +285,6 @@ public class RobotContainer {
 
   }
   
-
   public Command getAutonomousCommand() {
     try{
       return autoChooser.getSelected();

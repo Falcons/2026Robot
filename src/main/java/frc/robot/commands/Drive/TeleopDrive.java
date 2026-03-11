@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Swerve.Swerve;
 
@@ -17,6 +18,7 @@ public class TeleopDrive extends Command {
   private final Swerve swerve;
   private final DoubleSupplier  controlX, controlY, rot;
   private final BooleanSupplier fieldRelative;
+  private Double inversion = 1.0;
 
   public TeleopDrive(Swerve swerve, DoubleSupplier controlX, DoubleSupplier controlY, DoubleSupplier rot, BooleanSupplier fieldRelative) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -32,14 +34,19 @@ public class TeleopDrive extends Command {
   @Override
   public void initialize() {
     System.out.println(this.getName() + " start");
+    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) {
+      inversion = -1.0;
+    } else {
+      inversion = 1.0;
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     swerve.drive(new Translation2d(
-      controlY.getAsDouble()  * swerve.getMaximumVelocity(),
-      controlX.getAsDouble()  * swerve.getMaximumVelocity()),
+      controlY.getAsDouble() * swerve.getMaximumVelocity() * inversion,
+      controlX.getAsDouble() * swerve.getMaximumVelocity() * inversion),
       rot.getAsDouble() * swerve.getMaximumAngularVelocity(),
       fieldRelative.getAsBoolean());
   }

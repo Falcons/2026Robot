@@ -266,8 +266,9 @@ public class Swerve extends SubsystemBase {
     LimelightHelpers.PoseEstimate visionPose = null;
 
     // set the vision pose
-    visionPose = getPoseBasedOnPhase(limelightName);
-
+    if (DriverStation.getAlliance().isPresent()) {
+      visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+    }
     
     // dont do anything if there isnt a tag
     if (visionPose == null || visionPose.tagCount == 0) {
@@ -281,18 +282,6 @@ public class Swerve extends SubsystemBase {
   }
 
   /**
-   * get pose estimation based for pathplanner and yagsl
-   * @param limelightName
-   * @return a limelight pose estimate
-   */
-  public LimelightHelpers.PoseEstimate getPoseBasedOnPhase(String limelightName) {
-    if (!DriverStation.getAlliance().isPresent()) return null;
-    if (DriverStation.isAutonomous()) return LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-    if (DriverStation.getAlliance().get() == DriverStation.Alliance.Red) return LimelightHelpers.getBotPoseEstimate_wpiRed(limelightName);
-    return LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
-  }
-
-  /**
    * sets the max alloweable speed of the swerve drive
    * @param velocity in meters per second
    * @param angularVelocity in radians per secnond
@@ -300,8 +289,6 @@ public class Swerve extends SubsystemBase {
   public void setMaxAllowableSpeed(double velocity, double angularVelocity) {
     swerveDrive.setMaximumAllowableSpeeds(velocity, angularVelocity);
   }
-
-
 
   /**
    * Command to drive the robot using translative values and heading as a setpoint.
