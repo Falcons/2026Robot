@@ -79,11 +79,11 @@ public class Turret extends SubsystemBase {
 
     // MATH
     SmartDashboard.putNumber("Turret/Turret/MATH/global deg", Math.toDegrees(limelightGlobalRad()));
-    SmartDashboard.putNumber("Turret/Turret/MATH/rel deg", Math.toDegrees(limelightRelativeRad(limelightGlobalRad())));
+    SmartDashboard.putNumber("Turret/Turret/MATH/rel deg", Math.toDegrees(limelightRelativeRad()));
     SmartDashboard.putNumber("Turret/Turret/MATH/direct deg", Math.toDegrees(limelightDirectRad()));
     // launch calculator
     SmartDashboard.putNumber("Turret/Turret/LaunchCalc/global deg", Math.toDegrees(getGlobalRad()));
-    SmartDashboard.putNumber("Turret/Turret/LaunchCalc/rel deg", Math.toDegrees(getRelativeRad(getGlobalRad())));
+    SmartDashboard.putNumber("Turret/Turret/LaunchCalc/rel deg", Math.toDegrees(getRelativeRad()));
 
     // set limelight pos in turret periodic
     Translation3d rotatedLimelightTranslation = LimelightConstants.turretLimelightPos.rotateAround(TurretConstants.robotToTurret.getTranslation(), new Rotation3d(0, 0, -(turretEncoder.getPosition() - Math.toRadians(90))));
@@ -102,7 +102,7 @@ public class Turret extends SubsystemBase {
    * call this to actually auto aim to the goal
    */
   public void autoAim() {// swap to launchCalc
-    aimToSetpoint(limelightRelativeRad(limelightGlobalRad()));
+    aimToSetpoint(limelightRelativeRad());
   }
 
   /**
@@ -111,7 +111,7 @@ public class Turret extends SubsystemBase {
   public void autoLimelightAim() {
     if (!LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
       turret.set(0);
-    } else aimToSetpoint(limelightRelativeRad(limelightGlobalRad()));
+    } else aimToSetpoint(limelightRelativeRad());
   }
 
   /**
@@ -166,9 +166,9 @@ public class Turret extends SubsystemBase {
   /**
    * @return the relative abgle the shooter should point at in radians
    */
-  public double getRelativeRad(double globalRad) {
+  public double getRelativeRad() {
     return MathUtil.clamp(-MathUtil.angleModulus(
-      swerve.getHeading().getRadians() + globalRad - Math.toRadians(270)),
+      swerve.getHeading().getRadians() + getGlobalRad() - Math.toRadians(270)),
       TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
     // return MathUtil.angleModulus(
     //   (swerve.getHeading().getRadians() - getGlobalRad() - Math.toRadians(270)) * -1);
@@ -185,7 +185,7 @@ public class Turret extends SubsystemBase {
    * @return true if turret is in range
    */
   public boolean inRange() {
-    return Math.abs(getRelativeRad(getGlobalRad()) - turretEncoder.getPosition()) < TurretConstants.turretError;
+    return Math.abs(getRelativeRad() - turretEncoder.getPosition()) < TurretConstants.turretError;
   }
 
   /**
@@ -218,11 +218,11 @@ public class Turret extends SubsystemBase {
     );
   }
 
-  public double limelightRelativeRad(double globalRad) {
+  public double limelightRelativeRad() {
     if (!LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) return 0.0;
 
     return MathUtil.clamp(-MathUtil.angleModulus(
-      swerve.getHeading().getRadians() + globalRad - Math.toRadians(270)),
+      swerve.getHeading().getRadians() + limelightGlobalRad() - Math.toRadians(270)),
       TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
   }
 
