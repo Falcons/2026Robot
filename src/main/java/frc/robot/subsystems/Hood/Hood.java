@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants;
+import frc.robot.Constants.LightConstants;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
 // import frc.robot.subsystems.Turret.Shooter.Shooter;
@@ -18,15 +20,17 @@ import frc.robot.subsystems.Turret.LaunchCalculator;
 public class Hood extends SubsystemBase {
 
   private final Swerve swerve;
+  private final Lights lights;
   // private final Shooter shooter;
   
   private final Servo leftHoodActuator = new Servo(HoodConstants.leftHoodActuatorPWM);
   private final Servo rightHoodActuator = new Servo(HoodConstants.rightHoodActuatorPWM);
 
   
-  /** Creates a new Movement. */
-  public Hood(Swerve swerve) {
+  /** Creates a new Hood. */
+  public Hood(Swerve swerve, Lights lights) {
     this.swerve = swerve;
+    this.lights = lights;
     // this.shooter = shooter;
 
     leftHoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
@@ -35,6 +39,9 @@ public class Hood extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if(get() <= HoodConstants.hoodMin) lights.set(LightConstants.hoodDown);
+    else lights.set(LightConstants.hoodUp);
+
     SmartDashboard.putNumber("Hood/left actuators", getLeft());
     SmartDashboard.putNumber("Hood/right actuators", getRight());
     SmartDashboard.putNumber("Hood/actuators mean", get());
