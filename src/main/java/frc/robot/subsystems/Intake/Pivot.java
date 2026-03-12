@@ -9,6 +9,7 @@ import java.util.function.DoubleSupplier;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TorqueCurrentConfigs;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
@@ -27,6 +28,8 @@ public class Pivot extends SubsystemBase {
 
   private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
 
+  private final TorqueCurrentConfigs torqueCurrentConfigs = new TorqueCurrentConfigs();
+
   PIDController pivotPid = new PIDController(0.3, 0, 0);
 
   private boolean atMin, atMax;
@@ -38,12 +41,17 @@ public class Pivot extends SubsystemBase {
     limitsConfigs.StatorCurrentLimit = 40;
     limitsConfigs.StatorCurrentLimitEnable = true;
 
+    // Torque limits
+    torqueCurrentConfigs.PeakForwardTorqueCurrent = 400;
+    torqueCurrentConfigs.PeakReverseTorqueCurrent = -400;
+
     // configs
     pivotConfig.withCurrentLimits(limitsConfigs);
     pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
 
+    pivotConfig.withTorqueCurrent(torqueCurrentConfigs);
     pivot.getConfigurator().apply(pivotConfig);
-
+    
     // pid limits
     // pivotPid.enableContinuousInput(-Math.PI, Math.PI);
     pivotPid.setTolerance(0.05);
