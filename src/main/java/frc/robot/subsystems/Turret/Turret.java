@@ -224,7 +224,7 @@ public class Turret extends SubsystemBase {
   public double limelightOffsetGlobalRad() { // TODO: long thing
     if (!LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) return 0.0;
 
-    double tagID = (int) LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight);
+    double tagID = LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight);
 
     // get april tag pose
     // AprilTagFieldLayout layout = AprilTagFields.k2026RebuiltWelded //TODO: make better

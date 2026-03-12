@@ -170,7 +170,8 @@ public class RobotContainer {
     // spin shooter
     operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(new ShootAndHood(shooter, hood, ShooterConstants.highShooterSpeed, ShooterConstants.highShooterHoodAngle));
     operator.leftBumper().whileTrue(new ShootAndHood(shooter, hood, ShooterConstants.lowShooterSpeed, ShooterConstants.lowShooterHoodAngle));
-      // operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(Commands.runEnd(() -> shooter.setShooter(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed", 1)), () -> shooter.setShooter(0.0), shooter));
+    operator.back().whileTrue(Commands.runEnd(() -> shooter.setShooter(1.0), shooter::stopShooter, shooter));  
+    // operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(Commands.runEnd(() -> shooter.setShooter(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed", 1)), () -> shooter.setShooter(0.0), shooter));
 
     // manual turret
     operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(

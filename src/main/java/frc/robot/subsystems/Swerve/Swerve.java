@@ -16,6 +16,7 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -188,8 +189,24 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("desierd rot", velocity.omegaRadiansPerSecond);
     swerveDrive.driveFieldOriented(velocity);
   }
-  public void zeroGyro() {
+  public void zeroGyro(){
     swerveDrive.zeroGyro();
+  }
+  /**
+   * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0 (red alliance station).
+   */
+  public void zeroGyroWithFlip()
+  {
+    swerveDrive.swerveController.lastAngleScalar = 0;
+    if(DriverStation.getAlliance().equals(DriverStation.Alliance.Red)){
+      swerveDrive.setGyro(new Rotation3d(0,0,180));
+      swerveDrive.setGyroOffset(swerveDrive.getGyroRotation3d());
+      swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(180)));
+    }else{
+      swerveDrive.setGyro(new Rotation3d(0,0,0));
+      swerveDrive.setGyroOffset(swerveDrive.getGyroRotation3d());
+      swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+    }
   }
 
   /**
