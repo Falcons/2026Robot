@@ -74,7 +74,6 @@ public class Turret extends SubsystemBase {
     // MATH
     SmartDashboard.putNumber("Turret/Turret/MATH/global deg", Math.toDegrees(limelightGlobalRad()));
     SmartDashboard.putNumber("Turret/Turret/MATH/rel deg", Math.toDegrees(limelightRelativeRad()));
-    SmartDashboard.putNumber("Turret/Turret/MATH/direct deg", Math.toDegrees(limelightDirectRad()));
     // launch calculator
     SmartDashboard.putNumber("Turret/Turret/LaunchCalc/global deg", Math.toDegrees(getGlobalRad()));
     SmartDashboard.putNumber("Turret/Turret/LaunchCalc/rel deg", Math.toDegrees(getRelativeRad()));
@@ -164,7 +163,7 @@ public class Turret extends SubsystemBase {
    */
   public double getRelativeRad() {
     return MathUtil.clamp(-MathUtil.angleModulus(
-      swerve.getHeading().getRadians() + getGlobalRad() - Math.toRadians(270)),
+      swerve.getHeading().getRadians() + getGlobalRad() - Math.toRadians(90)),
       TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
     // return MathUtil.angleModulus(
     //   (swerve.getHeading().getRadians() - getGlobalRad() - Math.toRadians(270)) * -1);
@@ -209,8 +208,8 @@ public class Turret extends SubsystemBase {
     return -MathUtil.angleModulus(
       swerve.getHeading().getRadians() + // turret is facing where the bot is facing 
       (turretEncoder.getPosition() - Math.toRadians(90)) + // + its angle -90d offset
-      Math.atan2(aprilTagOffset[0] + LimelightConstants.tagOffsets.get(LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight)).getX(), aprilTagOffset[2] + LimelightConstants.tagOffsets.get(LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight)).getY()) + //(TURRET ANGLE) + (APRIL TAG ANGLE)
-      + Math.toRadians(180)
+      Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
+      // + Math.toRadians(180)
     );
   }
 
@@ -218,21 +217,7 @@ public class Turret extends SubsystemBase {
     if (!LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) return 0.0;
 
     return MathUtil.clamp(-MathUtil.angleModulus(
-      swerve.getHeading().getRadians() + limelightGlobalRad() - Math.toRadians(270)),
+      swerve.getHeading().getRadians() + limelightGlobalRad() - Math.toRadians(90)),
       TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
-  }
-
-  /**
-   * @return the relative abgle the shooter should point at in radians
-   */
-  public double limelightDirectRad() {
-    if (!LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) return 0.0;
-
-    double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
-    // get angle
-    return MathUtil.angleModulus(
-      (turretEncoder.getPosition() - Math.toRadians(90)) + // + its angle -90d offset
-      Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
-    );
   }
 }
