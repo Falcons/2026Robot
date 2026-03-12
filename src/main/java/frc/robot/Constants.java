@@ -2,11 +2,15 @@ package frc.robot;
 
 import static edu.wpi.first.units.Units.Meter;
 
+import static java.util.Map.entry;
+import java.util.Map;
+
 import com.pathplanner.lib.path.PathConstraints;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -69,8 +73,23 @@ public final class Constants {
         public static final int redHubTagIDs[] = {2, 3, 4, 5, 8, 9, 10, 11};
 
         public static final Rotation3d turretLimelightRot = new Rotation3d(0, Math.toRadians(26), 0);
-    }
 
+        // public static final Map<Double, Transform2d> tagOffsets = new Map()
+            
+        public static final Map<Double, Transform3d> tagOffsets = Map.ofEntries(
+            entry(-1.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
+            entry(2.0, new Transform3d(-0.584, 0.0, 0.0, new Rotation3d(0,0,0))),
+            entry(3.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
+            entry(4.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
+            entry(5.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
+            entry(8.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
+            entry(9.0, new Transform3d(0.1, 0.584, 0.0, new Rotation3d(0,0,0))),
+            entry(10.0, new Transform3d(0.0, 1, 0.0, new Rotation3d(0,0,0))),
+            entry(11.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0)))
+            
+        );
+        // public Dictionary<String, Double> tagOffsets = new Hashtable<>();
+    }
     public static final class ControllerConstants {
         public static final double deadBand = 0.05;
         public static final double triggerDeadBand = 0.01;
@@ -82,8 +101,11 @@ public final class Constants {
         public static final int rightHoodActuatorPWM = 0;
         public static final int leftHoodActuatorPWM = 1;
 
-        public static final int hoodAngleMin = 18;
+        public static final int hoodAngleMin = 0;
         public static final int hoodAngleMax = 126;
+
+        public static final double hoodMin = 0;
+        public static final double hoodMax = 0.7;
 
         public static final double hoodSpeedMultipier = 0.1;
     }
@@ -100,6 +122,7 @@ public final class Constants {
 
         // shoot on the move
         public static Transform3d robotToTurret = new Transform3d(0.114, 0, 0.30226, Rotation3d.kZero);
+        public static Transform3d robotToTurretZero = new Transform3d(0, 0, 0, Rotation3d.kZero);
         // x: 4.5in
         // y: 15in - using 11.9 cuz limelight
         public static Transform3d turretToCamera =

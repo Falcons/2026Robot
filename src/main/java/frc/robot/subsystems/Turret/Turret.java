@@ -35,7 +35,7 @@ public class Turret extends SubsystemBase {
   private final AbsoluteEncoder turretEncoder = turret.getAbsoluteEncoder();
   private final SparkMaxConfig turretConfig = new SparkMaxConfig();
 
-  private final PIDController turretPID = new PIDController(0.4, 0, 0);
+  private final PIDController turretPID = new PIDController(0.6, 0, 0);
 
   private boolean atMax, atMin;
 
@@ -49,14 +49,8 @@ public class Turret extends SubsystemBase {
     turretConfig.smartCurrentLimit(20);
     turretConfig.idleMode(IdleMode.kBrake);
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-
-    }
   
-  /**
-   * shoot Limelight
-   * x 11.93
-   * h 11.9 
-   */
+  }
 
   @Override
   public void periodic() {
@@ -96,6 +90,7 @@ public class Turret extends SubsystemBase {
       Math.toDegrees(LimelightConstants.turretLimelightRot.getX()),
       Math.toDegrees(LimelightConstants.turretLimelightRot.getY()),
       -getEncoderDeg()+90);
+    
   }
 
   /**
@@ -122,6 +117,7 @@ public class Turret extends SubsystemBase {
     setpoint = MathUtil.clamp(setpoint, TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
     // calc pid
     double pid = turretPID.calculate(turretEncoder.getPosition(), setpoint);
+    SmartDashboard.putNumber("Turret/Turret/PID/error", pid);
     // clamp setpoint 
     pid = MathUtil.clamp(pid, -0.5, 0.5);
     // move motor
@@ -213,7 +209,7 @@ public class Turret extends SubsystemBase {
     return -MathUtil.angleModulus(
       swerve.getHeading().getRadians() + // turret is facing where the bot is facing 
       (turretEncoder.getPosition() - Math.toRadians(90)) + // + its angle -90d offset
-      Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) + //(TURRET ANGLE) + (APRIL TAG ANGLE)
+      Math.atan2(aprilTagOffset[0] + LimelightConstants.tagOffsets.get(LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight)).getX(), aprilTagOffset[2] + LimelightConstants.tagOffsets.get(LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight)).getY()) + //(TURRET ANGLE) + (APRIL TAG ANGLE)
       + Math.toRadians(180)
     );
   }

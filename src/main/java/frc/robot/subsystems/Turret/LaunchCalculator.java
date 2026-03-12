@@ -143,7 +143,7 @@ public class LaunchCalculator {
     passingMinDistance = 5.4;
     passingMaxDistance = 17.16;
     phaseDelay = 0.03;
-    double hubOffset = 0.584;
+    double hubOffset = 0.85; //0.584
 
     hoodAngleMap.put(1.1 + hubOffset, 0.1);
     hoodAngleMap.put(1.3 + hubOffset, 0.1);
@@ -276,7 +276,7 @@ public class LaunchCalculator {
         passing
             ? getPassingTarget(swerve)
             : AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-    Pose2d launcherPosition = estimatedPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurret));
+    Pose2d launcherPosition = estimatedPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurretZero));
     double launcherToTargetDistance = target.getDistance(launcherPosition.getTranslation());
     // if limelight can see tag set distance to tz // TODO: my limelight shenanigans
     // if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
@@ -293,9 +293,9 @@ public class LaunchCalculator {
         DriverStation.isAutonomous()
             ? robotVelocity
             : GeomUtil.transformVelocity(
-                robotVelocity, TurretConstants.robotToTurret.getTranslation().toTranslation2d(), robotAngle);
+                robotVelocity, TurretConstants.robotToTurretZero.getTranslation().toTranslation2d(), robotAngle);
 
-    // Account for imparted velocity by robot (launcher) to offset
+    // Account for imparted velocity by robot (launcher) toe offset
     double timeOfFlight = timeOfFlightMap.get(launcherToTargetDistance);
     if (passing) {
         passingTimeOfFlightMap.get(launcherToTargetDistance);
@@ -322,7 +322,7 @@ public class LaunchCalculator {
 
     // Account for launcher being off center
     Pose2d lookaheadRobotPose =
-        lookaheadPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurret).inverse());
+        lookaheadPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurretZero).inverse());
     Rotation2d turretAngle = getturretAngleWithLauncherOffset(lookaheadRobotPose, target, turretRad);
 
     // Calculate remaining parameters
@@ -401,13 +401,19 @@ public class LaunchCalculator {
         new Rotation2d(
             Math.asin(
                 MathUtil.clamp(
-                    TurretConstants.robotToTurret.getTranslation().getY()
+                    TurretConstants.robotToTurretZero.getTranslation().getY()
                         / target.getDistance(robotPose.getTranslation()),
                     -1.0,
                     1.0)));
     Rotation2d turretAngle =
-        fieldToHubAngle.plus(hubAngle).plus(TurretConstants.robotToTurret.getRotation().toRotation2d());
-    return turretAngle;
+        fieldToHubAngle.plus(hubAngle).plus(TurretConstants.robotToTurretZero.getRotation().toRotation2d());
+
+    fieldToHubAngle = new Rotation2d(MathUtil.angleModulus(Math.atan2(
+        robotPose.getX() - target.getY(),
+        robotPose.getX() - target.getX()
+    )) - Math.toRadians(180));
+    
+    return fieldToHubAngle; //TODO return turretAngle
   }
 
   public double getNaiveTOF(double distance) {

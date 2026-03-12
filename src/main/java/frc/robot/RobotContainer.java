@@ -36,7 +36,6 @@ import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
-import frc.robot.commands.Turret.Shoot;
 import frc.robot.commands.Turret.ShootAndHood;
 import frc.robot.commands.Turret.ShootSim;
 import frc.robot.commands.Turret.TurretPID;
@@ -125,7 +124,7 @@ public class RobotContainer {
     this.hood = new Hood(swerve);
 
     SmartDashboard.putNumber("Hood/set angle", 0.1);
-    SmartDashboard.putNumber("shooter/Fire speed", 1);
+    SmartDashboard.putNumber("Turret/Shooter/Fire speed", 1);
 
     transfer.setDefaultCommand(Commands.run(() -> transfer.pulse(
         () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
@@ -174,6 +173,10 @@ public class RobotContainer {
 
     // auto turret only
     operator.b().whileTrue(Commands.runEnd(turret::autoLimelightAim, turret::stop, turret)); // TODO: auto aim
+    operator.a().whileTrue(new ParallelCommandGroup (
+      Commands.runEnd(turret::autoLimelightAim, turret::stop, turret),
+      Commands.runEnd(hood::autoAim, () -> hood.set(0.0), hood),
+      Commands.runEnd(shooter::autoShoot, () -> shooter.setShooter(0.0), shooter)));
 
     // hood
     operator.axisMagnitudeGreaterThan(5, 0.95).onTrue(

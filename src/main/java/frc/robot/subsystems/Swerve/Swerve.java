@@ -4,12 +4,7 @@
 
 package frc.robot.subsystems.Swerve;
 
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.DriveConstants;
-import frc.robot.Constants.LimelightConstants;
-import frc.robot.LimelightHelpers;
-import frc.robot.Util.AllianceFlipUtil;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -19,19 +14,25 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import swervelib.parser.SwerveDriveConfiguration;
-import swervelib.parser.SwerveParser;
-import swervelib.telemetry.SwerveDriveTelemetry;
-import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
-import swervelib.SwerveDrive;
-import swervelib.math.SwerveMath;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.LimelightConstants;
+import frc.robot.LimelightHelpers;
+import frc.robot.Util.AllianceFlipUtil;
+import swervelib.SwerveDrive;
+import swervelib.math.SwerveMath;
+import swervelib.parser.SwerveDriveConfiguration;
+import swervelib.parser.SwerveParser;
+import swervelib.telemetry.SwerveDriveTelemetry;
+import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 
 public class Swerve extends SubsystemBase {
@@ -44,7 +45,9 @@ public class Swerve extends SubsystemBase {
     try {
       // try to create a new swerve drive
       DriverStation.waitForDsConnection(0);
+      // Pose2d limelightPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimelightConstants.stillLimelight).pose;
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH; //TODO: high will cause more lag
+      // if (!limelightPose.equals(null)) swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, limelightPose);
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
     } catch (Exception e) {
       throw new RuntimeException(e);
@@ -61,6 +64,7 @@ public class Swerve extends SubsystemBase {
     SmartDashboard.putNumber("swerve/backRight encoder", swerveDrive.getModules()[3].getAbsolutePosition());
 
     addVisionMeasurement(LimelightConstants.stillLimelight); // TODO: pos
+    // addVisionMeasurement(LimelightConstants.turretLimelight); // TODO: pos
     // SmartDashboard.putData(swerveDrive.field);
   }
 
@@ -263,12 +267,31 @@ public class Swerve extends SubsystemBase {
   * @param limelightNames name of limelight
   */
   public void addVisionMeasurement(String limelightName) {
-
+    /* 
+    LimelightHelpers.SetRobotOrientation(LimelightConstants.stillLimelight, swerveDrive.getYaw().getDegrees(), 0, swerveDrive.getPitch().getDegrees(), 0, swerveDrive.getRoll().getDegrees(), 0);
+    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.stillLimelight);
+   boolean doRejectUpdate = false;
+    // if our angular velocity is greater than 360 degrees per second, ignore vision updates
+    if(Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360)
+    {
+      doRejectUpdate = true;
+    }
+    if(mt2.tagCount == 0)
+    {
+      doRejectUpdate = true;
+    }
+    if(!doRejectUpdate)
+    {
+      swerveDrive.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
+    }*/
+    
+    LimelightHelpers.SetRobotOrientation(LimelightConstants.stillLimelight, swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
     LimelightHelpers.PoseEstimate visionPose = null;
 
     // set the vision pose
     if (DriverStation.getAlliance().isPresent()) {
-      visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
+      // visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName); // megatag 1
+      visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName); // megaTag 2
     }
     
     // dont do anything if there isnt a tag
@@ -278,7 +301,7 @@ public class Swerve extends SubsystemBase {
   
     Pose2d pose = visionPose.pose;
   
-    // Add vision measurement to swerve estimator
+    // Add vision measurement to swerve estimator 
     swerveDrive.addVisionMeasurement(pose,visionPose.timestampSeconds);
   }
 

@@ -42,7 +42,7 @@ public class Hood extends SubsystemBase {
   }
 
   public void autoAim(){
-    double setpoint = MathUtil.clamp(getHoodAngle(), HoodConstants.hoodAngleMin, HoodConstants.hoodAngleMax);
+    double setpoint = MathUtil.clamp(getHoodAngle(), HoodConstants.hoodMin, HoodConstants.hoodMax);
     set(setpoint);
   }
 
@@ -52,7 +52,7 @@ public class Hood extends SubsystemBase {
   public double getHoodAngle() {
     // use the launch calulator to get hood angle
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    return  LaunchCalculator.getInstance().getParameters(swerve, -1.0).hoodAngle();
+    return LaunchCalculator.getInstance().getParameters(swerve, -1.0).hoodAngle();
   }
 
   /**
