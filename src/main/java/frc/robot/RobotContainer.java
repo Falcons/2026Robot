@@ -36,6 +36,7 @@ import frc.robot.commands.Drive.taxi;
 import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
+import frc.robot.commands.Turret.ControllerRumbleAtSpeed;
 import frc.robot.commands.Turret.ShootAndHood;
 import frc.robot.commands.Turret.ShootSim;
 import frc.robot.commands.Turret.TurretPID;
@@ -136,6 +137,7 @@ public class RobotContainer {
 
     // manual hood
     // hood.setDefaultCommand(Commands.run(() -> hood.set(() -> SmartDashboard.getNumber("Hood/set angle", 0.1)), hood));
+    while(DriverStation.isTeleopEnabled()) new ControllerRumbleAtSpeed(shooter, operator);
 
     // Named Commands
     NamedCommands.registerCommand("Test", new PrintCommand("test"));
