@@ -10,7 +10,6 @@ import com.pathplanner.lib.path.PathConstraints;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
@@ -76,16 +75,16 @@ public final class Constants {
 
         // public static final Map<Double, Transform2d> tagOffsets = new Map()
             
-        public static final Map<Double, Transform3d> tagOffsets = Map.ofEntries(
-            entry(-1.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
-            entry(2.0, new Transform3d(-0.584, 0.0, 0.0, new Rotation3d(0,0,0))),
-            entry(3.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
-            entry(4.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
-            entry(5.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
-            entry(8.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0))),
-            entry(9.0, new Transform3d(0.1, 0.584, 0.0, new Rotation3d(0,0,0))),
-            entry(10.0, new Transform3d(0.0, 1, 0.0, new Rotation3d(0,0,0))),
-            entry(11.0, new Transform3d(0.0, 0.0, 0.0, new Rotation3d(0,0,0)))
+        public static final Map<Double, Translation3d> tagOffsets = Map.ofEntries(
+            entry(-1.0, new Translation3d(0.0, 0.0, 0.0)),
+            entry(2.0, new Translation3d(-0.584, 0.0, 0.0)),
+            entry(3.0, new Translation3d(0.0, 0.0, 0.0)),
+            entry(4.0, new Translation3d(0.0, 0.0, 0.0)),
+            entry(5.0, new Translation3d(0.0, 0.0, 0.0)),
+            entry(8.0, new Translation3d(0.0, 0.0, 0.0)),
+            entry(9.0, new Translation3d(0.1, 0.584, 0.0)),
+            entry(10.0, new Translation3d(0.0, 1, 0.0)),
+            entry(11.0, new Translation3d(0.0, 0.0, 0.0))
             
         );
         // public Dictionary<String, Double> tagOffsets = new Hashtable<>();
@@ -162,5 +161,11 @@ public final class Constants {
             public static final double pivotIn = Math.toRadians(322); // in is higher, out is lower
             public static final double pivotMax = Math.toRadians(325); // in is higher, out is lower
         }
+    }
+    public static final class LightConstants {
+        public static final int lightPwm = 2;
+
+        public static final double hoodUp = 0.61;
+        public static final double hoodDown = 0.77;
     }
 }
