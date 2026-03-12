@@ -387,7 +387,7 @@ public class LaunchCalculator {
 
         double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
         // get angle
-        return new Rotation2d(-MathUtil.angleModulus(
+        return new Rotation2d(MathUtil.angleModulus(
             robotPose.getRotation().getRadians() + // turret is facing where the bot is facing 
             (turretRad - Math.toRadians(90)) + // + its angle -90d offset
             Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
