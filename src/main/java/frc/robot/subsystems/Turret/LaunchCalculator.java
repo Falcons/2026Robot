@@ -383,7 +383,6 @@ public class LaunchCalculator {
 
   private static Rotation2d getturretAngleWithLauncherOffset(Pose2d robotPose, Translation2d target, double turretRad) {
 
-    // TODO: my limelight shenanigans
     if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
 
         double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
@@ -391,8 +390,8 @@ public class LaunchCalculator {
         return new Rotation2d(-MathUtil.angleModulus(
             robotPose.getRotation().getRadians() + // turret is facing where the bot is facing 
             (turretRad - Math.toRadians(90)) + // + its angle -90d offset
-            Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) + //(TURRET ANGLE) + (APRIL TAG ANGLE)
-            + Math.toRadians(180)
+            Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
+            // + Math.toRadians(180)
         ));
     }
 
@@ -407,13 +406,8 @@ public class LaunchCalculator {
                     1.0)));
     Rotation2d turretAngle =
         fieldToHubAngle.plus(hubAngle).plus(TurretConstants.robotToTurretZero.getRotation().toRotation2d());
-
-    fieldToHubAngle = new Rotation2d(MathUtil.angleModulus(Math.atan2(
-        robotPose.getX() - target.getY(),
-        robotPose.getX() - target.getX()
-    )) - Math.toRadians(180));
     
-    return fieldToHubAngle; //TODO return turretAngle
+    return turretAngle; 
   }
 
   public double getNaiveTOF(double distance) {
