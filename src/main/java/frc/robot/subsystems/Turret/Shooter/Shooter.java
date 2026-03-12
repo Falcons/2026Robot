@@ -46,6 +46,7 @@ public class Shooter extends SubsystemBase {
 
   // variables
   public boolean shooterRunning = false;
+  private double shooterSetSpeed = 0;
 
   /** Creates a new Shooter. */
   public Shooter(Turret aimer, Transfer transfer, Swerve swerve) {
@@ -150,6 +151,7 @@ public class Shooter extends SubsystemBase {
    */
   public void setShooter(DoubleSupplier speed) {
     leftShooter.set(speed.getAsDouble());
+    shooterSetSpeed = speed.getAsDouble();
   }
 
   /**
@@ -158,6 +160,7 @@ public class Shooter extends SubsystemBase {
    */
   public void setShooter(Double speed) {
     leftShooter.set(speed);
+    shooterSetSpeed = speed;
   }
 
   public void stopShooter(){
@@ -169,5 +172,13 @@ public class Shooter extends SubsystemBase {
    */
   public Double getShooterRPS() {
     return leftShooter.getVelocity().getValueAsDouble();
+  }
+
+  public Double getShooterRealSpeed(){
+    return leftsShooter.get();
+  }
+
+  public Double getSetShooterSpeed(){
+    return shooterSetSpeed;
   }
 }

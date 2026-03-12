@@ -58,14 +58,11 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("swerve/frontLeft encoder", swerveDrive.getModules()[0].getAbsolutePosition());
-    SmartDashboard.putNumber("swerve/frontRight encoder", swerveDrive.getModules()[1].getAbsolutePosition());
-    SmartDashboard.putNumber("swerve/backLeft encoder", swerveDrive.getModules()[2].getAbsolutePosition());
-    SmartDashboard.putNumber("swerve/backRight encoder", swerveDrive.getModules()[3].getAbsolutePosition());
+    SmartDashboard.putNumberArray("Swerve/turret Limelight/botPose blue", LimelightHelpers.getBotPose_wpiBlue(LimelightConstants.turretLimelight));
+    SmartDashboard.putNumberArray("Swerve/still Limelight/botPose blue", LimelightHelpers.getBotPose_wpiBlue(LimelightConstants.stillLimelight));
 
     addVisionMeasurement(LimelightConstants.stillLimelight); // TODO: pos
     // addVisionMeasurement(LimelightConstants.turretLimelight); // TODO: pos
-    // SmartDashboard.putData(swerveDrive.field);
   }
 
   public SwerveDrive getSwerveDrive() {
@@ -78,7 +75,7 @@ public class Swerve extends SubsystemBase {
    *
    * @param xInput X joystick input for the robot to move in the X direction.
    * @param yInput Y joystick input for the robot to move in the Y direction.
-   * @param angle  The angle in as a {@link Rotation2d}.
+   * @param angle  The angle in as a {@link Rotation2d}.~
    * @return {@link ChassisSpeeds} which can be sent to the Swerve Drive.
    */
   public ChassisSpeeds getTargetSpeeds(double xInput, double yInput, Rotation2d angle)

@@ -44,6 +44,7 @@ import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
 // import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // just for sim
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Hood.HoodSim;
 import frc.robot.subsystems.Intake.Pivot;
@@ -70,6 +71,7 @@ public class RobotContainer {
   private RollersSim rollersSim;
 
   // real classes
+  private Lights lights;
   private Turret turret;
   private Shooter shooter;
   private Pivot pivot;
@@ -116,12 +118,13 @@ public class RobotContainer {
   
   private void setupReal() {
     //initializing real classes
+    this.lights = new Lights();
     this.turret = new Turret(swerve);
     this.transfer = new Transfer();
     this.shooter = new Shooter(turret, transfer, swerve);
     this.rollers = new Rollers();
     this.pivot = new Pivot(rollers);
-    this.hood = new Hood(swerve);
+    this.hood = new Hood(swerve, lights);
 
     SmartDashboard.putNumber("Hood/set angle", 0.1);
     SmartDashboard.putNumber("Turret/Shooter/Fire speed", 1);
