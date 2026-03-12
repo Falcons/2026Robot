@@ -167,8 +167,8 @@ public class Turret extends SubsystemBase {
    * @return the relative abgle the shooter should point at in radians
    */
   public double getRelativeRad() {
-    return MathUtil.clamp(-MathUtil.angleModulus(
-      swerve.getHeading().getRadians() + getGlobalRad() - Math.toRadians(90)),
+    return MathUtil.clamp(MathUtil.angleModulus(
+      -swerve.getHeading().getRadians() - limelightGlobalRad() - Math.toRadians(90)),
       TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
     // return MathUtil.angleModulus(
     //   (swerve.getHeading().getRadians() - getGlobalRad() - Math.toRadians(270)) * -1);
@@ -211,8 +211,8 @@ public class Turret extends SubsystemBase {
     double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
     // get angle
     return MathUtil.angleModulus(
-      swerve.getHeading().getRadians() + // turret is facing where the bot is facing 
-      (turretEncoder.getPosition() - Math.toRadians(90)) + // + its angle -90d offset
+      swerve.getHeading().getRadians() - // + // turret is facing where the bot is facing 
+      (turretEncoder.getPosition() - Math.toRadians(90)) - // + its angle -90d offset
       Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
       // + Math.toRadians(180)
     );
@@ -252,8 +252,8 @@ public class Turret extends SubsystemBase {
   public double limelightRelativeRad() {
     if (!LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) return 0.0;
 
-    return MathUtil.clamp(-MathUtil.angleModulus(
-      swerve.getHeading().getRadians() + limelightGlobalRad() - Math.toRadians(90)),
+    return MathUtil.clamp(MathUtil.angleModulus(
+      -swerve.getHeading().getRadians() - limelightGlobalRad() - Math.toRadians(90)), // + + -
       TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
   }
 }
