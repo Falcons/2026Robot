@@ -175,10 +175,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public Double getShooterRealSpeed(){
-    return leftsShooter.get();
+    return leftShooter.get();
   }
 
-  public Double getSetShooterSpeed(){
+  public Double getShooterSetSpeed(){
     return shooterSetSpeed;
   }
 }

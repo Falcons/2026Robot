@@ -4,16 +4,18 @@
 
 package frc.robot.commands.Turret;
 
+import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.subsystems.Turret.Shooter.Shooter;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class Shoot extends Command {
+public class ControllerRumbleAtSpeed extends Command {
   private final Shooter shooter;
-  private final CommandXboxController controller
+  private final CommandXboxController controller;
 
   /** Creates a new Shoot. */
-  public Shoot(Shooter shooter, CommandXboxController controller) {
+  public ControllerRumbleAtSpeed(Shooter shooter, CommandXboxController controller) {
     this.shooter = shooter;
     this.controller = controller;
   }
@@ -27,13 +29,13 @@ public class Shoot extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.getShooterRealSpeed() >= shooter.getSetShooterSpeed()-0.1 && shooter.getShooterRealSpeed() <= shooter.getShooterSetSpeed()+0.1){
-controller.setRumble(RumbleType.kLeftRumble, 0.3);
-controller.setRumble(RumbleType.kRightRumble 0.3);
-}else {
-controller.setRumble(RumbleType.kLeftRumble, 0);
-controller.setRumble(RumbleType.kRightRumble 0);
-}
+    if(shooter.getShooterRealSpeed() >= shooter.getShooterSetSpeed()-0.1 && shooter.getShooterRealSpeed() <= shooter.getShooterSetSpeed()+0.1){
+      controller.setRumble(RumbleType.kLeftRumble, 0.3);
+      controller.setRumble(RumbleType.kRightRumble, 0.3);
+    }else {
+        controller.setRumble(RumbleType.kLeftRumble, 0);
+        controller.setRumble(RumbleType.kRightRumble, 0);
+      }
   }
 
 
