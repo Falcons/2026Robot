@@ -54,7 +54,6 @@ public class Turret extends SubsystemBase {
     turretConfig.smartCurrentLimit(20);
     turretConfig.idleMode(IdleMode.kBrake);
     turret.configure(turretConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-  
   }
 
   @Override
@@ -101,7 +100,7 @@ public class Turret extends SubsystemBase {
    * call this to actually auto aim to the goal
    */
   public void autoAim() {// swap to launchCalc
-    aimToSetpoint(limelightRelativeRad());
+    aimToSetpoint(getRelativeRad());
   }
 
   /**
@@ -167,9 +166,9 @@ public class Turret extends SubsystemBase {
    * @return the relative abgle the shooter should point at in radians
    */
   public double getRelativeRad() {
-    return MathUtil.clamp(MathUtil.angleModulus(
-      -swerve.getHeading().getRadians() - limelightGlobalRad() - Math.toRadians(90)),
-      TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
+    return MathUtil.angleModulus(
+      swerve.getHeading().getRadians() - getGlobalRad() + Math.toRadians(90)); // + + -
+      // TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
     // return MathUtil.angleModulus(
     //   (swerve.getHeading().getRadians() - getGlobalRad() - Math.toRadians(270)) * -1);
   }
@@ -221,13 +220,13 @@ public class Turret extends SubsystemBase {
   /**
    * get the angle based on limelight with offsets
    */
-  public double limelightOffsetGlobalRad() { // TODO: long thing
+  public double limelightOffsetGlobalRad() {
     if (!LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) return 0.0;
 
     double tagID = LimelightHelpers.getFiducialID(LimelightConstants.turretLimelight);
 
     // get april tag pose
-    // AprilTagFieldLayout layout = AprilTagFields.k2026RebuiltWelded //TODO: make better
+    // AprilTagFieldLayout layout = AprilTagFields.k2026RebuiltWelde
     AprilTagFieldLayout layout = AprilTagFields.k2026RebuiltAndymark.loadAprilTagLayoutField();
     Optional<Pose3d> tagPose = layout.getTagPose((int)tagID);
 
@@ -253,7 +252,7 @@ public class Turret extends SubsystemBase {
     if (!LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) return 0.0;
 
     return MathUtil.clamp(MathUtil.angleModulus(
-      -swerve.getHeading().getRadians() - limelightGlobalRad() - Math.toRadians(90)), // + + -
+      swerve.getHeading().getRadians() - limelightGlobalRad() + Math.toRadians(90)), // + + -
       TurretConstants.turretMinRad, TurretConstants.turretMaxRad);
   }
 }

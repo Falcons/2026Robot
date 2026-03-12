@@ -15,8 +15,12 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
+import frc.robot.subsystems.Turret.Turret;
 
 public class Transfer extends SubsystemBase {
+
+  private final Turret turret;
+  private Shooter shooter;
 
   private final TalonFX transfer = new TalonFX(ShooterConstants.transferCANID);
   private final TalonFXConfiguration transferConfig = new TalonFXConfiguration();
@@ -25,7 +29,8 @@ public class Transfer extends SubsystemBase {
   private Timer timer = new Timer();
 
   /** Creates a new Transfer. */
-  public Transfer() {
+  public Transfer(Turret turret) {
+    this.turret = turret;
     timer.start();
     
     limitsConfigs.StatorCurrentLimit = 40;
@@ -66,7 +71,7 @@ public class Transfer extends SubsystemBase {
       transfer.set(0.0);
     }
   }
-  
+
   /**
    * set the transfer speed
    * @param speed the speed to set
@@ -80,4 +85,16 @@ public class Transfer extends SubsystemBase {
   public void stop() {
     transfer.stopMotor();
   }
+
+  public void autoTransfer() {
+    if (!turret.inRange()) return;
+    if (Math.abs(shooter.getShooterRealSpeed() - shooter.getShooterAutoSpeed()) < 0.05 ) {
+      pulse();
+    }
+  }
+
+  public void setShooter(Shooter shooter) {
+    this.shooter = shooter;
+  }
+
 }

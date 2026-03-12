@@ -5,6 +5,7 @@
 package frc.robot.subsystems.Swerve;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
+import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -14,6 +15,7 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
+import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -43,6 +45,7 @@ public class Swerve extends SubsystemBase {
   SwerveDrive swerveDrive;
 
   public Swerve() {
+    LimelightHelpers.SetIMUMode(LimelightConstants.stillLimelight, 0);
     try {
       // try to create a new swerve drive
       DriverStation.waitForDsConnection(0);
@@ -59,11 +62,14 @@ public class Swerve extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumberArray("Swerve/turret Limelight/botPose blue", LimelightHelpers.getBotPose_wpiBlue(LimelightConstants.turretLimelight));
-    SmartDashboard.putNumberArray("Swerve/still Limelight/botPose blue", LimelightHelpers.getBotPose_wpiBlue(LimelightConstants.stillLimelight));
+    SmartDashboard.putNumberArray("swerve/turret Limelight/botPose blue", LimelightHelpers.getBotPose_wpiBlue(LimelightConstants.turretLimelight));
+    SmartDashboard.putNumberArray("swerve/still Limelight/botPose blue", LimelightHelpers.getBotPose_wpiBlue(LimelightConstants.stillLimelight));
+    SmartDashboard.putNumber("swerve/AngularVelocity radPerSec", swerveDrive.getGyro().getYawAngularVelocity().in(RadiansPerSecond));
 
-    addVisionMeasurement(LimelightConstants.stillLimelight); // TODO: pos
-    // addVisionMeasurement(LimelightConstants.turretLimelight); // TODO: pos
+    addVisionMeasurement(LimelightConstants.stillLimelight, true);
+    addVisionMeasurement(LimelightConstants.turretLimelight, true);
+    // addVisionMeasurement(LimelightConstants.turretLimelight, false);
+    // addVisionMeasurement(LimelightConstants.turretLimelight, false);
   }
 
   public SwerveDrive getSwerveDrive() {
@@ -198,10 +204,10 @@ public class Swerve extends SubsystemBase {
   public void zeroGyroWithFlip()
   {
     swerveDrive.swerveController.lastAngleScalar = 0;
-    if(DriverStation.getAlliance().equals(DriverStation.Alliance.Red)){
-      swerveDrive.setGyro(new Rotation3d(0,0,180));
+    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      swerveDrive.setGyro(new Rotation3d(0,0,Math.toRadians(180)));
       swerveDrive.setGyroOffset(swerveDrive.getGyroRotation3d());
-      swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(180)));
+      swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.toRadians(180))));
     }else{
       swerveDrive.setGyro(new Rotation3d(0,0,0));
       swerveDrive.setGyroOffset(swerveDrive.getGyroRotation3d());
@@ -280,43 +286,28 @@ public class Swerve extends SubsystemBase {
   * Adds the vision estimations from a limelight to swerveDriveodometry 
   * @param limelightNames name of limelight
   */
-  public void addVisionMeasurement(String limelightName) {
-    /* 
-    LimelightHelpers.SetRobotOrientation(LimelightConstants.stillLimelight, swerveDrive.getYaw().getDegrees(), 0, swerveDrive.getPitch().getDegrees(), 0, swerveDrive.getRoll().getDegrees(), 0);
-    LimelightHelpers.PoseEstimate mt2 = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.stillLimelight);
-   boolean doRejectUpdate = false;
+  public void addVisionMeasurement(String limelightName, boolean megatag2) {
+    LimelightHelpers.SetRobotOrientation(limelightName, swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    
+    // if(DriverStation.isDisabled())LimelightHelpers.SetIMUMode(LimelightConstants.stillLimelight, 1);
+    // else LimelightHelpers.SetIMUMode(LimelightConstants.stillLimelight, 4);
+    LimelightHelpers.PoseEstimate pose;
+    if (megatag2) pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.stillLimelight);
+    else pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimelightConstants.stillLimelight);
+    boolean doRejectUpdate = false;
     // if our angular velocity is greater than 360 degrees per second, ignore vision updates
     if(Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360)
     {
       doRejectUpdate = true;
     }
-    if(mt2.tagCount == 0)
+    if(pose.tagCount == 0)
     {
       doRejectUpdate = true;
     }
     if(!doRejectUpdate)
     {
-      swerveDrive.addVisionMeasurement(mt2.pose, mt2.timestampSeconds);
-    }*/
-    
-    LimelightHelpers.SetRobotOrientation(LimelightConstants.stillLimelight, swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
-    LimelightHelpers.PoseEstimate visionPose = null;
-
-    // set the vision pose
-    if (DriverStation.getAlliance().isPresent()) {
-      // visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName); // megatag 1
-      visionPose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName); // megaTag 2
+      swerveDrive.addVisionMeasurement(pose.pose, pose.timestampSeconds, VecBuilder.fill(.7,.7,9999999));
     }
-    
-    // dont do anything if there isnt a tag
-    if (visionPose == null || visionPose.tagCount == 0) {
-      return;
-    }
-  
-    Pose2d pose = visionPose.pose;
-  
-    // Add vision measurement to swerve estimator 
-    swerveDrive.addVisionMeasurement(pose,visionPose.timestampSeconds);
   }
 
   /**

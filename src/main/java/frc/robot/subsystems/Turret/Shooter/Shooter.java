@@ -15,6 +15,7 @@ import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
@@ -47,6 +48,9 @@ public class Shooter extends SubsystemBase {
   // variables
   public boolean shooterRunning = false;
   private double shooterSetSpeed = 0;
+  private double shooterAutoSpeed = 0;
+
+  private final PIDController speedControl = new PIDController(5, 0, 0);
 
   /** Creates a new Shooter. */
   public Shooter(Turret aimer, Transfer transfer, Swerve swerve) {
@@ -112,25 +116,33 @@ public class Shooter extends SubsystemBase {
    */
   public void autoShoot() {
     LaunchCalculator.getInstance().clearLaunchingParameters();
-    leftShooter.set(LaunchCalculator.getInstance().getParameters(swerve, -1.0).flywheelSpeed());
+    shooterAutoSpeed = LaunchCalculator.getInstance().getParameters(swerve, -1.0).flywheelSpeed();
+    leftShooter.set(shooterAutoSpeed);
+  }
+
+  public double getShooterAutoSpeed() {
+    return shooterAutoSpeed;
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Turret/Shooter/leftShooterSpeed", leftShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter.get());
+    SmartDashboard.putNumber("Turret/Shooter/leftShooterRPS", leftShooter.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/rightShooterRPS", rightShooter.getVelocity().getValueAsDouble());
+    
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
     SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
 
-    SmartDashboard.putNumber("Turret/Shooter/leftShooterVel", leftShooter.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Turret/Shooter/leftShooterEncoder", leftShooter.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/PID/setpoint", speedControl.getSetpoint());
+    SmartDashboard.putNumber("Turret/Shooter/PID/error", speedControl.getError());
   }
 
   /**
-   * check if the shooter rpm is too low to shoot
-   * @return true when rpm is too low
+   * check if the shooter rps is too low to shoot
+   * @return true when rps is too low
    */
-  public boolean shooterRPMlow() {
+  public boolean shooterRPSlow() {
     if (shooterRunning && leftShooter.getVelocity().getValueAsDouble() < ShooterConstants.maxShooterRPS) {
       shooterRunning = false;
       return true;
@@ -162,13 +174,20 @@ public class Shooter extends SubsystemBase {
     leftShooter.set(speed);
     shooterSetSpeed = speed;
   }
-
+  public void setRps(double speed){ //TODO: get numbers
+    double pid = speedControl.calculate(getShooterRPS(), speed);
+    pid /= 113.07; // max rps
+    setShooter(pid);
+  }
+  public void setRps(DoubleSupplier speed){ //TODO: get numbers
+    setRps(speed.getAsDouble());
+  }
   public void stopShooter(){
     leftShooter.stopMotor();
     rightShooter.stopMotor();
   }
   /**
-   * get the rpm of the shooter
+   * get the rps of the shooter
    */
   public Double getShooterRPS() {
     return leftShooter.getVelocity().getValueAsDouble();

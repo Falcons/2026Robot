@@ -92,10 +92,10 @@ public class ShooterSim extends SubsystemBase {
   }
 
   /**
-   * check if the shooter rpm is too low to shoot
-   * @return true when rpm is too low
+   * check if the shooter rps is too low to shoot
+   * @return true when rps is too low
    */
-  public boolean shooterRPMlow() {
+  public boolean shooterRPSlow() {
     if (shooterRunning && rightShooter < ShooterConstants.maxShooterRPS) {
       shooterRunning = false;
       shotTimer.stop();
@@ -148,7 +148,7 @@ public class ShooterSim extends SubsystemBase {
   }
 
   /**
-   * get the rpm of the shooter
+   * get the rps of the shooter
    */
   public Double getShooterRPS() {
     return rightShooter;

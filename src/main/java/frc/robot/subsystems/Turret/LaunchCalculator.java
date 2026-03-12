@@ -44,6 +44,7 @@ public class LaunchCalculator {
 
   private double lastHoodAngle;
   private Rotation2d lastturretAngle;
+  private boolean limelightOverride = false;
 
   public static LaunchCalculator getInstance() {
     if (instance == null) instance = new LaunchCalculator();
@@ -143,7 +144,8 @@ public class LaunchCalculator {
     passingMinDistance = 5.4;
     passingMaxDistance = 17.16;
     phaseDelay = 0.03;
-    double hubOffset = 0.85; //0.584
+    final double hubOffset = 0.6; //0.584
+    final double speedOffset = 0.03;
 
     hoodAngleMap.put(1.1 + hubOffset, 0.1);
     hoodAngleMap.put(1.3 + hubOffset, 0.1);
@@ -158,18 +160,18 @@ public class LaunchCalculator {
     hoodAngleMap.put(4.23 + hubOffset, 0.55);
     hoodAngleMap.put(4.5 + hubOffset, 0.58);
     
-    flywheelSpeedMap.put(1.1 + hubOffset, 0.55);
-    flywheelSpeedMap.put(1.3 + hubOffset, 0.55);
-    flywheelSpeedMap.put(1.7 + hubOffset, 0.6);
-    flywheelSpeedMap.put(2.0 + hubOffset, 0.65);
-    flywheelSpeedMap.put(2.3 + hubOffset, 0.7);
-    flywheelSpeedMap.put(2.6 + hubOffset, 0.77);
-    flywheelSpeedMap.put(2.9 + hubOffset, 0.7);
-    flywheelSpeedMap.put(3.2 + hubOffset, 0.68);
-    flywheelSpeedMap.put(3.62 + hubOffset, 0.72);
-    flywheelSpeedMap.put(3.92 + hubOffset, 0.77);
-    flywheelSpeedMap.put(4.23 + hubOffset, 0.8);
-    flywheelSpeedMap.put(4.5 + hubOffset, 0.83);
+    flywheelSpeedMap.put(1.1 + hubOffset, 0.55 + speedOffset);
+    flywheelSpeedMap.put(1.3 + hubOffset, 0.55 + speedOffset);
+    flywheelSpeedMap.put(1.7 + hubOffset, 0.6 + speedOffset);
+    flywheelSpeedMap.put(2.0 + hubOffset, 0.65 + speedOffset);
+    flywheelSpeedMap.put(2.3 + hubOffset, 0.77 + speedOffset);
+    flywheelSpeedMap.put(2.6 + hubOffset, 0.77 + speedOffset);
+    flywheelSpeedMap.put(2.9 + hubOffset, 0.7 + speedOffset);
+    flywheelSpeedMap.put(3.2 + hubOffset, 0.68 + speedOffset);
+    flywheelSpeedMap.put(3.62 + hubOffset, 0.72 + speedOffset);
+    flywheelSpeedMap.put(3.92 + hubOffset, 0.77 + speedOffset);
+    flywheelSpeedMap.put(4.23 + hubOffset, 0.8 + speedOffset);
+    flywheelSpeedMap.put(4.5 + hubOffset, 0.83 + speedOffset);
 
     timeOfFlightMap.put(1.1+ hubOffset, 0.89);
     timeOfFlightMap.put(1.3+ hubOffset, 0.88);
@@ -278,7 +280,7 @@ public class LaunchCalculator {
             : AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
     Pose2d launcherPosition = estimatedPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurretZero));
     double launcherToTargetDistance = target.getDistance(launcherPosition.getTranslation());
-    // if limelight can see tag set distance to tz // TODO: my limelight shenanigans
+    // if limelight can see tag set distance to tz 
     // if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
     //     Math.hypot(
     //         launcherToTargetDistance = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight)[2],
@@ -304,7 +306,7 @@ public class LaunchCalculator {
     Pose2d lookaheadPose = launcherPosition;
     double lookaheadLauncherToTargetDistance = launcherToTargetDistance;
 
-    // TODO: limelight being overwritten 
+    
     // idk how to rlly fix this since they dont want to use robot pose however velocity is dependant on robot pose
     for (int i = 0; i < 20; i++) { 
       timeOfFlight =
@@ -383,17 +385,17 @@ public class LaunchCalculator {
 
   private static Rotation2d getturretAngleWithLauncherOffset(Pose2d robotPose, Translation2d target, double turretRad) {
 
-    if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
+    // if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
 
-        double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
-        // get angle
-        return new Rotation2d(MathUtil.angleModulus(
-        robotPose.getRotation().getRadians() - // + // turret is facing where the bot is facing 
-        (turretRad - Math.toRadians(90)) - // + its angle -90d offset
-        Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
-        // + Math.toRadians(180)
-        ));
-    }
+    //     double aprilTagOffset[] = LimelightHelpers.getTargetPose_CameraSpace(LimelightConstants.turretLimelight);
+    //     // get angle
+    //     return new Rotation2d(MathUtil.angleModulus(
+    //     robotPose.getRotation().getRadians() - // + // turret is facing where the bot is facing 
+    //     (turretRad - Math.toRadians(90)) - // + its angle -90d offset
+    //     Math.atan2(aprilTagOffset[0], aprilTagOffset[2]) //(TURRET ANGLE) + (APRIL TAG ANGLE)
+    //     // + Math.toRadians(180)
+    //     ));
+    // }
 
     Rotation2d fieldToHubAngle = target.minus(robotPose.getTranslation()).getAngle();
     Rotation2d hubAngle =

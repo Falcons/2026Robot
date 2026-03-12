@@ -23,7 +23,7 @@ public class ControllerRumbleAtSpeed extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    System.out.println(getName() + "start");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -47,7 +47,7 @@ public class ControllerRumbleAtSpeed extends Command {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    
+    System.out.println(getName() + "end");
   }
 
   // Returns true when the command should end.

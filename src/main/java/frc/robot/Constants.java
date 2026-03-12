@@ -24,17 +24,17 @@ public final class Constants {
         // max speed MPS TODO: change max speed MPS
         public static final double maxSpeedMPS = 6.7;
         public static final double maxRotationsRadPS = Math.toRadians(1080);
-        public static final double slowModeMPS = 1;
+        public static final double slowModeMPS = 1.5;
         public static final double slowModeRotationsRadPS = Math.toRadians(45);
         
         public static final double driveRatio = 6.75;
         public static final double driveSteeringRatio = 150/7;
 
-        public static final PathConstraints pathFindingConstraints = new PathConstraints(5, 5, 540, 270);
+        public static final PathConstraints pathFindingConstraints = new PathConstraints(6.7, 5, 6.8, 4);
 
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
-            Meter.of(3),//X
+            Meter.of(2),//X
             Meter.of(4)), //Y
             Rotation2d.fromDegrees(0));
         
@@ -157,7 +157,7 @@ public final class Constants {
             public static final int pivotCANID = 22;
 
             public static final double pivotMin = Math.toRadians(207);
-            public static final double pivotOut = Math.toRadians(220);
+            public static final double pivotOut = 3.7; //Math.toRadians(220);
             public static final double pivotIn = Math.toRadians(322); // in is higher, out is lower
             public static final double pivotMax = Math.toRadians(325); // in is higher, out is lower
         }
