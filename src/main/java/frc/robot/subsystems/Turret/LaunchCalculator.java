@@ -22,9 +22,7 @@ import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants;
-import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TurretConstants;
-import frc.robot.LimelightHelpers;
 import frc.robot.Util.AllianceFlipUtil;
 import frc.robot.Util.Bounds;
 import frc.robot.Util.FieldConstants;
@@ -44,7 +42,6 @@ public class LaunchCalculator {
 
   private double lastHoodAngle;
   private Rotation2d lastturretAngle;
-  private boolean limelightOverride = false;
 
   public static LaunchCalculator getInstance() {
     if (instance == null) instance = new LaunchCalculator();
