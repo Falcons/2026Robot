@@ -41,15 +41,15 @@ public class Pivot extends SubsystemBase {
     limitsConfigs.StatorCurrentLimit = 40;
     limitsConfigs.StatorCurrentLimitEnable = true;
 
-    // Torque limits
-    torqueCurrentConfigs.PeakForwardTorqueCurrent = 400;
-    torqueCurrentConfigs.PeakReverseTorqueCurrent = -400;
+    // Torque limits //TODO: test this
+    // torqueCurrentConfigs.PeakForwardTorqueCurrent = 400;
+    // torqueCurrentConfigs.PeakReverseTorqueCurrent = -400;
 
     // configs
     pivotConfig.withCurrentLimits(limitsConfigs);
     pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
 
-    pivotConfig.withTorqueCurrent(torqueCurrentConfigs);
+    // pivotConfig.withTorqueCurrent(torqueCurrentConfigs);
     pivot.getConfigurator().apply(pivotConfig);
     
     // pid limits

@@ -287,10 +287,8 @@ public class Swerve extends SubsystemBase {
   * @param limelightNames name of limelight
   */
   public void addVisionMeasurement(String limelightName, boolean megatag2) {
-    LimelightHelpers.SetRobotOrientation(limelightName, swerveDrive.getPose().getRotation().getDegrees(), 0, 0, 0, 0, 0);
+    LimelightHelpers.SetRobotOrientation(limelightName, swerveDrive.getPose().getRotation().getDegrees(), 0, swerveDrive.getPitch().getDegrees(), 0, swerveDrive.getRoll().getDegrees(), 0);
     
-    // if(DriverStation.isDisabled())LimelightHelpers.SetIMUMode(LimelightConstants.stillLimelight, 1);
-    // else LimelightHelpers.SetIMUMode(LimelightConstants.stillLimelight, 4);
     LimelightHelpers.PoseEstimate pose;
     if (megatag2) pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.stillLimelight);
     else pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimelightConstants.stillLimelight);

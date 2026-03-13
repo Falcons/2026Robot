@@ -25,7 +25,7 @@ public final class Constants {
         public static final double maxSpeedMPS = 6.7;
         public static final double maxRotationsRadPS = Math.toRadians(1080);
         public static final double slowModeMPS = 1.5;
-        public static final double slowModeRotationsRadPS = Math.toRadians(45);
+        public static final double slowModeRotationsRadPS = Math.toRadians(90);
         
         public static final double driveRatio = 6.75;
         public static final double driveSteeringRatio = 150/7;
@@ -34,7 +34,7 @@ public final class Constants {
 
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
-            Meter.of(2),//X
+            Meter.of(3.5),//X
             Meter.of(4)), //Y
             Rotation2d.fromDegrees(0));
         

@@ -174,11 +174,15 @@ public class Shooter extends SubsystemBase {
     leftShooter.set(speed);
     shooterSetSpeed = speed;
   }
+  
   public void setRps(double speed){ //TODO: get numbers
     double pid = speedControl.calculate(getShooterRPS(), speed);
-    pid /= 113.07; // max rps
+    SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
+    pid /= 97; // max rps
+    SmartDashboard.putNumber("Turret/Shooter/PID/adjusted pid", pid);
     setShooter(pid);
   }
+
   public void setRps(DoubleSupplier speed){ //TODO: get numbers
     setRps(speed.getAsDouble());
   }
