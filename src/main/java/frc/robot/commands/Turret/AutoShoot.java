@@ -6,6 +6,7 @@ package frc.robot.commands.Turret;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Turret.Shooter.Shooter;
@@ -20,6 +21,7 @@ public class AutoShoot extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new PrintCommand("auto shoot started"),
       Commands.runEnd(turret::autoAim, turret::stop, turret),
       Commands.runEnd(hood::autoAim, () -> hood.set(0.0), hood),
       Commands.runEnd(shooter::autoShoot, shooter::stopShooter, shooter),

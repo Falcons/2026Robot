@@ -68,6 +68,8 @@ public class LaunchCalculator {
   private static final double passingMinDistance;
   private static final double passingMaxDistance;
   private static final double phaseDelay;
+  private static double hubOffset;
+  private static double speedOffset;
 
   // Launching Maps
   private static final InterpolatingTreeMap<Double, Double> hoodAngleMap =
@@ -136,52 +138,28 @@ public class LaunchCalculator {
           FieldConstants.LinesHorizontal.leftBumpEnd);
 
   static {
-    minDistance = 1.1;
-    maxDistance = 4.5;
+    minDistance = 1.3;
+    maxDistance = 2.5;
     passingMinDistance = 5.4;
     passingMaxDistance = 17.16;
     phaseDelay = 0.03;
-    final double hubOffset = 0.6; //0.584
-    final double speedOffset = 0.03;
+    hubOffset = 0; //0.584
+    speedOffset = 0;
 
-    hoodAngleMap.put(1.1 + hubOffset, 0.1);
     hoodAngleMap.put(1.3 + hubOffset, 0.1);
-    hoodAngleMap.put(1.7 + hubOffset, 0.0);
-    hoodAngleMap.put(2.0 + hubOffset, 0.0);
-    hoodAngleMap.put(2.3 + hubOffset, 0.0);
-    hoodAngleMap.put(2.6 + hubOffset, 0.0);
-    hoodAngleMap.put(2.9 + hubOffset, 0.25);
-    hoodAngleMap.put(3.2 + hubOffset, 0.4);
-    hoodAngleMap.put(3.62 + hubOffset, 0.45);
-    hoodAngleMap.put(3.92 + hubOffset, 0.5);
-    hoodAngleMap.put(4.23 + hubOffset, 0.55);
-    hoodAngleMap.put(4.5 + hubOffset, 0.58);
+    hoodAngleMap.put(1.8 + hubOffset, 0.2);
+    hoodAngleMap.put(2.2 + hubOffset, 0.4);
+    hoodAngleMap.put(2.5 + hubOffset, 0.5);
     
-    flywheelSpeedMap.put(1.1 + hubOffset, 0.55 + speedOffset);
-    flywheelSpeedMap.put(1.3 + hubOffset, 0.55 + speedOffset);
-    flywheelSpeedMap.put(1.7 + hubOffset, 0.6 + speedOffset);
-    flywheelSpeedMap.put(2.0 + hubOffset, 0.65 + speedOffset);
-    flywheelSpeedMap.put(2.3 + hubOffset, 0.77 + speedOffset);
-    flywheelSpeedMap.put(2.6 + hubOffset, 0.77 + speedOffset);
-    flywheelSpeedMap.put(2.9 + hubOffset, 0.7 + speedOffset);
-    flywheelSpeedMap.put(3.2 + hubOffset, 0.68 + speedOffset);
-    flywheelSpeedMap.put(3.62 + hubOffset, 0.72 + speedOffset);
-    flywheelSpeedMap.put(3.92 + hubOffset, 0.77 + speedOffset);
-    flywheelSpeedMap.put(4.23 + hubOffset, 0.8 + speedOffset);
-    flywheelSpeedMap.put(4.5 + hubOffset, 0.83 + speedOffset);
+    flywheelSpeedMap.put(1.3 + hubOffset, 50 + speedOffset);
+    flywheelSpeedMap.put(1.8 + hubOffset, 50 + speedOffset);
+    flywheelSpeedMap.put(2.2 + hubOffset, 52 + speedOffset);
+    flywheelSpeedMap.put(2.5 + hubOffset, 55 + speedOffset);
 
-    timeOfFlightMap.put(1.1+ hubOffset, 0.89);
-    timeOfFlightMap.put(1.3+ hubOffset, 0.88);
-    timeOfFlightMap.put(1.7+ hubOffset, 1.08);
-    timeOfFlightMap.put(2.0+ hubOffset, 1.11);
-    timeOfFlightMap.put(2.3+ hubOffset, 1.19);
-    timeOfFlightMap.put(2.6+ hubOffset, 1.35);
-    timeOfFlightMap.put(2.9+ hubOffset, 1.26);
-    timeOfFlightMap.put(3.2+ hubOffset, 1.03);
-    timeOfFlightMap.put(3.62+ hubOffset, 1.01);
-    timeOfFlightMap.put(3.92+ hubOffset, 1.11);
-    timeOfFlightMap.put(4.23+ hubOffset, 1.01);
-    timeOfFlightMap.put(4.5+ hubOffset, 0.95);
+    timeOfFlightMap.put(1.3 + hubOffset, 0.45);
+    timeOfFlightMap.put(1.6 + hubOffset, 0.33);
+    timeOfFlightMap.put(2.2 + hubOffset, 0.96);
+    timeOfFlightMap.put(2.5 + hubOffset, 0.75);
 
     // TODO: passing
     passingHoodAngleMap.put(5.46, 38.0);
@@ -243,6 +221,17 @@ public class LaunchCalculator {
     //             flywheelSpeedMap.get(outpostPresetDistance)));
   }
 
+  public static void setHubOffset(double newValue){
+    hubOffset = newValue;
+  }
+  public static void setSpeedOffset(double newValue){
+    speedOffset = newValue;
+  }
+
+  public static double getSpeedOffset(){
+    return speedOffset;
+  }
+
   public static double getMinTimeOfFlight() {
     return timeOfFlightMap.get(minDistance);
   }
@@ -275,7 +264,7 @@ public class LaunchCalculator {
         passing
             ? getPassingTarget(swerve)
             : AllianceFlipUtil.apply(FieldConstants.Hub.topCenterPoint.toTranslation2d());
-    Pose2d launcherPosition = estimatedPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurretZero));
+    Pose2d launcherPosition = estimatedPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurret));
     double launcherToTargetDistance = target.getDistance(launcherPosition.getTranslation());
     // if limelight can see tag set distance to tz 
     // if (LimelightHelpers.lookingAtHub(LimelightConstants.turretLimelight)) {
@@ -292,7 +281,7 @@ public class LaunchCalculator {
         DriverStation.isAutonomous()
             ? robotVelocity
             : GeomUtil.transformVelocity(
-                robotVelocity, TurretConstants.robotToTurretZero.getTranslation().toTranslation2d(), robotAngle);
+                robotVelocity, TurretConstants.robotToTurret.getTranslation().toTranslation2d(), robotAngle);
 
     // Account for imparted velocity by robot (launcher) toe offset
     double timeOfFlight = timeOfFlightMap.get(launcherToTargetDistance);
@@ -321,7 +310,7 @@ public class LaunchCalculator {
 
     // Account for launcher being off center
     Pose2d lookaheadRobotPose =
-        lookaheadPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurretZero).inverse());
+        lookaheadPose.transformBy(GeomUtil.toTransform2d(TurretConstants.robotToTurret).inverse());
     Rotation2d turretAngle = getturretAngleWithLauncherOffset(lookaheadRobotPose, target, turretRad);
 
     // Calculate remaining parameters
@@ -399,12 +388,12 @@ public class LaunchCalculator {
         new Rotation2d(
             Math.asin(
                 MathUtil.clamp(
-                    TurretConstants.robotToTurretZero.getTranslation().getY()
+                    TurretConstants.robotToTurret.getTranslation().getY()
                         / target.getDistance(robotPose.getTranslation()),
                     -1.0,
                     1.0)));
     Rotation2d turretAngle =
-        fieldToHubAngle.plus(hubAngle).plus(TurretConstants.robotToTurretZero.getRotation().toRotation2d());
+        fieldToHubAngle.plus(hubAngle).plus(TurretConstants.robotToTurret.getRotation().toRotation2d());
     
     return turretAngle; 
   }

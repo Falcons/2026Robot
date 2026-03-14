@@ -59,7 +59,7 @@ public class Transfer extends SubsystemBase {
     }
     
     // reset timer
-    if (timer.hasElapsed(2.5)) {
+    if (timer.hasElapsed(2.2)) {
       timer.reset();
     }
   }

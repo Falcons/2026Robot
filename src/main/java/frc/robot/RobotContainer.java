@@ -51,6 +51,7 @@ import frc.robot.subsystems.Intake.PivotSim;
 import frc.robot.subsystems.Intake.Rollers;
 import frc.robot.subsystems.Intake.RollersSim;
 import frc.robot.subsystems.Swerve.Swerve;
+import frc.robot.subsystems.Turret.LaunchCalculator;
 import frc.robot.subsystems.Turret.Turret;
 import frc.robot.subsystems.Turret.TurretSim;
 import frc.robot.subsystems.Turret.Shooter.Shooter;
@@ -128,7 +129,7 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("Hood/set angle", 0.1);
     SmartDashboard.putNumber("Turret/Shooter/Fire speed", 1);
-    SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 1);
+    SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
 
     transfer.setDefaultCommand(Commands.run(() -> transfer.pulse(
         () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
@@ -150,7 +151,7 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
       (stream) -> Constants.isCompetition
         ? stream.filter(auto -> !auto.getName().startsWith("Test")): stream);
-    autoChooser.addOption("hub Center", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.startingPose), DriveConstants.pathFindingConstraints, 0));
+    /*autoChooser.addOption("hub Center", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.startingPose), DriveConstants.pathFindingConstraints, 0));
     autoChooser.addOption("timeout left", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseLeft), DriveConstants.pathFindingConstraints, 0));
     autoChooser.addOption("timeout right", AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.timeoutPoseRight), DriveConstants.pathFindingConstraints, 0));
     autoChooser.addOption("preload shoot left", Commands.parallel(
@@ -159,20 +160,27 @@ public class RobotContainer {
     autoChooser.addOption("preload shoot right", Commands.parallel(
       AutoBuilder.pathfindToPose(AllianceFlipUtil.apply(DriveConstants.ShootingStartRight), DriveConstants.pathFindingConstraints, 0),
       new AimAndShoot(hood, shooter, turret)));
-    
+    */
     SmartDashboard.putData("auto Chooser" ,autoChooser);
   }
 
   private void configureRealBindings() {
     
+    driver.povUp().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(LaunchCalculator.getSpeedOffset() + 0.05)));
+    driver.povDown().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(LaunchCalculator.getSpeedOffset() - 0.05)));
+    driver.povLeft().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(0)));
+
     // OPERATOR
 
     // spin shooter
     // operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(new ShootAndHood(shooter, hood, ShooterConstants.highShooterSpeed, ShooterConstants.highShooterHoodAngle));
     // operator.leftBumper().whileTrue(new ShootAndHood(shooter, hood, ShooterConstants.lowShooterSpeed, ShooterConstants.lowShooterHoodAngle));
     operator.back().whileTrue(Commands.runEnd(() -> shooter.setShooter(1.0), shooter::stopShooter, shooter));  
-    operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(Commands.runEnd(() -> shooter.setShooter(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed", 1)), () -> shooter.setShooter(0.0), shooter));
-    operator.leftBumper().whileTrue(Commands.runEnd(() -> shooter.setRps(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed Rps", 1)), () -> shooter.setShooter(0.0), shooter));
+    operator.axisMagnitudeGreaterThan(2, ControllerConstants.triggerDeadBand).whileTrue(Commands.runEnd(
+      () -> shooter.setRps(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed Rps", 60)), 
+      shooter::stopShooter, shooter));
+    operator.leftBumper().whileTrue(Commands.runEnd(() -> shooter.setRps(85), shooter::stopShooter, shooter));
+    // operator.leftBumper().whileTrue(Commands.runEnd(() -> shooter.setRps(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed Rps", 60)), shooter::stopShooter, shooter));
 
     // manual turret
     operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
@@ -180,7 +188,7 @@ public class RobotContainer {
 
     // auto turret only
     operator.b().whileTrue(Commands.runEnd(turret::autoLimelightAim, turret::stop, turret));
-    operator.a().whileTrue(new AutoShoot(turret, hood, transfer, shooter));
+    operator.a().whileTrue(new AutoShoot(turret, hood, transfer, shooter).andThen(new PrintCommand("autoShoot ended")));
 
     // hood
     operator.axisMagnitudeGreaterThan(5, 0.95).onTrue(
@@ -258,6 +266,7 @@ public class RobotContainer {
       System.err.println(err);
     }
     
+    
     SmartDashboard.putData("auto Chooser" ,autoChooser);
   }
   private void configureSimBindings(){
@@ -290,6 +299,7 @@ public class RobotContainer {
   
   public Command getAutonomousCommand() {
     try{
+      System.out.println("Selected auto: " + autoChooser.getSelected().getName());
       return autoChooser.getSelected();
     }catch (Exception err){
       System.err.println("error loading autonomous command | " + err);

@@ -51,8 +51,8 @@ public class Swerve extends SubsystemBase {
       DriverStation.waitForDsConnection(0);
       // Pose2d limelightPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimelightConstants.stillLimelight).pose;
       SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH; //TODO: high will cause more lag
-      // if (!limelightPose.equals(null)) swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, limelightPose);
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
+      // swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
@@ -68,13 +68,17 @@ public class Swerve extends SubsystemBase {
 
     addVisionMeasurement(LimelightConstants.stillLimelight, true);
     addVisionMeasurement(LimelightConstants.turretLimelight, true);
-    // addVisionMeasurement(LimelightConstants.turretLimelight, false);
+    // addVisionMeasurement(LimelightConstants.stillLimelight, false);
     // addVisionMeasurement(LimelightConstants.turretLimelight, false);
   }
 
   public SwerveDrive getSwerveDrive() {
     return swerveDrive;
   }
+  public void setPose(Pose2d pose){
+    swerveDrive.resetOdometry(pose);
+  }
+
 
   /**
    * Get the chassis speeds based on controller input of 1 joystick and one angle. Control the robot at an offset of
@@ -290,8 +294,8 @@ public class Swerve extends SubsystemBase {
     LimelightHelpers.SetRobotOrientation(limelightName, swerveDrive.getPose().getRotation().getDegrees(), 0, swerveDrive.getPitch().getDegrees(), 0, swerveDrive.getRoll().getDegrees(), 0);
     
     LimelightHelpers.PoseEstimate pose;
-    if (megatag2) pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(LimelightConstants.stillLimelight);
-    else pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimelightConstants.stillLimelight);
+    if (megatag2) pose = LimelightHelpers.getBotPoseEstimate_wpiBlue_MegaTag2(limelightName);
+    else pose = LimelightHelpers.getBotPoseEstimate_wpiBlue(limelightName);
     boolean doRejectUpdate = false;
     // if our angular velocity is greater than 360 degrees per second, ignore vision updates
     if(Math.abs(swerveDrive.getGyro().getYawAngularVelocity().in(DegreesPerSecond)) > 360)

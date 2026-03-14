@@ -18,7 +18,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     public static final double deltaTime = 0.02;
     public static final boolean disableHAL = false; // if tue alliance doesnt update in sim
-    public static final boolean isCompetition = false;
+    public static final boolean isCompetition = true;
 
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS
@@ -103,8 +103,8 @@ public final class Constants {
         public static final int hoodAngleMin = 0;
         public static final int hoodAngleMax = 126;
 
-        public static final double hoodMin = 0;
-        public static final double hoodMax = 0.7;
+        public static final double hoodMin = 0.1;
+        public static final double hoodMax = 0.8;
 
         public static final double hoodSpeedMultipier = 0.1;
     }

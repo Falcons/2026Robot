@@ -67,8 +67,9 @@ public class Hood extends SubsystemBase {
    * @param position position 
    */
   public void set(double position){
-    leftHoodActuator.setPosition(position);
-    rightHoodActuator.setPosition(position);
+    double clampPosition = MathUtil.clamp(position, HoodConstants.hoodMin, HoodConstants.hoodMax);
+    leftHoodActuator.setPosition(clampPosition);
+    rightHoodActuator.setPosition(clampPosition);
   }
   public void set(DoubleSupplier position){
     set(position.getAsDouble());

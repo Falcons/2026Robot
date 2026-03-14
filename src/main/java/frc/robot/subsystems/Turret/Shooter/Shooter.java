@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
   private double shooterSetSpeed = 0;
   private double shooterAutoSpeed = 0;
 
-  private final PIDController speedControl = new PIDController(5, 0, 0);
+  private final PIDController speedControl = new PIDController(0.6, 0, 0);
 
   /** Creates a new Shooter. */
   public Shooter(Turret aimer, Transfer transfer, Swerve swerve) {
@@ -117,7 +117,7 @@ public class Shooter extends SubsystemBase {
   public void autoShoot() {
     LaunchCalculator.getInstance().clearLaunchingParameters();
     shooterAutoSpeed = LaunchCalculator.getInstance().getParameters(swerve, -1.0).flywheelSpeed();
-    leftShooter.set(shooterAutoSpeed);
+    this.setRps(shooterAutoSpeed);
   }
 
   public double getShooterAutoSpeed() {
@@ -176,6 +176,10 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRps(double speed){ //TODO: get numbers
+    // if(Math.abs(leftShooter.get()-speed) <= 5){
+    //   setShooter(leftShooter.get());
+    //   return;
+    // }
     double pid = speedControl.calculate(getShooterRPS(), speed);
     SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
     pid /= 97; // max rps
