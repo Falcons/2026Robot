@@ -5,7 +5,6 @@
 package frc.robot.subsystems.Swerve;
 
 import static edu.wpi.first.units.Units.DegreesPerSecond;
-import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import java.io.File;
 import java.util.function.DoubleSupplier;
@@ -50,22 +49,20 @@ public class Swerve extends SubsystemBase {
       // try to create a new swerve drive
       DriverStation.waitForDsConnection(0);
       // Pose2d limelightPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimelightConstants.stillLimelight).pose;
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH; //TODO: high will cause more lag
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.POSE; //TODO: high will cause more lag
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
       // swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS);
     } catch (Exception e) {
       throw new RuntimeException(e);
     }
     swerveDrive.setMotorIdleMode(true);
+
     setupPathPlanner();
   }
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumberArray("swerve/turret Limelight/botPose blue", LimelightHelpers.getBotPose_wpiBlue(LimelightConstants.turretLimelight));
-    SmartDashboard.putNumberArray("swerve/still Limelight/botPose blue", LimelightHelpers.getBotPose_wpiBlue(LimelightConstants.stillLimelight));
-    SmartDashboard.putNumber("swerve/AngularVelocity radPerSec", swerveDrive.getGyro().getYawAngularVelocity().in(RadiansPerSecond));
-
+    
     addVisionMeasurement(LimelightConstants.stillLimelight, true);
     addVisionMeasurement(LimelightConstants.turretLimelight, true);
     // addVisionMeasurement(LimelightConstants.stillLimelight, false);
@@ -254,7 +251,6 @@ public class Swerve extends SubsystemBase {
           },
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(
-              // TODO: pid
               // PPHolonomicController is the built in path following controller for holonomic drive trains
               new PIDConstants(5.0, 0.0, 0.0),
               // Translation PID constants
@@ -302,13 +298,15 @@ public class Swerve extends SubsystemBase {
     {
       doRejectUpdate = true;
     }
-    if(pose.tagCount == 0)
-    {
-      doRejectUpdate = true;
-    }
-    if(!doRejectUpdate)
-    {
-      swerveDrive.addVisionMeasurement(pose.pose, pose.timestampSeconds, VecBuilder.fill(.7,.7,9999999));
+    if(pose != null){
+      if(pose.tagCount == 0)
+      {
+        doRejectUpdate = true;
+      }
+      if(!doRejectUpdate)
+      {
+        swerveDrive.addVisionMeasurement(pose.pose, pose.timestampSeconds, VecBuilder.fill(.7,.7,9999999));
+      }
     }
   }
 

@@ -95,7 +95,7 @@ public final class Constants {
     }
 
     public static final class HoodConstants {
-        public static final double hoodDefault = 0;
+        public static final double hoodDefault = 0.1;
 
         public static final int rightHoodActuatorPWM = 0;
         public static final int leftHoodActuatorPWM = 1;
@@ -117,7 +117,7 @@ public final class Constants {
         public static final double turretMidRad = Math.toRadians(90);
         public static final double turretMaxRad = Math.toRadians(160);
 
-        public static final double turretError = Math.toRadians(3); //TODO: turret error
+        public static final double turretError = Math.toRadians(3);
 
         // shoot on the move
         public static Transform3d robotToTurret = new Transform3d(0.114, 0, 0.30226, Rotation3d.kZero);

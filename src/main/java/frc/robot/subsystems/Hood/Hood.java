@@ -35,6 +35,8 @@ public class Hood extends SubsystemBase {
 
     leftHoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
     rightHoodActuator.setBoundsMicroseconds(2000, 1800, 1500, 1200, 1000);
+
+    set(HoodConstants.hoodDefault);
   }
 
   @Override

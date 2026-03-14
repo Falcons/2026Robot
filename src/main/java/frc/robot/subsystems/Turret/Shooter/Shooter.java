@@ -50,7 +50,7 @@ public class Shooter extends SubsystemBase {
   private double shooterSetSpeed = 0;
   private double shooterAutoSpeed = 0;
 
-  private final PIDController speedControl = new PIDController(0.6, 0, 0);
+  private final PIDController speedControl = new PIDController(0.46, 0, 0.05);
 
   /** Creates a new Shooter. */
   public Shooter(Turret aimer, Transfer transfer, Swerve swerve) {
@@ -70,7 +70,7 @@ public class Shooter extends SubsystemBase {
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
     rightShooter.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Opposed));
-    kicker.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Aligned));
+    // kicker.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Aligned));
 
     // apply configs
     leftShooterConfig.withCurrentLimits(limitsConfigs);
@@ -136,6 +136,8 @@ public class Shooter extends SubsystemBase {
 
     SmartDashboard.putNumber("Turret/Shooter/PID/setpoint", speedControl.getSetpoint());
     SmartDashboard.putNumber("Turret/Shooter/PID/error", speedControl.getError());
+
+    SmartDashboard.putNumber("Turret/LaunchCalc/Speed offset", LaunchCalculator.getSpeedOffset());
   }
 
   /**
@@ -148,14 +150,6 @@ public class Shooter extends SubsystemBase {
       return true;
     }
     return false;
-  }
-
-  /**
-   * set the kicker speed
-   * @param speed the speed to set
-   */
-  public void setKicker(double speed) {
-    kicker.set(speed);
   }
   /**
    * set the shooter and kicker speed
@@ -175,24 +169,22 @@ public class Shooter extends SubsystemBase {
     shooterSetSpeed = speed;
   }
 
-  public void setRps(double speed){ //TODO: get numbers
-    // if(Math.abs(leftShooter.get()-speed) <= 5){
-    //   setShooter(leftShooter.get());
-    //   return;
-    // }
+  public void setRps(double speed){
     double pid = speedControl.calculate(getShooterRPS(), speed);
     SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
     pid /= 97; // max rps
     SmartDashboard.putNumber("Turret/Shooter/PID/adjusted pid", pid);
     setShooter(leftShooter.get() + pid);
+    kicker.set(1);
   }
 
-  public void setRps(DoubleSupplier speed){ //TODO: get numbers
+  public void setRps(DoubleSupplier speed){
     setRps(speed.getAsDouble());
   }
   public void stopShooter(){
     leftShooter.stopMotor();
     rightShooter.stopMotor();
+    kicker.stopMotor();
   }
   /**
    * get the rps of the shooter
@@ -207,5 +199,9 @@ public class Shooter extends SubsystemBase {
 
   public Double getShooterSetSpeed(){
     return shooterSetSpeed;
+  }
+
+  public double getShooterRealRPS() {
+    return leftShooter.getVelocity().getValueAsDouble();
   }
 }
