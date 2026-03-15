@@ -7,7 +7,6 @@ package frc.robot.subsystems.Turret.Shooter;
 import java.util.function.DoubleSupplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
-// import com.ctre.phoenix6.Orchestra;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -80,21 +79,19 @@ public class Shooter extends SubsystemBase {
     rightShooter.getConfigurator().apply(rightShooterConfig);
     kicker.getConfigurator().apply(kickerConfig);
 
-    /* music bs  
-    orchestra.addInstrument(leftShooter);
-    orchestra.addInstrument(rightShooter);
-    orchestra.addInstrument(transfer); */
+    //  music bs  
+    // orchestra.addInstrument(leftShooter);
+    // orchestra.addInstrument(rightShooter);
   }
 
-  /*
+  /* 
   public void playSong(String path){
     orchestra.loadMusic(path);
     orchestra.play();
   }
   public void stopSong(){
     orchestra.stop();
-  }
-    */
+  }*/
 
   /**
    * turns on transfer motor when the shooter reaches max speed

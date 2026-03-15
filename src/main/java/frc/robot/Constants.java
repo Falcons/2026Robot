@@ -34,10 +34,19 @@ public final class Constants {
 
          // starting position of bot
         public static final Pose2d startingPose = new Pose2d(new Translation2d(
-            Meter.of(3.5),//X
+            Meter.of(3.5),//X 3,5
             Meter.of(4)), //Y
             Rotation2d.fromDegrees(0));
-        
+         // starting position of bot
+        public static final Pose2d startingPoseLeftBump = new Pose2d(new Translation2d(
+            Meter.of(3.5),//X 3,5
+            Meter.of(5.7)), //Y
+            Rotation2d.fromDegrees(0));
+         // starting position of bot
+        public static final Pose2d startingPoseRightBump = new Pose2d(new Translation2d(
+            Meter.of(3.5),//X 3,5
+            Meter.of(2.7)), //Y
+            Rotation2d.fromDegrees(0));
 
         // corrner hideing pose aka timeout
         public static final Pose2d timeoutPoseLeft = new Pose2d(new Translation2d(
@@ -151,6 +160,7 @@ public final class Constants {
         public static final class RollersConstants {
             public static final int rollerCANID = 6;
             public static final double rollerSpeed = 1;
+            public static final double slowRollerSpeed = 0.7;
         }
 
         public static final class PivotConstants {

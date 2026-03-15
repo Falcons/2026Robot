@@ -6,8 +6,10 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -168,6 +170,7 @@ public class RobotContainer {
       () -> shooter.setRps(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed Rps", 60)), 
       shooter::stopShooter, shooter));
     operator.leftBumper().whileTrue(Commands.runEnd(() -> shooter.setRps(85), shooter::stopShooter, shooter));
+    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.slowRollerSpeed), rollers::stop, rollers));
 
     // manual turret
     operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
@@ -286,8 +289,9 @@ public class RobotContainer {
   
   public Command getAutonomousCommand() {
     try{
-      System.out.println("Selected auto: " + autoChooser.getSelected().getName());
-      return autoChooser.getSelected();
+      Command currentAuto = autoChooser.getSelected();
+      System.out.println("Selected auto: " + currentAuto.getName());
+      return currentAuto;
     }catch (Exception err){
       System.err.println("error loading autonomous command | " + err);
       return new taxi(swerve, 1);
