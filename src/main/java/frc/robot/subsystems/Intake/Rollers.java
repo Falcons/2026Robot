@@ -23,7 +23,7 @@ public class Rollers extends SubsystemBase {
   private final SparkMax roller;
   private final RelativeEncoder relativeEncoder;
   private SparkMaxConfig rollerConfig = new SparkMaxConfig();
-  private final PIDController speedControl = new PIDController(0.05, 0, 0.001);
+  private final PIDController speedControl = new PIDController(0.05, 0, 0.0015);
   /** Creates a new Rollers. */
   public Rollers() {
     this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless); 

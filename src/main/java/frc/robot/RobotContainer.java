@@ -172,7 +172,6 @@ public class RobotContainer {
       () -> shooter.setRps(() -> SmartDashboard.getNumber("Turret/Shooter/Fire speed Rps", 60)), 
       shooter::stopShooter, shooter));
     operator.leftBumper().whileTrue(Commands.runEnd(() -> shooter.setRps(85), shooter::stopShooter, shooter));
-    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.slowRollerSpeed), rollers::stop, rollers));
 
     // manual turret
     operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
@@ -187,7 +186,10 @@ public class RobotContainer {
       new InstantCommand(() -> hood.moveHood(operator::getRightY), hood));
 
     // spin intake - rollers 
-    operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
+    // operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
+    // operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.slowRollerSpeed), rollers::stop, rollers));
+    operator.x().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.slowRollerSpeedRPM), rollers::stop, rollers));
+    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.rollerSpeedRPM), rollers::stop, rollers));
     operator.povRight().whileTrue(Commands.runEnd(() -> rollers.set(-RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
 
     // intake out and in

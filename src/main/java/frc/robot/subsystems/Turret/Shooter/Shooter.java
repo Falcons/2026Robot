@@ -134,7 +134,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/PID/setpoint", speedControl.getSetpoint());
     SmartDashboard.putNumber("Turret/Shooter/PID/error", speedControl.getError());
 
-    SmartDashboard.putNumber("Turret/LaunchCalc/Speed offset", LaunchCalculator.getSpeedOffset());
+    SmartDashboard.putNumber("Turret/Shooter/LaunchCalc/Speed offset", LaunchCalculator.getSpeedOffset());
   }
 
   /**
