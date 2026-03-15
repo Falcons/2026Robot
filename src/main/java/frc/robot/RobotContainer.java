@@ -130,6 +130,7 @@ public class RobotContainer {
     this.hood = new Hood(swerve, lights);
 
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
+    SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
 
     transfer.setDefaultCommand(Commands.run(() -> transfer.pulse(
         () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
@@ -162,6 +163,7 @@ public class RobotContainer {
     driver.povDown().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(LaunchCalculator.getSpeedOffset() - 0.05)));
     driver.povLeft().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(0)));
 
+    driver.povRight().whileTrue(Commands.runEnd(() -> rollers.setRPM(() -> SmartDashboard.getNumber("Intake/Rollers/Set RPM", 3000)), rollers::stop, rollers));
     // OPERATOR
 
     // spin shooter
