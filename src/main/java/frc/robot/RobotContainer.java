@@ -127,7 +127,7 @@ public class RobotContainer {
     this.shooter = new Shooter(turret, swerve, lights);
     this.transfer.setShooter(shooter);
     this.rollers = new Rollers(lights);
-    this.pivot = new Pivot(rollers);
+    this.pivot = new Pivot(swerve);
     this.hood = new Hood(swerve, lights);
     this.fmsRumble = new FmsRumble(new CommandXboxController[]{driver, operator});
 

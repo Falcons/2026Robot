@@ -12,18 +12,20 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.spark.SparkMax;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
+import frc.robot.subsystems.Swerve.Swerve;
 
 public class Pivot extends SubsystemBase {
   // pivot motor, encoder and config
   private final TalonFX pivot = new TalonFX(PivotConstants.pivotCANID); //kracken n44
   private final TalonFXConfiguration pivotConfig = new TalonFXConfiguration();
-  private final Rollers rollers;
+  private final Swerve swerve;
 
   private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
 
@@ -31,8 +33,8 @@ public class Pivot extends SubsystemBase {
   
   private boolean atMin, atMax;
   /** Creates a new Pivot. */
-  public Pivot(Rollers rollers) {
-    this.rollers = rollers;
+  public Pivot(Swerve swerve) {
+    this.swerve = swerve;
 
     // smart current limits
     limitsConfigs.StatorCurrentLimit = 40;
@@ -42,9 +44,10 @@ public class Pivot extends SubsystemBase {
     pivotConfig.withCurrentLimits(limitsConfigs);
     pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
 
- //TODO: test this    // pivot.getConfigurator().apply(pivotConfig);
+    //TODO: test this    
+    // pivot.getConfigurator().apply(pivotConfig);
 
-//     // pid limits
+    // pid limits
     // pivotPid.enableContinuousInput(-Math.PI, Math.PI);
     pivotPid.setTolerance(0.05);
     pivotPid.setIntegratorRange(-0.01, 0.01);
@@ -56,14 +59,14 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Pivot/Speed", pivot.get());
     SmartDashboard.putNumber("Intake/Pivot/PID/error", pivotPid.getError());
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", pivotPid.getSetpoint());
-    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder rad", pivotEncoder().getPosition());
-    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", Math.toDegrees(pivotEncoder().getPosition()));
+    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder deg", getPivotDegrees());
+    SmartDashboard.putNumber("Intake/Pivot/Abs Encoder rad", getPivotRad());
     SmartDashboard.putBoolean("Intake/Pivot/at max", atMax);
     SmartDashboard.putBoolean("Intake/Pivot/at min", atMin);
 
     // set max and min
-    atMax = pivotEncoder().getPosition() >= PivotConstants.pivotMax;
-    atMin = pivotEncoder().getPosition() <= PivotConstants.pivotMin;
+    atMax = getPivotRad() >= PivotConstants.pivotMax;
+    atMin = getPivotRad() <= PivotConstants.pivotMin;
   }
   
   public void set(double speed) { 
@@ -85,7 +88,7 @@ public class Pivot extends SubsystemBase {
    * @param setpoint the radians to set the pivot
    */
   public void setPivotPid(double setpoint) {
-    double pid = pivotPid.calculate(pivotEncoder().getPosition(), setpoint);
+    double pid = pivotPid.calculate(getPivotRad(), setpoint);
     // check if above setpoint clamp, and clamp pid speed
     setpoint = MathUtil.clamp(setpoint, PivotConstants.pivotOut, PivotConstants.pivotIn); // pivot in is max
     pid = MathUtil.clamp(-pid, -0.5, 0.5);
@@ -93,10 +96,6 @@ public class Pivot extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Pivot/PID/setpoint", setpoint);
     SmartDashboard.putNumber("Intake/Pivot/PID/calc", pid);
     set(pid);
-  }
-
-  public double getPivotDegrees() {
-    return Math.toDegrees(pivotEncoder().getPosition());
   }
 
   public boolean atSetpoint(){
@@ -114,7 +113,14 @@ public class Pivot extends SubsystemBase {
    * returns the pivot encoder
    */
   public AbsoluteEncoder pivotEncoder() {
-    return rollers.getPivotEncoder();
+    SparkMax angleMotor = (SparkMax) swerve.getSwerveDrive().getModules()[3].getAngleMotor().getMotor();
+    return angleMotor.getAbsoluteEncoder();
+  }
+  public double getPivotRad() {
+    return getPivotDegrees() * Math.PI / 180;
+  }
+  public double getPivotDegrees() {
+    return pivotEncoder().getPosition();
   }
 
   /**

@@ -6,12 +6,11 @@ package frc.robot.subsystems.Intake;
 
 import java.util.function.DoubleSupplier;
 
-import com.revrobotics.AbsoluteEncoder;
-import com.revrobotics.RelativeEncoder;
-import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,27 +21,33 @@ import frc.robot.subsystems.Lights;
 
 public class Rollers extends SubsystemBase {
   private final Lights lights;
-  private final SparkMax roller;
-  private final RelativeEncoder relativeEncoder;
-  private SparkMaxConfig rollerConfig = new SparkMaxConfig();
+
+  private final TalonFX roller = new TalonFX(RollersConstants.rollerCANID);
+  // configs
+  private TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
+  private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
+
   private final PIDController speedControl = new PIDController(0.05, 0, 0.0015);
+
   /** Creates a new Rollers. */
   public Rollers(Lights lights) {
     this.lights = lights;
-    this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless); 
-    rollerConfig.idleMode(IdleMode.kCoast);
-    rollerConfig.smartCurrentLimit(20);
-    rollerConfig.absoluteEncoder.positionConversionFactor(360 * Math.PI / 180); // deg to rad is pi / 180
-    roller.configure(rollerConfig, com.revrobotics.ResetMode.kResetSafeParameters,  com.revrobotics.PersistMode.kNoPersistParameters);
-  
-    this.relativeEncoder  = roller.getEncoder();
+
+    // configs
+    rollerConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Coast));
+    // smart current limits
+    limitsConfigs.StatorCurrentLimit = 40; //TODO: current limite
+    limitsConfigs.StatorCurrentLimitEnable = true;
+    rollerConfig.withCurrentLimits(limitsConfigs);
+
+    roller.getConfigurator().apply(rollerConfig);
   }
 
   @Override
   public void periodic() {
     if (roller.get() == 0) lights.removeQueue(LightConstants.intakePriority);
     SmartDashboard.putNumber("Intake/Rollers/Roller speed", roller.get());
-    SmartDashboard.putNumber("Intake/Rollers/RPM", relativeEncoder.getVelocity());
+    SmartDashboard.putNumber("Intake/Rollers/RPM", roller.getVelocity().getValueAsDouble());
   }
 
   /**
@@ -65,7 +70,7 @@ public class Rollers extends SubsystemBase {
   }
 
   public double getRPM(){
-    return relativeEncoder.getVelocity();
+    return roller.getVelocity().getValueAsDouble();
   }
 
   /**
@@ -73,12 +78,5 @@ public class Rollers extends SubsystemBase {
    */
   public void stop() {
     roller.stopMotor();
-  }
-
-  /**
-   * get encoder for the pivot, YES FOR THE PIVOT
-   */
-  public AbsoluteEncoder getPivotEncoder() {
-    return roller.getAbsoluteEncoder();
   }
 }
