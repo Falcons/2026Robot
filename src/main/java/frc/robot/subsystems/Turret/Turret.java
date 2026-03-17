@@ -25,9 +25,11 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.Constants.TurretConstants;
 import frc.robot.LimelightHelpers;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Swerve.Swerve;
 // import frc.robot.subsystems.Turret.Shooter.Shooter;
 
@@ -35,6 +37,7 @@ public class Turret extends SubsystemBase {
 
   private final Swerve swerve;
   // private final Shooter shooter;
+  private final Lights lights;
 
   private final SparkMax turret = new SparkMax(TurretConstants.turretCANID, MotorType.kBrushless);
   private final AbsoluteEncoder turretEncoder = turret.getAbsoluteEncoder();
@@ -45,8 +48,9 @@ public class Turret extends SubsystemBase {
   private boolean atMax, atMin;
 
   /** Creates a new Movement. */
-  public Turret(Swerve swerve) {
+  public Turret(Swerve swerve, Lights lights) {
     this.swerve = swerve;
+    this.lights = lights;
     // this.shooter = shooter;
 
     turretConfig.absoluteEncoder.positionConversionFactor(Math.PI);
@@ -58,6 +62,12 @@ public class Turret extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    if (turret.get() > 0) {
+      lights.addQueue(LightConstants.autoFireAimPriority);
+    } else {
+      lights.removeQueue(LightConstants.autoFireAimPriority);
+    }
 
     // max saffty
     atMax = turretEncoder.getPosition() >= TurretConstants.turretMaxRad;

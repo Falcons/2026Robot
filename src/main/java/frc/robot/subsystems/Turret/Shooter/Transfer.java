@@ -14,13 +14,16 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Turret.Turret;
 
 public class Transfer extends SubsystemBase {
 
   private final Turret turret;
   private Shooter shooter;
+  private final Lights lights;
 
   private final TalonFX transfer = new TalonFX(ShooterConstants.transferCANID);
   private final TalonFXConfiguration transferConfig = new TalonFXConfiguration();
@@ -29,8 +32,9 @@ public class Transfer extends SubsystemBase {
   private Timer timer = new Timer();
 
   /** Creates a new Transfer. */
-  public Transfer(Turret turret) {
+  public Transfer(Turret turret, Lights lights) {
     this.turret = turret;
+    this.lights = lights;
     timer.start();
     
     limitsConfigs.StatorCurrentLimit = 40;
@@ -45,6 +49,10 @@ public class Transfer extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putNumber("Turret/Shooter/transferSpeed", transfer.get());
+
+    if (transfer.get() == 0) {
+      lights.removeQueue(LightConstants.manualTransferPriority);
+    }
   }
 
   /**
@@ -78,6 +86,7 @@ public class Transfer extends SubsystemBase {
    */
   public void set(double speed) {
     transfer.set(speed);
+    lights.addQueue(LightConstants.manualTransferPriority);
   }
   /**
    * stop the transfer motoe

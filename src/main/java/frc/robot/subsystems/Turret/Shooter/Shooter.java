@@ -17,7 +17,9 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
+import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Swerve.Swerve;
 import frc.robot.subsystems.Turret.LaunchCalculator;
 import frc.robot.subsystems.Turret.Turret;
@@ -25,6 +27,7 @@ import frc.robot.subsystems.Turret.Turret;
 public class Shooter extends SubsystemBase {
   
   // Orchestra orchestra = new Orchestra();///music bs
+  private final Lights lights;
 
   // once shooters AND kicker are max speed than transfer
   private final TalonFX leftShooter = new TalonFX(ShooterConstants.leftShooterCANID); // Kraken x60
@@ -51,9 +54,11 @@ public class Shooter extends SubsystemBase {
   private final PIDController speedControl = new PIDController(0.46, 0, 0.05);
 
   /** Creates a new Shooter. */
-  public Shooter(Turret aimer, Swerve swerve) {
+  public Shooter(Turret aimer, Swerve swerve, Lights lights) {
+  
     this.aimer = aimer;
     this.swerve = swerve;
+    this.lights = lights;
 
     // smart current limits
     limitsConfigs.StatorCurrentLimit = 40;
@@ -96,6 +101,7 @@ public class Shooter extends SubsystemBase {
    */
   public void autoShoot() {
     if (!aimer.inRange()) return; // dont shoot if not in range
+    lights.addQueue(LightConstants.autoFirePriority);
 
     LaunchCalculator.getInstance().clearLaunchingParameters();
     shooterAutoSpeed = LaunchCalculator.getInstance().getParameters(swerve, -1.0).flywheelSpeed();
@@ -108,6 +114,10 @@ public class Shooter extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (leftShooter.get() == 0) {
+      lights.removeQueue(LightConstants.autoFirePriority);
+      lights.removeQueue(LightConstants.manualShooterPriority);
+    }
     SmartDashboard.putNumber("Turret/Shooter/leftShooterSpeed", leftShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/leftShooterRPS", leftShooter.getVelocity().getValueAsDouble());
@@ -151,7 +161,9 @@ public class Shooter extends SubsystemBase {
 
   public void setRps(DoubleSupplier speed){
     setRps(speed.getAsDouble());
+    lights.addQueue(LightConstants.manualShooterPriority);
   }
+
   public void stopShooter(){
     leftShooter.stopMotor();
     rightShooter.stopMotor();

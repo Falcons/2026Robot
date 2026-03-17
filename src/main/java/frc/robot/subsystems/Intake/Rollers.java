@@ -16,15 +16,19 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.LightConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
+import frc.robot.subsystems.Lights;
 
 public class Rollers extends SubsystemBase {
+  private final Lights lights;
   private final SparkMax roller;
   private final RelativeEncoder relativeEncoder;
   private SparkMaxConfig rollerConfig = new SparkMaxConfig();
   private final PIDController speedControl = new PIDController(0.05, 0, 0.0015);
   /** Creates a new Rollers. */
-  public Rollers() {
+  public Rollers(Lights lights) {
+    this.lights = lights;
     this.roller = new SparkMax(RollersConstants.rollerCANID, MotorType.kBrushless); 
     rollerConfig.idleMode(IdleMode.kCoast);
     rollerConfig.smartCurrentLimit(20);
@@ -36,6 +40,7 @@ public class Rollers extends SubsystemBase {
 
   @Override
   public void periodic() {
+    if (roller.get() == 0) lights.removeQueue(LightConstants.intakePriority);
     SmartDashboard.putNumber("Intake/Rollers/Roller speed", roller.get());
     SmartDashboard.putNumber("Intake/Rollers/RPM", relativeEncoder.getVelocity());
   }
@@ -45,6 +50,7 @@ public class Rollers extends SubsystemBase {
    */
   public void set(double roll) {
     roller.set(roll);
+    lights.addQueue(LightConstants.intakePriority);
   }
 
   public void setRPM(double RPM){

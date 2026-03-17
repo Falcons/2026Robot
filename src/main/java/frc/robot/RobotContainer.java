@@ -122,11 +122,11 @@ public class RobotContainer {
   private void setupReal() {
     //initializing real classes
     this.lights = new Lights();
-    this.turret = new Turret(swerve);
-    this.transfer = new Transfer(turret);
-    this.shooter = new Shooter(turret, swerve);
+    this.turret = new Turret(swerve, lights);
+    this.transfer = new Transfer(turret, lights);
+    this.shooter = new Shooter(turret, swerve, lights);
     this.transfer.setShooter(shooter);
-    this.rollers = new Rollers();
+    this.rollers = new Rollers(lights);
     this.pivot = new Pivot(rollers);
     this.hood = new Hood(swerve, lights);
     this.fmsRumble = new FmsRumble(new CommandXboxController[]{driver, operator});
