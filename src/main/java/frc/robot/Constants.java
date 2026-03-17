@@ -160,18 +160,19 @@ public final class Constants {
         public static final class RollersConstants {
             public static final int rollerCANID = 6;
             public static final double rollerSpeed = 1;
-            public static final double rollerSpeedRPM = 6000;
+            public static final double rollerSpeedRPM = 4000;
             public static final double slowRollerSpeed = 0.7;
-            public static final double slowRollerSpeedRPM = 4100;
+            public static final double slowRollerSpeedRPM = 3500;
         }
 
         public static final class PivotConstants {
             public static final int pivotCANID = 22;
 
-            public static final double pivotMin = Math.toRadians(207);
-            public static final double pivotOut = 3.7; //Math.toRadians(220);
-            public static final double pivotIn = Math.toRadians(322); // in is higher, out is lower
-            public static final double pivotMax = Math.toRadians(325); // in is higher, out is lower
+            public static final double pivotMin = Math.toRadians(203); // in is higher, out is lower
+            public static final double pivotMax = Math.toRadians(330); // in is higher, out is lower
+
+             public static final double pivotOut = Math.toRadians(203);
+            public static final double pivotIn = Math.toRadians(327);
         }
     }
     public static final class LightConstants {

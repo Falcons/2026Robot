@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.GenericHID.RumbleType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -27,6 +28,7 @@ public class FmsRumble extends SubsystemBase {
       timeOffset -= 25; // each swap happens every 25 seconds
       setRumble(controllers, 0);
     }
+    SmartDashboard.putNumber("FmsRumble/matchTime", DriverStation.getMatchTime());
   }
 
   public void setRumble(CommandXboxController xboxControllers[], double amount) {

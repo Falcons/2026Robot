@@ -120,7 +120,7 @@ public class Pivot extends SubsystemBase {
     return getPivotDegrees() * Math.PI / 180;
   }
   public double getPivotDegrees() {
-    return pivotEncoder().getPosition();
+    return pivotEncoder().getPosition() * 360;
   }
 
   /**

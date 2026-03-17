@@ -178,6 +178,9 @@ public class RobotContainer {
     // manual turret
     operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
       Commands.runEnd(() -> turret.set(() -> operator.getLeftX()), () -> turret.set(0), turret));
+    // manual pivot
+    // operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
+    //   Commands.runEnd(() -> pivot.set(() -> operator.getLeftX()), () -> pivot.set(0), pivot));
 
     // auto turret only
     operator.b().whileTrue(Commands.runEnd(turret::autoLimelightAim, turret::stop, turret));
@@ -190,8 +193,8 @@ public class RobotContainer {
     // spin intake - rollers 
     // operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
     // operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.slowRollerSpeed), rollers::stop, rollers));
-    operator.x().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.slowRollerSpeedRPM), rollers::stop, rollers));
-    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.rollerSpeedRPM), rollers::stop, rollers));
+    operator.x().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.rollerSpeedRPM), rollers::stop, rollers));
+    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.slowRollerSpeedRPM), rollers::stop, rollers));
     operator.povRight().whileTrue(Commands.runEnd(() -> rollers.set(-RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
 
     // intake out and in
@@ -208,8 +211,8 @@ public class RobotContainer {
     // return home
     operator.y().whileTrue(
       new ParallelCommandGroup(
-        new TurretPID(turret, Math.toRadians(90)),
-        new InstantCommand(() -> hood.setDeg(HoodConstants.hoodAngleMin))));
+      new TurretPID(turret, Math.toRadians(90)),
+      new InstantCommand(() -> hood.setDeg(HoodConstants.hoodAngleMin))));
     
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
   }
