@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.PriorityQueue;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -15,6 +16,8 @@ import frc.robot.Constants.LightConstants;
 public class Lights extends SubsystemBase {
   private final Spark blinkin = new Spark(LightConstants.lightPwm);
   private final Map<String, Double> lightCodeMap = new HashMap<String, Double>();
+  private final Map<Integer, String> priorityToLight = new HashMap<Integer, String>();
+  private PriorityQueue<Integer> lightPriorities = new PriorityQueue<>();
 
   /** Creates a new Lights. */
   public Lights() {
@@ -40,11 +43,28 @@ public class Lights extends SubsystemBase {
     lightCodeMap.put("Grey", 0.95);
     lightCodeMap.put("Dark Grey", 0.97);
     lightCodeMap.put("Black", 0.99);
+    lightCodeMap.put("Strobe Red", -0.11);
+    lightCodeMap.put("Strobe Blue", -0.15);
+    lightCodeMap.put("End To End Blend Color 1 to 2", 0.45);
+
+    priorityToLight.put(0, "Strobe Blue"); // auto fire - flashing purple
+    priorityToLight.put(1, "Blue"); // auto fire aiming - purple
+    priorityToLight.put(2, "Strobe Red"); // manual transfer - flashing pink
+    priorityToLight.put(3, "Hot Pink"); // manual spink shooter - pink
+    priorityToLight.put(4, "Red"); // hood up - red
+    priorityToLight.put(5, "Gold"); // intake spin - blue
+    priorityToLight.put(6, "Green"); // hood up - green
+    priorityToLight.put(7, "End To End Blend Color 1 to 2"); // default
+
+    lightPriorities.add(7); // add lowest prioity
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    if (!lightPriorities.isEmpty()) {
+      set(priorityToLight.get(lightPriorities.peek()));
+    }
   }
 
   /**
@@ -80,5 +100,24 @@ public class Lights extends SubsystemBase {
       if(entry.getValue().equals(blinkin.get())) return entry.getKey();
     }
     return "";
+  }
+
+  /**
+   * add a queue to display this light
+   * @param priority lower is higher priotty
+   */
+  public void addQueue(int priority) {
+    if (!lightPriorities.contains(priority)) {
+      lightPriorities.add(priority);
+    }
+  }
+  /**
+   * remove that queue to display this light cant remove 
+   * the number 7 since that is the default queue
+   * @param priority the number of prioty to remove
+   */
+  public void removeQueue(int priority) {
+    if (priority == 7) return;
+    lightPriorities.remove(priority);
   }
 }

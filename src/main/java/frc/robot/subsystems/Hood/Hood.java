@@ -41,8 +41,14 @@ public class Hood extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if(get() <= HoodConstants.hoodMin) lights.set(LightConstants.hoodDown);
-    else lights.set(LightConstants.hoodUp);
+    if(get() <= HoodConstants.hoodMin) {
+      lights.addQueue(LightConstants.hoodDownPriority);
+      lights.removeQueue(LightConstants.hoodUpPriority);
+    } 
+    else {
+      lights.removeQueue(LightConstants.hoodDownPriority);
+      lights.addQueue(LightConstants.hoodUpPriority);
+    }
 
     SmartDashboard.putNumber("Hood/left actuators", getLeft());
     SmartDashboard.putNumber("Hood/right actuators", getRight());

@@ -41,7 +41,6 @@ public class Shooter extends SubsystemBase {
 
   // need to connect to movement to see if its aligned
   private final Turret aimer;
-  private final Transfer transfer;
   private final Swerve swerve;
 
   // variables
@@ -52,9 +51,8 @@ public class Shooter extends SubsystemBase {
   private final PIDController speedControl = new PIDController(0.46, 0, 0.05);
 
   /** Creates a new Shooter. */
-  public Shooter(Turret aimer, Transfer transfer, Swerve swerve) {
+  public Shooter(Turret aimer, Swerve swerve) {
     this.aimer = aimer;
-    this.transfer = transfer;
     this.swerve = swerve;
 
     // smart current limits
@@ -94,24 +92,11 @@ public class Shooter extends SubsystemBase {
   }*/
 
   /**
-   * turns on transfer motor when the shooter reaches max speed
-   */
-  public void shootWhenMaxSpeed() {
-    // dont run if not in range
-    if (!aimer.inRange()) return;
-
-    leftShooter.set(ShooterConstants.maxShooterSpeed);
-    // wait until shooter is max speed than rotate transfer
-    if (leftShooter.getVelocity().getValueAsDouble() >= ShooterConstants.maxShooterRPS) {
-      transfer.pulse();
-      shooterRunning = true;
-    }
-  }
-
-  /**
    * shoot based on what launch calc spits out
    */
   public void autoShoot() {
+    if (!aimer.inRange()) return; // dont shoot if not in range
+
     LaunchCalculator.getInstance().clearLaunchingParameters();
     shooterAutoSpeed = LaunchCalculator.getInstance().getParameters(swerve, -1.0).flywheelSpeed();
     this.setRps(shooterAutoSpeed);
@@ -137,17 +122,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/LaunchCalc/Speed offset", LaunchCalculator.getSpeedOffset());
   }
 
-  /**
-   * check if the shooter rps is too low to shoot
-   * @return true when rps is too low
-   */
-  public boolean shooterRPSlow() {
-    if (shooterRunning && leftShooter.getVelocity().getValueAsDouble() < ShooterConstants.maxShooterRPS) {
-      shooterRunning = false;
-      return true;
-    }
-    return false;
-  }
   /**
    * set the shooter and kicker speed
    * @param speed the speed to set

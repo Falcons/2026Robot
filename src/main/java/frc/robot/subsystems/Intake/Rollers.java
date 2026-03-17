@@ -5,7 +5,6 @@
 package frc.robot.subsystems.Intake;
 
 import java.util.function.DoubleSupplier;
-import java.util.stream.DoubleStream;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;

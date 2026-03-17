@@ -179,5 +179,13 @@ public final class Constants {
 
         public static final double hoodUp = 0.61;
         public static final double hoodDown = 0.77;
+
+        public static final int autoFirePriority = 0;
+        public static final int autoFireAimPriority = 1;
+        public static final int manualTransferPriority = 2;
+        public static final int manualShooterPriority = 3;
+        public static final int hoodUpPriority = 4;
+        public static final int intakePriority = 5;
+        public static final int hoodDownPriority = 6;
     }
 }

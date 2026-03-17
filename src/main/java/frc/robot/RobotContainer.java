@@ -6,10 +6,8 @@ package frc.robot;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
-import com.pathplanner.lib.commands.PathPlannerAuto;
 import com.pathplanner.lib.events.EventTrigger;
 import com.pathplanner.lib.path.PathPlannerPath;
-import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -45,6 +43,7 @@ import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
 // import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // just for sim
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
+import frc.robot.subsystems.FmsRumble;
 import frc.robot.subsystems.Lights;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Hood.HoodSim;
@@ -80,6 +79,8 @@ public class RobotContainer {
   private Hood hood;
   private Rollers rollers;
   private Transfer transfer;
+  @SuppressWarnings("unused")
+  private FmsRumble fmsRumble; // its being mean so i shall suppress it
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -123,11 +124,12 @@ public class RobotContainer {
     this.lights = new Lights();
     this.turret = new Turret(swerve);
     this.transfer = new Transfer(turret);
-    this.shooter = new Shooter(turret, transfer, swerve);
+    this.shooter = new Shooter(turret, swerve);
     this.transfer.setShooter(shooter);
     this.rollers = new Rollers();
     this.pivot = new Pivot(rollers);
     this.hood = new Hood(swerve, lights);
+    this.fmsRumble = new FmsRumble(new CommandXboxController[]{driver, operator});
 
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
