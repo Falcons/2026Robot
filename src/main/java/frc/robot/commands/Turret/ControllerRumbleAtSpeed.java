@@ -1,4 +1,4 @@
-// Copyright (c) FIRST and other WPILib contributors.
+// Copyright (c) FIRST and other WPILib contributors. //TODO: dont need this
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
@@ -29,13 +29,13 @@ public class ControllerRumbleAtSpeed extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if(shooter.getShooterRealSpeed() >= shooter.getShooterSetSpeed()-0.1 && shooter.getShooterRealSpeed() <= shooter.getShooterSetSpeed()+0.1){
+    if(shooter.atTargetRps()){
       controller.setRumble(RumbleType.kLeftRumble, 0.3);
       controller.setRumble(RumbleType.kRightRumble, 0.3);
     }else {
-        controller.setRumble(RumbleType.kLeftRumble, 0);
-        controller.setRumble(RumbleType.kRightRumble, 0);
-      }
+      controller.setRumble(RumbleType.kLeftRumble, 0);
+      controller.setRumble(RumbleType.kRightRumble, 0);
+    }
   }
 
 
