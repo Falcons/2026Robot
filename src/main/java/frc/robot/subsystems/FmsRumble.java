@@ -9,20 +9,30 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.Turret.Shooter.Shooter;
 
 public class FmsRumble extends SubsystemBase {
   private double timeOffset = 130.0;
   private CommandXboxController controllers[];
+
+  private final Shooter shooter;
   /** Creates a new FMS. */
-  public FmsRumble(CommandXboxController controllers[]) {
+  public FmsRumble(CommandXboxController controllers[], Shooter shooter) {
+    this.shooter = shooter;
     this.controllers = controllers;
   }
 
   @Override
   public void periodic() { 
+    if(shooter.atTargetRps()){
+      setRumble(controllers, 0.1);
+    }else {
+      setRumble(controllers, 0.1);
+    }
+
     // do +5 so it rumbles 5 seconds before
     if (DriverStation.getMatchTime() <= timeOffset + 5 && DriverStation.getMatchTime() >= timeOffset) {
-      setRumble(controllers, 0.5);
+      setRumble(controllers, 0.1);
     }
     if (DriverStation.getMatchTime() == timeOffset) {
       timeOffset -= 25; // each swap happens every 25 seconds

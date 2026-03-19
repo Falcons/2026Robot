@@ -44,11 +44,7 @@ public class Pivot extends SubsystemBase {
     pivotConfig.withCurrentLimits(limitsConfigs);
     pivotConfig.withMotorOutput(new MotorOutputConfigs().withNeutralMode(NeutralModeValue.Brake));
 
-    //TODO: test this    
-    // pivot.getConfigurator().apply(pivotConfig);
-
     // pid limits
-    // pivotPid.enableContinuousInput(-Math.PI, Math.PI);
     pivotPid.setTolerance(0.05);
     pivotPid.setIntegratorRange(-0.01, 0.01);
   }

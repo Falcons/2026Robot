@@ -97,7 +97,7 @@ public class Transfer extends SubsystemBase {
 
   public void autoTransfer() {
     if (!turret.inRange()) return;
-    if (Math.abs(shooter.getShooterRealRPS() - shooter.getShooterAutoSpeed()) < 5 ) {
+    if (shooter.atTargetRps()) {
       pulse();
     }
   }

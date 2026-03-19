@@ -152,6 +152,8 @@ public final class Constants {
             public static final double highShooterHoodAngle = 0.1;
             public static final double lowShooterSpeed = 0.6;
             public static final double lowShooterHoodAngle = 0.8;
+
+            public static final double shooterErrorRps = 3; 
         }
     }
 

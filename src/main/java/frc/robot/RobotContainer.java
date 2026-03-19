@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HoodConstants;
@@ -36,8 +37,8 @@ import frc.robot.commands.Hood.ManualHoodSim;
 import frc.robot.commands.Intake.IntakeSim.PivotPidToggleSim;
 import frc.robot.commands.Intake.IntakeSim.PivotShakeSim;
 import frc.robot.commands.Turret.AutoShoot;
-import frc.robot.commands.Turret.ShootSim;
 import frc.robot.commands.Turret.TurretPID;
+import frc.robot.commands.Turret.TurretSim.ShootSim;
 // import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // just for sim
 import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
@@ -84,6 +85,7 @@ public class RobotContainer {
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
+  private final CommandXboxController testController = new CommandXboxController(2); //TODO: remove this guy
 
   // make a chooser option to select autos
   public static SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -129,18 +131,10 @@ public class RobotContainer {
     this.rollers = new Rollers(lights);
     this.pivot = new Pivot(swerve);
     this.hood = new Hood(swerve, lights);
-    this.fmsRumble = new FmsRumble(new CommandXboxController[]{driver, operator});
+    this.fmsRumble = new FmsRumble(new CommandXboxController[]{driver, operator}, shooter);
 
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
-
-    transfer.setDefaultCommand(Commands.run(() -> transfer.pulse(
-        () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
-
-    // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
-    
-
-    // manual hood
 
     // Named Commands
     NamedCommands.registerCommand("Auto shoot", new AutoShoot(turret,hood, transfer, shooter).withTimeout(10));
@@ -148,7 +142,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake in", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
     NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
     //autos
-     DriverStation.waitForDsConnection(0);
+    DriverStation.waitForDsConnection(0);
 
     autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
       (stream) -> Constants.isCompetition
@@ -157,6 +151,12 @@ public class RobotContainer {
     autoChooser.setDefaultOption("setup", new Setup(pivot, swerve));
 
     SmartDashboard.putData("auto Chooser" ,autoChooser);
+
+    transfer.setDefaultCommand(Commands.run(() -> transfer.pulse(
+        () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
+
+    // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
+
   }
 
   private void configureRealBindings() {
@@ -215,6 +215,12 @@ public class RobotContainer {
       new InstantCommand(() -> hood.setDeg(HoodConstants.hoodAngleMin))));
     
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
+
+    // SYS ID
+    testController.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    testController.b().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    testController.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    testController.y().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   }
  
   private void setupSim(){
