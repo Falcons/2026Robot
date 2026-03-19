@@ -175,9 +175,9 @@ public class RobotContainer {
       shooter::stopShooter, shooter));
     operator.leftBumper().whileTrue(Commands.runEnd(() -> shooter.setRps(85), shooter::stopShooter, shooter));
 
-    // manual turret
-    operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
-      Commands.runEnd(() -> turret.set(() -> operator.getLeftX()), () -> turret.set(0), turret));
+    // manual turret 50% speed
+    operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue( 
+      Commands.runEnd(() -> turret.set(() -> operator.getLeftX() * 0.5), () -> turret.set(0), turret));
     // manual pivot
     // operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(
     //   Commands.runEnd(() -> pivot.set(() -> operator.getLeftX()), () -> pivot.set(0), pivot));
@@ -193,8 +193,8 @@ public class RobotContainer {
     // spin intake - rollers 
     // operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
     // operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.slowRollerSpeed), rollers::stop, rollers));
-    operator.x().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.rollerSpeedRPM), rollers::stop, rollers));
-    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.slowRollerSpeedRPM), rollers::stop, rollers));
+    operator.x().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.rollerSpeedRPS), rollers::stop, rollers));
+    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.slowRollerSpeedRPS), rollers::stop, rollers));
     operator.povRight().whileTrue(Commands.runEnd(() -> rollers.set(-RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
 
     // intake out and in
@@ -212,7 +212,7 @@ public class RobotContainer {
     operator.y().whileTrue(
       new ParallelCommandGroup(
       new TurretPID(turret, Math.toRadians(90)),
-      new InstantCommand(() -> hood.setDeg(HoodConstants.hoodAngleMin))));
+      new InstantCommand(() -> hood.set(HoodConstants.hoodMin))));
     
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
 

@@ -149,28 +149,26 @@ public class LaunchCalculator {
     hoodAngleMap.put(1.3 + hubOffset, 0.1);
     hoodAngleMap.put(1.6 + hubOffset, 0.1);
     hoodAngleMap.put(1.9 + hubOffset, 0.1);
-    hoodAngleMap.put(2.2 + hubOffset, 0.1);
-    hoodAngleMap.put(2.5 + hubOffset, 0.5);
-    hoodAngleMap.put(2.7 + hubOffset, 0.5);
-    hoodAngleMap.put(3 + hubOffset, 0.6);
+    hoodAngleMap.put(2.3 + hubOffset, 0.2);
+    hoodAngleMap.put(2.6 + hubOffset, 0.3);
+    hoodAngleMap.put(2.9 + hubOffset, 0.4);
     hoodAngleMap.put(3.3 + hubOffset, 0.5);
-    hoodAngleMap.put(3.5 + hubOffset, 0.6);
-    hoodAngleMap.put(3.8 + hubOffset, 0.6);
-    hoodAngleMap.put(4.2 + hubOffset, 0.6);
-    hoodAngleMap.put(4.5 + hubOffset, 0.5);
+    hoodAngleMap.put(3.6 + hubOffset, 0.6);
+    hoodAngleMap.put(3.9 + hubOffset, 0.6);
+    hoodAngleMap.put(4.3 + hubOffset, 0.6);
+    hoodAngleMap.put(4.6 + hubOffset, 0.6);
     
     flywheelSpeedMap.put(1.3 + hubOffset, 50 + speedOffset);
-    flywheelSpeedMap.put(1.6 + hubOffset, 55 + speedOffset);
+    flywheelSpeedMap.put(1.6 + hubOffset, 53 + speedOffset);
     flywheelSpeedMap.put(1.9 + hubOffset, 55 + speedOffset);
-    flywheelSpeedMap.put(2.2 + hubOffset, 58 + speedOffset);
-    flywheelSpeedMap.put(2.5 + hubOffset, 55 + speedOffset);
-    flywheelSpeedMap.put(2.5 + hubOffset, 55 + speedOffset);
-    flywheelSpeedMap.put(3 + hubOffset, 60 + speedOffset);
-    flywheelSpeedMap.put(3.3 + hubOffset, 60 + speedOffset);
-    flywheelSpeedMap.put(3.5 + hubOffset, 63 + speedOffset);
-    flywheelSpeedMap.put(3.8 + hubOffset, 64 + speedOffset);
-    flywheelSpeedMap.put(4.2 + hubOffset, 67 + speedOffset);
-    flywheelSpeedMap.put(4.5 + hubOffset, 70 + speedOffset);
+    flywheelSpeedMap.put(2.3 + hubOffset, 55 + speedOffset);
+    flywheelSpeedMap.put(2.6 + hubOffset, 56 + speedOffset);
+    flywheelSpeedMap.put(2.9 + hubOffset, 57 + speedOffset);
+    flywheelSpeedMap.put(3.3 + hubOffset, 59 + speedOffset);
+    flywheelSpeedMap.put(3.6 + hubOffset, 60 + speedOffset);
+    flywheelSpeedMap.put(3.9 + hubOffset, 63 + speedOffset);
+    flywheelSpeedMap.put(4.3 + hubOffset, 65 + speedOffset);
+    flywheelSpeedMap.put(4.6 + hubOffset, 68 + speedOffset);
 
     timeOfFlightMap.put(1.3 + hubOffset, 0.76);
     timeOfFlightMap.put(1.6 + hubOffset, 0.33);
@@ -186,12 +184,13 @@ public class LaunchCalculator {
     passingHoodAngleMap.put(7.80, 0.8);
     passingHoodAngleMap.put(17.16, 0.8);
 
-    passingFlywheelSpeedMap.put(5.46, 85.0);
-    passingFlywheelSpeedMap.put(6.62, 85.0);
-    passingFlywheelSpeedMap.put(7.80, 85.0);
+    passingFlywheelSpeedMap.put(5.46, 50.0);
+    passingFlywheelSpeedMap.put(8.0, 55.0);
+    passingFlywheelSpeedMap.put(11.0, 70.0);
     passingFlywheelSpeedMap.put(17.16, 85.0);
 
-    passingTimeOfFlightMap.put(5.46, 1.27);
+    passingTimeOfFlightMap.put(5.46, 
+    1.27);
     passingTimeOfFlightMap.put(6.62, 1.39);
     passingTimeOfFlightMap.put(7.8, 1.49);
     passingTimeOfFlightMap.put(11.0, 1.75);

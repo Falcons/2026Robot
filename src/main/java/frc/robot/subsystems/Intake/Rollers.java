@@ -58,10 +58,10 @@ public class Rollers extends SubsystemBase {
     lights.addQueue(LightConstants.intakePriority);
   }
 
-  public void setRPM(double RPM){
+  public void setRPM(double RPM){ //TODO: RPS
     double pid = speedControl.calculate(getRPM(), RPM);
     SmartDashboard.putNumber("Intake/Rollers/PID/raw pid", pid);
-    pid /= 6000; // max RPM
+    pid /= 105; // max RPs
     SmartDashboard.putNumber("Intake/Rollers/PID/adjusted pid", pid);
     set(roller.get() + pid);
   }

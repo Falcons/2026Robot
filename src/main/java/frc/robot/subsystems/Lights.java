@@ -46,16 +46,18 @@ public class Lights extends SubsystemBase {
     lightCodeMap.put("Black", 0.99);
     lightCodeMap.put("Strobe Red", -0.11);
     lightCodeMap.put("Strobe Blue", -0.15);
+    lightCodeMap.put("Strobe White", -0.05);
+
     lightCodeMap.put("End To End Blend Color 1 to 2", 0.45);
     lightCodeMap.put("Heartbeat White", -0.21);
 
-    priorityToLight.put(0, "Heartbeat White"); // auto fire - flashing purple
+    priorityToLight.put(0, "Strobe White"); // auto fire - flashing purple
     priorityToLight.put(1, "White"); // auto fire aiming - purple
-    priorityToLight.put(2, "Strobe Red"); // manual transfer - flashing pink
+    priorityToLight.put(2, "Yellow"); // manual transfer - flashing pink
     priorityToLight.put(3, "Hot Pink"); // manual spink shooter - pink
     priorityToLight.put(4, "Red"); // hood up - red
     priorityToLight.put(5, "Blue"); // intake spin - blue
-    priorityToLight.put(6, "Green"); // hood up - green
+    priorityToLight.put(6, "Green"); // hood down - green
     priorityToLight.put(7, "End To End Blend Color 1 to 2"); // default
 
     lightPriorities.add(7); // add lowest prioity

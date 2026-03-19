@@ -267,7 +267,6 @@ public class Shooter extends SubsystemBase {
 
   public void stopShooter(){
     leftShooter.set(0.0);
-    rightShooter.set(0.0);
     kicker.set(0.0);
   }
   /**

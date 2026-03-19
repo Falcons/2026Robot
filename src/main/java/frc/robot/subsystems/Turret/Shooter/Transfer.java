@@ -61,9 +61,9 @@ public class Transfer extends SubsystemBase {
   public void pulse() {
     // move for half a second stop the other half
     if (timer.hasElapsed(2)) {
-      transfer.set(-ShooterConstants.maxTransferSpeed);
+      set(-ShooterConstants.maxTransferSpeed);
     } else{
-      transfer.set(ShooterConstants.maxTransferSpeed);
+      set(ShooterConstants.maxTransferSpeed);
     }
     
     // reset timer
