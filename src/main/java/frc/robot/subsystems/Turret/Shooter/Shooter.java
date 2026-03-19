@@ -65,7 +65,7 @@ public class Shooter extends SubsystemBase {
   // pid
   private final VelocityVoltage velocityVoltage = new VelocityVoltage(0).withSlot(0);
   private final MotionMagicVelocityVoltage motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0);
-  private final PIDController speedControl = new PIDController(0.46, 0, 0.05);
+  private final PIDController speedControl = new PIDController(0.44, 0, 0.05);
   // sys iddd
   private final SysIdRoutine sysIdRoutine;
   private final MutVoltage mutVoltage = Volts.mutable(0);
@@ -232,10 +232,15 @@ public class Shooter extends SubsystemBase {
    * @param speed rps
    */
   public void setRps(double speed){
-    leftShooter.setControl(velocityVoltage.withVelocity(speed));
+    // leftShooter.setControl(velocityVoltage.withVelocity(speed));
     // rightShooter.setControl(velocityVoltage.withVelocity(speed)); // TODO: will follow?
     // leftShooter.setControl(motionMagicVelocityVoltage.withVelocity(speed));
     // rightShooter.setControl(motionMagicVelocityVoltage.withVelocity(speed));
+    double pid = speedControl.calculate(getShooterRPS(), speed);
+    SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
+    pid /= 97; // max rps
+    SmartDashboard.putNumber("Turret/Shooter/PID/adjusted pid", pid);
+    setShooter(leftShooter.get() + pid);
     kicker.set(1);
   }
 

@@ -24,21 +24,21 @@ public class FmsRumble extends SubsystemBase {
 
   @Override
   public void periodic() { 
-    if(shooter.atTargetRps()){
-      setRumble(controllers, 0.1);
-    }else {
-      setRumble(controllers, 0.1);
-    }
+    // if(shooter.atTargetRps()){
+    //   setRumble(controllers, 0.1);
+    // }else {
+    //   setRumble(controllers, 0.1);
+    // }
 
-    // do +5 so it rumbles 5 seconds before
-    if (DriverStation.getMatchTime() <= timeOffset + 5 && DriverStation.getMatchTime() >= timeOffset) {
-      setRumble(controllers, 0.1);
-    }
-    if (DriverStation.getMatchTime() == timeOffset) {
-      timeOffset -= 25; // each swap happens every 25 seconds
-      setRumble(controllers, 0);
-    }
-    SmartDashboard.putNumber("FmsRumble/matchTime", DriverStation.getMatchTime());
+    // // do +5 so it rumbles 5 seconds before
+    // if (DriverStation.getMatchTime() <= timeOffset + 5 && DriverStation.getMatchTime() >= timeOffset) {
+    //   setRumble(controllers, 0.1);
+    // }
+    // if (DriverStation.getMatchTime() == timeOffset) {
+    //   timeOffset -= 25; // each swap happens every 25 seconds
+    //   setRumble(controllers, 0);
+    // }
+    // SmartDashboard.putNumber("FmsRumble/matchTime", DriverStation.getMatchTime());
   }
 
   public void setRumble(CommandXboxController xboxControllers[], double amount) {
