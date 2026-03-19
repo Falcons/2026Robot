@@ -24,8 +24,8 @@ public final class Constants {
         // max speed MPS TODO: change max speed MPS
         public static final double maxSpeedMPS = 6.7;
         public static final double maxRotationsRadPS = Math.toRadians(1080);
-        public static final double slowModeMPS = 3;
-        public static final double slowModeRotationsRadPS = Math.toRadians(90);
+        public static final double slowModeMPS = 2;
+        public static final double slowModeRotationsRadPS = Math.toRadians(120);
         
         public static final double driveRatio = 6.75;
         public static final double driveSteeringRatio = 150/7;
@@ -162,7 +162,7 @@ public final class Constants {
             public static final double rollerSpeed = 1;
             public static final double rollerSpeedRPM = 4000;
             public static final double slowRollerSpeed = 0.7;
-            public static final double slowRollerSpeedRPM = 3500;
+            public static final double slowRollerSpeedRPM = 3000;
         }
 
         public static final class PivotConstants {

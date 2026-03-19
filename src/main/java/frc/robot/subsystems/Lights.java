@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LightConstants;
 
@@ -46,13 +47,14 @@ public class Lights extends SubsystemBase {
     lightCodeMap.put("Strobe Red", -0.11);
     lightCodeMap.put("Strobe Blue", -0.15);
     lightCodeMap.put("End To End Blend Color 1 to 2", 0.45);
+    lightCodeMap.put("Heartbeat White", -0.21);
 
-    priorityToLight.put(0, "Strobe Blue"); // auto fire - flashing purple
-    priorityToLight.put(1, "Blue"); // auto fire aiming - purple
+    priorityToLight.put(0, "Heartbeat White"); // auto fire - flashing purple
+    priorityToLight.put(1, "White"); // auto fire aiming - purple
     priorityToLight.put(2, "Strobe Red"); // manual transfer - flashing pink
     priorityToLight.put(3, "Hot Pink"); // manual spink shooter - pink
     priorityToLight.put(4, "Red"); // hood up - red
-    priorityToLight.put(5, "Gold"); // intake spin - blue
+    priorityToLight.put(5, "Blue"); // intake spin - blue
     priorityToLight.put(6, "Green"); // hood up - green
     priorityToLight.put(7, "End To End Blend Color 1 to 2"); // default
 
@@ -65,6 +67,7 @@ public class Lights extends SubsystemBase {
     if (!lightPriorities.isEmpty()) {
       set(priorityToLight.get(lightPriorities.peek()));
     }
+    SmartDashboard.putNumber("Lights/peak", lightPriorities.peek());
   }
 
   /**

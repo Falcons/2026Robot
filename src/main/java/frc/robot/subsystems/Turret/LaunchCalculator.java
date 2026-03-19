@@ -153,7 +153,11 @@ public class LaunchCalculator {
     hoodAngleMap.put(2.5 + hubOffset, 0.5);
     hoodAngleMap.put(2.7 + hubOffset, 0.5);
     hoodAngleMap.put(3 + hubOffset, 0.6);
-    hoodAngleMap.put(3.3 + hubOffset, 0.0);
+    hoodAngleMap.put(3.3 + hubOffset, 0.5);
+    hoodAngleMap.put(3.5 + hubOffset, 0.6);
+    hoodAngleMap.put(3.8 + hubOffset, 0.6);
+    hoodAngleMap.put(4.2 + hubOffset, 0.6);
+    hoodAngleMap.put(4.5 + hubOffset, 0.5);
     
     flywheelSpeedMap.put(1.3 + hubOffset, 50 + speedOffset);
     flywheelSpeedMap.put(1.6 + hubOffset, 55 + speedOffset);
@@ -163,6 +167,10 @@ public class LaunchCalculator {
     flywheelSpeedMap.put(2.5 + hubOffset, 55 + speedOffset);
     flywheelSpeedMap.put(3 + hubOffset, 60 + speedOffset);
     flywheelSpeedMap.put(3.3 + hubOffset, 60 + speedOffset);
+    flywheelSpeedMap.put(3.5 + hubOffset, 63 + speedOffset);
+    flywheelSpeedMap.put(3.8 + hubOffset, 64 + speedOffset);
+    flywheelSpeedMap.put(4.2 + hubOffset, 67 + speedOffset);
+    flywheelSpeedMap.put(4.5 + hubOffset, 70 + speedOffset);
 
     timeOfFlightMap.put(1.3 + hubOffset, 0.76);
     timeOfFlightMap.put(1.6 + hubOffset, 0.33);
@@ -173,15 +181,15 @@ public class LaunchCalculator {
     timeOfFlightMap.put(3.3 + hubOffset, 0.9);
 
     // TODO: passing
-    passingHoodAngleMap.put(5.46, 38.0);
-    passingHoodAngleMap.put(6.62, 38.0);
-    passingHoodAngleMap.put(7.80, 38.0);
-    passingHoodAngleMap.put(17.16, 38.0);
+    passingHoodAngleMap.put(5.46, 0.8);
+    passingHoodAngleMap.put(6.62, 0.8);
+    passingHoodAngleMap.put(7.80, 0.8);
+    passingHoodAngleMap.put(17.16, 0.8);
 
-    passingFlywheelSpeedMap.put(5.46, 160.0);
-    passingFlywheelSpeedMap.put(6.62, 180.0);
-    passingFlywheelSpeedMap.put(7.80, 200.0);
-    passingFlywheelSpeedMap.put(17.16, 360.0);
+    passingFlywheelSpeedMap.put(5.46, 85.0);
+    passingFlywheelSpeedMap.put(6.62, 85.0);
+    passingFlywheelSpeedMap.put(7.80, 85.0);
+    passingFlywheelSpeedMap.put(17.16, 85.0);
 
     passingTimeOfFlightMap.put(5.46, 1.27);
     passingTimeOfFlightMap.put(6.62, 1.39);
@@ -255,7 +263,7 @@ public class LaunchCalculator {
     boolean passing =
         AllianceFlipUtil.applyX(swerve.getPose().getX())
             > FieldConstants.LinesVertical.hubCenter;
-    passing = false; //TODO: we r not always passing
+    // passing = false; //TODO: we r not always passing
     if (latestParameters != null) {
       return latestParameters;
     }

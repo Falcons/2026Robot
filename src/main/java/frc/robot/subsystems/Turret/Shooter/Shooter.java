@@ -12,9 +12,11 @@ import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
+// import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LightConstants;
@@ -51,14 +53,22 @@ public class Shooter extends SubsystemBase {
   private double shooterSetSpeed = 0;
   private double shooterAutoSpeed = 0;
 
-  private final PIDController speedControl = new PIDController(0.46, 0, 0.05);
+  private final PIDController speedControl = new PIDController(0.46, 0, 0.04);
+  // private final SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(0.1, 0.01);
 
   /** Creates a new Shooter. */
   public Shooter(Turret aimer, Swerve swerve, Lights lights) {
+
+    SmartDashboard.putNumber("Turret/Shooter/PID/kp", 0.46);
+    SmartDashboard.putNumber("Turret/Shooter/PID/kd", 0.04);
   
     this.aimer = aimer;
     this.swerve = swerve;
     this.lights = lights;
+
+    rightShooter.getConfigurator().apply(new TalonFXConfiguration());
+    leftShooter.getConfigurator().apply(new TalonFXConfiguration());
+    
 
     // smart current limits
     limitsConfigs.StatorCurrentLimit = 40;
@@ -71,6 +81,7 @@ public class Shooter extends SubsystemBase {
 
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
+    rightShooterConfig.MotorOutput.Inverted = InvertedValue.Clockwise_Positive;
     rightShooter.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Opposed));
     // kicker.setControl(new Follower(ShooterConstants.leftShooterCANID, MotorAlignmentValue.Aligned));
 
@@ -151,7 +162,11 @@ public class Shooter extends SubsystemBase {
   }
 
   public void setRps(double speed){
-    double pid = speedControl.calculate(getShooterRPS(), speed);
+
+    // speedControl.setP(SmartDashboard.getNumber("Turret/Shooter/PID/kp", 0.46));
+    // speedControl.setD(SmartDashboard.getNumber("Turret/Shooter/PID/kd", 0.04));
+
+    double pid = speedControl.calculate(getShooterRPS(), speed);// + feedforward.calculate(speed);
     SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
     pid /= 97; // max rps
     SmartDashboard.putNumber("Turret/Shooter/PID/adjusted pid", pid);
@@ -165,9 +180,8 @@ public class Shooter extends SubsystemBase {
   }
 
   public void stopShooter(){
-    leftShooter.stopMotor();
-    rightShooter.stopMotor();
-    kicker.stopMotor();
+    leftShooter.set(0.0);
+    kicker.set(0.0);
   }
   /**
    * get the rps of the shooter
