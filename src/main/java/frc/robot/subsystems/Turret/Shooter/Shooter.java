@@ -9,23 +9,19 @@ import static edu.wpi.first.units.Units.Volts;
 
 import java.util.function.DoubleSupplier;
 
-import com.ctre.phoenix6.SignalLogger;
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
-import com.ctre.phoenix6.controls.MotionMagicVelocityVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.InvertedValue;
 import com.ctre.phoenix6.signals.MotorAlignmentValue;
-// import com.ctre.phoenix6.signals.MotorAlignmentValue;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.measure.MutAngularVelocity;
 import edu.wpi.first.units.measure.MutVoltage;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -64,7 +60,6 @@ public class Shooter extends SubsystemBase {
 
   // pid
   private final VelocityVoltage velocityVoltage = new VelocityVoltage(0).withSlot(0);
-  private final MotionMagicVelocityVoltage motionMagicVelocityVoltage = new MotionMagicVelocityVoltage(0);
   private final PIDController speedControl = new PIDController(0.44, 0, 0.05);
   // sys iddd
   private final SysIdRoutine sysIdRoutine;
@@ -147,13 +142,8 @@ public class Shooter extends SubsystemBase {
     leftShooterConfig.withCurrentLimits(limitsConfigs);
     rightShooterConfig.withCurrentLimits(limitsConfigs);
     kickerConfig.withCurrentLimits(limitsConfigs);
-
-    // apply configs
-    leftShooter.getConfigurator().apply(slot0Configs);
-    leftShooter.getConfigurator().apply(leftShooterConfig);
-    rightShooter.getConfigurator().apply(slot0Configs);
-    rightShooter.getConfigurator().apply(rightShooterConfig);
-    kicker.getConfigurator().apply(kickerConfig);
+    leftShooterConfig.withSlot0(slot0Configs);
+    rightShooterConfig.withSlot0(slot0Configs);
 
     // follow right shooter
     leftShooterConfig.MotorOutput.Inverted = InvertedValue.CounterClockwise_Positive;
@@ -164,6 +154,11 @@ public class Shooter extends SubsystemBase {
     //  music bs  
     // orchestra.addInstrument(leftShooter);
     // orchestra.addInstrument(rightShooter);
+
+    // apply configs
+    leftShooter.getConfigurator().apply(leftShooterConfig);
+    rightShooter.getConfigurator().apply(rightShooterConfig);
+    kicker.getConfigurator().apply(kickerConfig);
   }
 
   /* 
@@ -232,10 +227,6 @@ public class Shooter extends SubsystemBase {
    * @param speed rps
    */
   public void setRps(double speed){
-    // leftShooter.setControl(velocityVoltage.withVelocity(speed));
-    // rightShooter.setControl(velocityVoltage.withVelocity(speed)); // TODO: will follow?
-    // leftShooter.setControl(motionMagicVelocityVoltage.withVelocity(speed));
-    // rightShooter.setControl(motionMagicVelocityVoltage.withVelocity(speed));
     double pid = speedControl.calculate(getShooterRPS(), speed);
     SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
     pid /= 97; // max rps
@@ -278,6 +269,11 @@ public class Shooter extends SubsystemBase {
 
   public Double getShooterRealSpeed(){
     return leftShooter.get();
+  }
+
+  public void shooterTest() { // 60 rps for memes idk :/
+    leftShooter.setControl(velocityVoltage.withVelocity(60));
+    rightShooter.setControl(velocityVoltage.withVelocity(-60));
   }
 
   /*

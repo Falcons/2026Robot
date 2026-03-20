@@ -47,7 +47,7 @@ public class FmsRumble extends SubsystemBase {
     // }
 
     // do +5 so it rumbles 5 seconds before
-    if (getTime() <= rumbleTime + 2 && getTime() > rumbleTime) {
+    if (getTime() <= rumbleTime + rumbleSecs && getTime() > rumbleTime) {
       setRumble(controllers, 0.5);
     }
     if (getTime() < rumbleTime) {

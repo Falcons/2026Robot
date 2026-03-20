@@ -85,7 +85,7 @@ public class RobotContainer {
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
-  private final CommandXboxController testController = new CommandXboxController(2); //TODO: remove this guy
+  // private final CommandXboxController testController = new CommandXboxController(2); //TODO: remove this guy
 
   // make a chooser option to select autos
   public static SendableChooser<Command> autoChooser = new SendableChooser<Command>();
@@ -217,10 +217,13 @@ public class RobotContainer {
     // driver.y().whileTrue(Commands.runEnd(() -> shooter.playSong("src/main/deploy/chirp/crazy_train.chrp"), shooter::stopSong)); //music bs
 
     // SYS ID
-    testController.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    testController.b().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-    testController.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    testController.y().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // testController.a().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // testController.b().whileTrue(shooter.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+    // testController.x().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // testController.y().whileTrue(shooter.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+
+    // TODO: test rps
+    //operator.start().whileTrue(Commands.runEnd(shooter::shooterTest, shooter::stopShooter, shooter));
   }
  
   private void setupSim(){
