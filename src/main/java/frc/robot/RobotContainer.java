@@ -122,6 +122,7 @@ public class RobotContainer {
   }
   
   private void setupReal() {
+    DriverStation.silenceJoystickConnectionWarning(true);
     //initializing real classes
     this.lights = new Lights();
     this.turret = new Turret(swerve, lights);

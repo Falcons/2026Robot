@@ -130,28 +130,29 @@ public class Shooter extends SubsystemBase {
 
     // pidddddddd
     var slot0Configs = new Slot0Configs(); // shouldnt need a
-    slot0Configs.kS = 0.4; // Add 0.25 V output to overcome static friction
-    slot0Configs.kV = 0.11; // A velocity target of 1 rps results in 0.12 V output
-    slot0Configs.kP = 0; // A position error of 2.5 rotations results in 12 V output
+    slot0Configs.kS = 0.083585; // Add 0.25 V output to overcome static friction 0.4
+    slot0Configs.kV = 0.11406; // A velocity target of 1 rps results in 0.12 V output 0.11
+    slot0Configs.kP = 0.0076509; // A position error of 2.5 rotations results in 12 V output
     slot0Configs.kI = 0; // no output for integrated error
     slot0Configs.kD = 0; // A velocity error of 1 rps results in 0.1 V output
 
     // motion magic to make more smooth
-    leftShooterConfig.MotionMagic.MotionMagicAcceleration = 400;
-    leftShooterConfig.MotionMagic.MotionMagicJerk = 4000;
+    // leftShooterConfig.MotionMagic.MotionMagicAcceleration = 400;
+    // leftShooterConfig.MotionMagic.MotionMagicJerk = 4000;
 
-    rightShooterConfig.MotionMagic.MotionMagicAcceleration = 400;
-    rightShooterConfig.MotionMagic.MotionMagicJerk = 4000;
+    // rightShooterConfig.MotionMagic.MotionMagicAcceleration = 400;
+    // rightShooterConfig.MotionMagic.MotionMagicJerk = 4000;
 
     // apply current limits
     leftShooterConfig.withCurrentLimits(limitsConfigs);
     rightShooterConfig.withCurrentLimits(limitsConfigs);
+
+    leftShooterConfig.withSlot0(slot0Configs);
+    rightShooterConfig.withSlot0(slot0Configs);
     kickerConfig.withCurrentLimits(limitsConfigs);
 
     // apply configs
-    leftShooter.getConfigurator().apply(slot0Configs);
     leftShooter.getConfigurator().apply(leftShooterConfig);
-    rightShooter.getConfigurator().apply(slot0Configs);
     rightShooter.getConfigurator().apply(rightShooterConfig);
     kicker.getConfigurator().apply(kickerConfig);
 
@@ -201,10 +202,13 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/leftShooterRPS", leftShooter.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Turret/Shooter/rightShooterRPS", rightShooter.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/rightShooterPOS", rightShooter.getPosition().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/leftShooterPOS", leftShooter.getPosition().getValueAsDouble());
     
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
     SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
 
+    SmartDashboard.putNumber("Turret/Shooter/PID/target", getTargetRps());
     SmartDashboard.putNumber("Turret/Shooter/PID/setpoint", speedControl.getSetpoint());
     SmartDashboard.putNumber("Turret/Shooter/PID/error", speedControl.getError());
 
@@ -232,15 +236,17 @@ public class Shooter extends SubsystemBase {
    * @param speed rps
    */
   public void setRps(double speed){
-    // leftShooter.setControl(velocityVoltage.withVelocity(speed));
+    var request = new VelocityVoltage(0).withSlot(0);
+    leftShooter.setControl(request.withVelocity(speed));
+    SmartDashboard.putNumber("Turret/Shooter/PID/cc error", leftShooter.getClosedLoopError().getValueAsDouble());
     // rightShooter.setControl(velocityVoltage.withVelocity(speed)); // TODO: will follow?
     // leftShooter.setControl(motionMagicVelocityVoltage.withVelocity(speed));
     // rightShooter.setControl(motionMagicVelocityVoltage.withVelocity(speed));
-    double pid = speedControl.calculate(getShooterRPS(), speed);
-    SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
-    pid /= 97; // max rps
-    SmartDashboard.putNumber("Turret/Shooter/PID/adjusted pid", pid);
-    setShooter(leftShooter.get() + pid);
+    // double pid = speedControl.calculate(getShooterRPS(), speed);
+    // SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
+    // pid /= 97; // max rps
+    // SmartDashboard.putNumber("Turret/Shooter/PID/adjusted pid", pid);
+    // setShooter(leftShooter.get() + pid);
     kicker.set(1);
   }
 

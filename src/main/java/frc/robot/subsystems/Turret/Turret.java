@@ -63,7 +63,7 @@ public class Turret extends SubsystemBase {
   @Override
   public void periodic() {
 
-    if (turret.get() > 0) {
+    if (Math.abs(turret.get()) > 0) {
       lights.addQueue(LightConstants.autoFireAimPriority);
     } else {
       lights.removeQueue(LightConstants.autoFireAimPriority);
