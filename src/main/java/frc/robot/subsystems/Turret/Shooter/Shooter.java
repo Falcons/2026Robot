@@ -239,14 +239,19 @@ public class Shooter extends SubsystemBase {
     var request = new VelocityVoltage(0).withSlot(0);
     leftShooter.setControl(request.withVelocity(speed));
     SmartDashboard.putNumber("Turret/Shooter/PID/cc error", leftShooter.getClosedLoopError().getValueAsDouble());
-    // rightShooter.setControl(velocityVoltage.withVelocity(speed)); // TODO: will follow?
-    // leftShooter.setControl(motionMagicVelocityVoltage.withVelocity(speed));
-    // rightShooter.setControl(motionMagicVelocityVoltage.withVelocity(speed));
-    // double pid = speedControl.calculate(getShooterRPS(), speed);
-    // SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
-    // pid /= 97; // max rps
-    // SmartDashboard.putNumber("Turret/Shooter/PID/adjusted pid", pid);
-    // setShooter(leftShooter.get() + pid);
+    kicker.set(1);
+  }
+  /**
+   * set the speed of the motor in rps
+   * @param speed rps
+   * @deprecated bulky
+   */
+  public void oldSetRps(double speed){
+    double pid = speedControl.calculate(getShooterRPS(), speed);
+    SmartDashboard.putNumber("Turret/Shooter/PID/raw pid", pid);
+    pid /= 97; // max rps
+    SmartDashboard.putNumber("Turret/Shooter/PID/adjusted pid", pid);
+    setShooter(leftShooter.get() + pid);
     kicker.set(1);
   }
 
