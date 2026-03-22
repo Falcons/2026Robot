@@ -202,8 +202,6 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/rightShooterSpeed", rightShooter.get());
     SmartDashboard.putNumber("Turret/Shooter/leftShooterRPS", leftShooter.getVelocity().getValueAsDouble());
     SmartDashboard.putNumber("Turret/Shooter/rightShooterRPS", rightShooter.getVelocity().getValueAsDouble());
-    SmartDashboard.putNumber("Turret/Shooter/rightShooterPOS", rightShooter.getPosition().getValueAsDouble());
-    SmartDashboard.putNumber("Turret/Shooter/leftShooterPOS", leftShooter.getPosition().getValueAsDouble());
     
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
     SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
@@ -244,7 +242,7 @@ public class Shooter extends SubsystemBase {
   /**
    * set the speed of the motor in rps
    * @param speed rps
-   * @deprecated bulky
+   * @deprecated bulky | no feedforward
    */
   public void oldSetRps(double speed){
     double pid = speedControl.calculate(getShooterRPS(), speed);

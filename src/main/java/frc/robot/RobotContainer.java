@@ -46,6 +46,7 @@ import frc.robot.commands.Intake.PivotPid;
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
 import frc.robot.subsystems.FmsRumble;
 import frc.robot.subsystems.Lights;
+import frc.robot.subsystems.MiscUtils;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Hood.HoodSim;
 import frc.robot.subsystems.Intake.Pivot;
@@ -82,6 +83,7 @@ public class RobotContainer {
   private Transfer transfer;
   @SuppressWarnings("unused")
   private FmsRumble fmsRumble; // its being mean so i shall suppress it
+  private MiscUtils miscUtils;
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
@@ -122,7 +124,7 @@ public class RobotContainer {
   }
   
   private void setupReal() {
-    DriverStation.silenceJoystickConnectionWarning(true);
+    // DriverStation.silenceJoystickConnectionWarning(true);
     //initializing real classes
     this.lights = new Lights();
     this.turret = new Turret(swerve, lights);
@@ -133,15 +135,17 @@ public class RobotContainer {
     this.pivot = new Pivot(swerve);
     this.hood = new Hood(swerve, lights);
     this.fmsRumble = new FmsRumble(new CommandXboxController[]{driver, operator}, shooter);
+    
 
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
 
     // Named Commands
-    NamedCommands.registerCommand("Auto shoot", new AutoShoot(turret,hood, transfer, shooter).withTimeout(10));
+    NamedCommands.registerCommand("Auto shoot", new AutoShoot(turret, hood, transfer, shooter).withTimeout(10));
     NamedCommands.registerCommand("Intake out", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed).withTimeout(1));
     NamedCommands.registerCommand("Intake in", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
     NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
+    NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers).withTimeout(1));
     //autos
     DriverStation.waitForDsConnection(0);
 
@@ -157,7 +161,7 @@ public class RobotContainer {
         () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
 
     // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
-
+    // this.miscUtils = new MiscUtils(autoChooser, swerve);
   }
 
   private void configureRealBindings() {

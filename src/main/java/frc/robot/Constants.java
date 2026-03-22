@@ -19,6 +19,7 @@ public final class Constants {
     public static final double deltaTime = 0.02;
     public static final boolean disableHAL = false; // if tue alliance doesnt update in sim
     public static final boolean isCompetition = true;
+    public static final boolean logDashboard = true;
 
     public static final class DriveConstants {  
         // max speed MPS TODO: change max speed MPS

@@ -49,7 +49,7 @@ public class Swerve extends SubsystemBase {
       // try to create a new swerve drive
       DriverStation.waitForDsConnection(0);
       // Pose2d limelightPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimelightConstants.stillLimelight).pose;
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.POSE; //TODO: high will cause more lag
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH; //TODO: high will cause more lag
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
       // swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS);
     } catch (Exception e) {
@@ -242,21 +242,18 @@ public class Swerve extends SubsystemBase {
               swerveDrive.drive(
                   speedsRobotRelative,
                   swerveDrive.kinematics.toSwerveModuleStates(speedsRobotRelative),
-                  moduleFeedForwards.linearForces()
-                               );
+                  moduleFeedForwards.linearForces());
             } else
             {
               swerveDrive.setChassisSpeeds(speedsRobotRelative);
             }
           },
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
-          new PPHolonomicDriveController(
-              // PPHolonomicController is the built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0),
-              // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)
-              // Rotation PID constants
+          new PPHolonomicDriveController(//built in path following controller for holonomic drive trains
+              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
+              new PIDConstants(5.0, 0.0, 0.0)// Rotation PID constants
           ),
+          
           config,
           // The robot configuration
           () -> {
