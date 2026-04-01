@@ -56,37 +56,16 @@ public class Transfer extends SubsystemBase {
   }
 
   /**
-   * Pulse the transfer motor in half a second intravals
-   */
-  public void pulse() {
-    // move for half a second stop the other half
-    if (timer.hasElapsed(2)) {
-      set(-ShooterConstants.maxTransferSpeed);
-    } else{
-      set(ShooterConstants.maxTransferSpeed);
-    }
-    
-    // reset timer
-    if (timer.hasElapsed(2.2)) {
-      timer.reset();
-    }
-  }
-
-  public void pulse(BooleanSupplier run) {
-    if (run.getAsBoolean()) {
-      pulse();
-    } else {
-      transfer.set(0.0);
-    }
-  }
-
-  /**
    * set the transfer speed
    * @param speed the speed to set
    */
   public void set(double speed) {
     transfer.set(speed);
     lights.addQueue(LightConstants.manualTransferPriority);
+  }
+  public void set(BooleanSupplier run, double speed) {
+    if(run.getAsBoolean()) set(speed);
+    else stop();
   }
   /**
    * stop the transfer motoe
@@ -98,7 +77,7 @@ public class Transfer extends SubsystemBase {
   public void autoTransfer() {
     if (!turret.inRange()) return;
     if (shooter.atTargetRps()) {
-      pulse();
+      set(ShooterConstants.maxTransferSpeed);
     }
   }
 

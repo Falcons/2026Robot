@@ -4,9 +4,14 @@
 
 package frc.robot.subsystems;
 
-import com.pathplanner.lib.commands.PathPlannerAuto;
+import java.util.List;
 
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.path.PathPlannerPath;
+
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.wpilibj.DataLogManager;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -26,8 +31,25 @@ public class MiscUtils extends SubsystemBase {
 
   @Override
   public void periodic() {
-    Command SelectedAuto = autoChooser.getSelected();
-    PathPlannerAuto SelectedPathPlannerAuto = new PathPlannerAuto(SelectedAuto.getName());
-    
+    /*
+    // auto path preview
+    Command selectedAuto = autoChooser.getSelected();
+    List<PathPlannerPath> selectedPaths;
+    try {
+      selectedPaths = PathPlannerAuto.getPathGroupFromAutoFile(selectedAuto.getName());
+    } catch (Exception e) {
+      selectedPaths = List.of();
+      System.err.println(e);
+    }
+
+    if(!DriverStation.isTeleop()){
+      for(PathPlannerPath path: selectedPaths){
+        swerve.getSwerveDrive().field.getObject(path.name).setPoses(path.getPathPoses());
+      }
+    }else{
+      for(PathPlannerPath path: selectedPaths){
+        swerve.getSwerveDrive().field.getObject(path.name).setPose(new Pose2d());
+      }
+    }*/
   }
 }

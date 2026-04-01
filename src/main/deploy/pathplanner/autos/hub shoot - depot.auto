@@ -63,13 +63,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "mid to outpost"
+            "pathName": "mid to depot"
           }
         }
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }

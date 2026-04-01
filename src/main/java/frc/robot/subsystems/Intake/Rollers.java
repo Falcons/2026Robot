@@ -47,7 +47,7 @@ public class Rollers extends SubsystemBase {
   public void periodic() {
     if (roller.get() == 0) lights.removeQueue(LightConstants.intakePriority);
     SmartDashboard.putNumber("Intake/Rollers/Roller speed", roller.get());
-    SmartDashboard.putNumber("Intake/Rollers/RPM", roller.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Intake/Rollers/RPS", roller.getVelocity().getValueAsDouble());
   }
 
   /**
@@ -58,15 +58,15 @@ public class Rollers extends SubsystemBase {
     lights.addQueue(LightConstants.intakePriority);
   }
 
-  public void setRPM(double RPM){ //TODO: RPS
-    double pid = speedControl.calculate(getRPM(), RPM);
+  public void setRPS(double RPS){ //TODO: RPS
+    double pid = speedControl.calculate(getRPM(), RPS);
     SmartDashboard.putNumber("Intake/Rollers/PID/raw pid", pid);
     pid /= 105; // max RPs
     SmartDashboard.putNumber("Intake/Rollers/PID/adjusted pid", pid);
     set(roller.get() + pid);
   }
-  public void setRPM(DoubleSupplier RPM){
-    setRPM(RPM.getAsDouble());
+  public void setRPM(DoubleSupplier RPS){
+    setRPS(RPS.getAsDouble());
   }
 
   public double getRPM(){

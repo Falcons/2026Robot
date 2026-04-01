@@ -24,7 +24,9 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.button.RobotModeTriggers;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.LimelightConstants;
 import frc.robot.LimelightHelpers;
@@ -58,11 +60,13 @@ public class Swerve extends SubsystemBase {
     swerveDrive.setMotorIdleMode(true);
 
     setupPathPlanner();
+    RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithFlip));  
   }
 
   @Override
   public void periodic() {
-    
+    swerveDrive.updateOdometry();
+
     addVisionMeasurement(LimelightConstants.stillLimelight, true);
     addVisionMeasurement(LimelightConstants.turretLimelight, true);
     // addVisionMeasurement(LimelightConstants.stillLimelight, false);
@@ -199,6 +203,7 @@ public class Swerve extends SubsystemBase {
   public void zeroGyro(){
     swerveDrive.zeroGyro();
   }
+  
   /**
    * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0 (red alliance station).
    */
@@ -213,6 +218,23 @@ public class Swerve extends SubsystemBase {
       swerveDrive.setGyro(new Rotation3d(0,0,0));
       swerveDrive.setGyroOffset(swerveDrive.getGyroRotation3d());
       swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+    }
+  }
+
+  /**
+   * Resets the gyro angle to zero and resets odometry to the same position, but facing toward 0 (red alliance station).
+   */
+  public void invertedZeroGyroWithFlip()
+  {
+    swerveDrive.swerveController.lastAngleScalar = 0;
+    if(DriverStation.getAlliance().get() == DriverStation.Alliance.Red){
+      swerveDrive.setGyro(new Rotation3d(0,0,0));
+      swerveDrive.setGyroOffset(swerveDrive.getGyroRotation3d());
+      swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d()));
+    }else{
+      swerveDrive.setGyro(new Rotation3d(0,0,Math.toRadians(180)));
+      swerveDrive.setGyroOffset(swerveDrive.getGyroRotation3d());
+      swerveDrive.resetOdometry(new Pose2d(getPose().getTranslation(), new Rotation2d(Math.toRadians(180))));
     }
   }
 
@@ -250,8 +272,8 @@ public class Swerve extends SubsystemBase {
           },
           // Method that will drive the robot given ROBOT RELATIVE ChassisSpeeds. Also optionally outputs individual module feedforwards
           new PPHolonomicDriveController(//built in path following controller for holonomic drive trains
-              new PIDConstants(5.0, 0.0, 0.0), // Translation PID constants
-              new PIDConstants(5.0, 0.0, 0.0)// Rotation PID constants
+              new PIDConstants(3, 0.0, 0.2), // Translation PID constants
+              new PIDConstants(1.5, 0.0, 0.2)// Rotation PID constants
           ),
           
           config,

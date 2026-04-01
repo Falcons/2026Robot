@@ -26,6 +26,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
+import frc.robot.Constants.TurretConstants.ShooterConstants;
 // import frc.robot.Util.AllianceFlipUtil;
 // import frc.robot.commands.AimAndShootSim;
 import frc.robot.commands.Auto.Setup;
@@ -141,11 +142,12 @@ public class RobotContainer {
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
 
     // Named Commands
-    NamedCommands.registerCommand("Auto shoot", new AutoShoot(turret, hood, transfer, shooter).withTimeout(10));
-    NamedCommands.registerCommand("Intake out", new PivotIntake(pivot, rollers, PivotConstants.pivotOut, RollersConstants.rollerSpeed).withTimeout(1));
-    NamedCommands.registerCommand("Intake in", new PivotIntake(pivot, rollers, PivotConstants.pivotIn, 0).withTimeout(1));
+    NamedCommands.registerCommand("Auto shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
+    NamedCommands.registerCommand("Intake out", new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1));
+    NamedCommands.registerCommand("Intake in", new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1));
     NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
     NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers).withTimeout(1));
+    NamedCommands.registerCommand("inverted gyro zero", Commands.runOnce(swerve::invertedZeroGyroWithFlip));
     //autos
     DriverStation.waitForDsConnection(0);
 
@@ -157,8 +159,8 @@ public class RobotContainer {
 
     SmartDashboard.putData("auto Chooser" ,autoChooser);
 
-    transfer.setDefaultCommand(Commands.run(() -> transfer.pulse(
-        () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand), transfer));
+    transfer.setDefaultCommand(Commands.run(() -> transfer.set(
+        () -> operator.getRightTriggerAxis() > ControllerConstants.triggerDeadBand, ShooterConstants.maxTransferSpeed), transfer));
 
     // pivot.setDefaultCommand(Commands.runEnd(() -> pivot.set(operator::getRightY), () -> pivot.set(0), pivot));
     // this.miscUtils = new MiscUtils(autoChooser, swerve);
@@ -189,7 +191,7 @@ public class RobotContainer {
 
     // auto turret only
     operator.b().whileTrue(Commands.runEnd(turret::autoLimelightAim, turret::stop, turret));
-    operator.a().whileTrue(new AutoShoot(turret, hood, transfer, shooter).andThen(new PrintCommand("autoShoot ended")));
+    operator.a().whileTrue(new AutoShoot(turret, hood, transfer, shooter, rollers).andThen(new PrintCommand("autoShoot ended")));
 
     // hood
     operator.axisMagnitudeGreaterThan(5, 0.95).onTrue(
@@ -198,8 +200,8 @@ public class RobotContainer {
     // spin intake - rollers 
     // operator.x().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
     // operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.set(RollersConstants.slowRollerSpeed), rollers::stop, rollers));
-    operator.x().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.rollerSpeedRPS), rollers::stop, rollers));
-    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.setRPM(RollersConstants.slowRollerSpeedRPS), rollers::stop, rollers));
+    operator.x().whileTrue(Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers));
+    operator.rightBumper().whileTrue(Commands.runEnd(() -> rollers.setRPS(RollersConstants.slowRollerSpeedRPS), rollers::stop, rollers));
     operator.povRight().whileTrue(Commands.runEnd(() -> rollers.set(-RollersConstants.rollerSpeed), () -> rollers.set(0), rollers));
 
     // intake out and in
