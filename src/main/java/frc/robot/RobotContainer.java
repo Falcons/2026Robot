@@ -41,7 +41,6 @@ import frc.robot.commands.Turret.AutoShoot;
 import frc.robot.commands.Turret.TurretPID;
 import frc.robot.commands.Turret.TurretSim.ShootSim;
 // import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // just for sim
-import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
 // import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // just for sim
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
@@ -147,7 +146,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake in", new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1));
     NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
     NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers).withTimeout(1));
-    NamedCommands.registerCommand("inverted gyro zero", Commands.runOnce(swerve::invertedZeroGyroWithFlip));
+    // NamedCommands.registerCommand("inverted gyro zero", Commands.runOnce(swerve::invertedZeroGyroWithFlip));
     //autos
     DriverStation.waitForDsConnection(0);
 
@@ -209,9 +208,7 @@ public class RobotContainer {
     operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
     // shake
     // operator.povLeft().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    operator.povLeft().onTrue(new ParallelDeadlineGroup(
-      new PivotPid(pivot, PivotConstants.pivotIn), 
-      Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers)));
+    operator.povLeft().onTrue(new PivotPid(pivot, PivotConstants.pivotIn)); 
 
     operator.povLeft().onFalse(new PivotPid(pivot, PivotConstants.pivotOut));
 
