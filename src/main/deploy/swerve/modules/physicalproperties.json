@@ -11,5 +11,6 @@
       "drive": 0.25,
       "angle": 0.25
     },
-    "optimalVoltage": 12
+    "optimalVoltage": 12,
+    "robotMass": 113
   }
