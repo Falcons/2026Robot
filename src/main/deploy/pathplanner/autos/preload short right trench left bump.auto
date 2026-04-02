@@ -5,6 +5,12 @@
     "data": {
       "commands": [
         {
+          "type": "named",
+          "data": {
+            "name": "Intake out"
+          }
+        },
+        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -13,12 +19,6 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake out"
-                      }
-                    },
-                    {
                       "type": "wait",
                       "data": {
                         "waitTime": 1.0
@@ -27,19 +27,7 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake in"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake out"
+                        "name": "Delayed intake shake"
                       }
                     }
                   ]
@@ -48,7 +36,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto shoot"
+                  "name": "Shoot"
                 }
               }
             ]
@@ -61,7 +49,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "right trench mid bump"
+                  "pathName": "short right trench left bump"
                 }
               },
               {
@@ -80,7 +68,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto shoot"
+                  "name": "Shoot"
                 }
               },
               {
@@ -88,27 +76,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 2.0
+                        "name": "Delayed intake shake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake in"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake out"
+                        "name": "Delayed intake shake"
                       }
                     }
                   ]

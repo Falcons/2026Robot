@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ControllerConstants;
@@ -27,6 +28,7 @@ import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
+import frc.robot.commands.Auto.IntakeShake;
 // import frc.robot.Util.AllianceFlipUtil;
 // import frc.robot.commands.AimAndShootSim;
 import frc.robot.commands.Auto.Setup;
@@ -141,11 +143,13 @@ public class RobotContainer {
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
 
     // Named Commands
-    NamedCommands.registerCommand("Auto shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
+    NamedCommands.registerCommand("Shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
     NamedCommands.registerCommand("Intake out", new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1));
     NamedCommands.registerCommand("Intake in", new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1));
-    NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
-    NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers).withTimeout(1));
+    NamedCommands.registerCommand("Delayed intake shake", new IntakeShake(pivot, 1));
+    NamedCommands.registerCommand("Intake shake", new IntakeShake(pivot, 0));
+    NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers));
+    NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers).withTimeout(1));
     // NamedCommands.registerCommand("inverted gyro zero", Commands.runOnce(swerve::invertedZeroGyroWithFlip));
     //autos
     DriverStation.waitForDsConnection(0);
@@ -252,8 +256,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Outake", new PivotPidSim(pivotSim, PivotConstants.pivotIn));
 
     // pathplaner events
-    new EventTrigger("Intake").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotOut));
-    new EventTrigger("Outake").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotIn));
+    new EventTrigger("Intake out").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotOut));
+    new EventTrigger("Inatke in").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotIn));
 
     // auto aim
     // turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
