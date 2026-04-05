@@ -32,6 +32,7 @@ import frc.robot.commands.Auto.IntakeShake;
 // import frc.robot.Util.AllianceFlipUtil;
 // import frc.robot.commands.AimAndShootSim;
 import frc.robot.commands.Auto.Setup;
+import frc.robot.commands.Auto.ShootPreload;
 // import frc.robot.commands.Auto.shootAndPathToPathSim;
 // import frc.robot.commands.Auto.shootAndPathToPoseSim;
 import frc.robot.commands.Drive.TeleopDrive;
@@ -160,6 +161,7 @@ public class RobotContainer {
     
     autoChooser.setDefaultOption("setup", new Setup(pivot, swerve));
 
+    SmartDashboard.putBoolean("shoot preload", true);
     SmartDashboard.putData("auto Chooser" ,autoChooser);
 
     transfer.setDefaultCommand(Commands.run(() -> transfer.set(
@@ -317,6 +319,10 @@ public class RobotContainer {
     try{
       Command currentAuto = autoChooser.getSelected();
       System.out.println("Selected auto: " + currentAuto.getName());
+      if(SmartDashboard.getBoolean("shoot preload", true)){
+        System.out.print(" + shooting preload");
+        currentAuto.beforeStarting(new ShootPreload(turret, hood, transfer, shooter, rollers, pivot));
+      }
       return currentAuto;
     }catch (Exception err){
       System.err.println("error loading autonomous command | " + err);
