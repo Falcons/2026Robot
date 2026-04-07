@@ -20,6 +20,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -144,8 +145,8 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
-    SmartDashboard.putBoolean("Intake/Rollers/rollers active", false);
-    SmartDashboard.putBoolean("Turret/Shooter/driver shoot active", false);
+    SmartDashboard.putBoolean("Intake/Rollers/rollers active", !Constants.isCompetition);
+    SmartDashboard.putBoolean("Turret/Shooter/driver shoot active", !Constants.isCompetition);
 
     // preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot);
     // Named Commands
@@ -186,12 +187,12 @@ public class RobotContainer {
 
     // intake
     driver.rightTrigger().whileTrue(Commands.runEnd(() -> rollers.setRPS(
-      SmartDashboard.getBoolean("Intake/Rollers/rollers active", false) ? RollersConstants.rollerSpeedRPS : 0), 
+      SmartDashboard.getBoolean("Intake/Rollers/rollers active", !Constants.isCompetition) ? RollersConstants.rollerSpeedRPS : 0), 
       rollers::stop, rollers));
     // shoot
     driver.leftTrigger().whileTrue(
       new AutoShoot(turret, hood, transfer, shooter, rollers).onlyWhile(
-        () -> SmartDashboard.getBoolean("Turret/Shooter/driver shoot active", false)));
+        () -> SmartDashboard.getBoolean("Turret/Shooter/driver shoot active", !Constants.isCompetition)));
 
     // OPERATOR
 
@@ -341,7 +342,7 @@ public class RobotContainer {
       }
       System.out.println();
       // return currentAuto;
-      return currentAuto = Commands.sequence(preloadFire, currentAuto);
+      return new SequentialCommandGroup(preloadFire, currentAuto);
     }catch (Exception err){
       System.err.println("error loading autonomous command | " + err);
       return new taxi(swerve, 1);
