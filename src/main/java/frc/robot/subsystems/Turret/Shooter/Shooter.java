@@ -204,6 +204,7 @@ public class Shooter extends SubsystemBase {
     SmartDashboard.putNumber("Turret/Shooter/rightShooterRPS", rightShooter.getVelocity().getValueAsDouble());
     
     SmartDashboard.putNumber("Turret/Shooter/kickerSpeed", kicker.get());
+    SmartDashboard.putNumber("Turret/Shooter/kickerRPS", kicker.getVelocity().getValueAsDouble());
     SmartDashboard.putBoolean("Turret/Shooter/shooterRunning", shooterRunning);
 
     SmartDashboard.putNumber("Turret/Shooter/PID/target", getTargetRps());
