@@ -335,7 +335,8 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     try{
       Command currentAuto = autoChooser.getSelected();
-      preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot).unless(() -> !SmartDashboard.getBoolean("shoot preload", true));
+      CommandScheduler.getInstance().removeComposedCommand(currentAuto);
+      preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot);
 
       System.out.print("Selected auto: " + currentAuto.getName());
       if(SmartDashboard.getBoolean("shoot preload", true)){
@@ -344,7 +345,7 @@ public class RobotContainer {
       }
       System.out.println();
       // return currentAuto;
-      return new SequentialCommandGroup(preloadFire, currentAuto);
+      return currentAuto;
     }catch (Exception err){
       System.err.println("error loading autonomous command | " + err);
       return new taxi(swerve, 1);
