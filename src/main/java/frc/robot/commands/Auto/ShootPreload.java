@@ -29,13 +29,14 @@ public class ShootPreload extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1).asProxy(),
-      new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10).andThen(Commands.print("autoShoot end")),
+      new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10),
+      new WaitCommand(1).andThen(new PrintCommand("wait 1")),
       new SequentialCommandGroup(
-        new WaitCommand(1),
-        new PrintCommand("wait 1"),
+        Commands.waitSeconds(1),
+        new PrintCommand("wait 2"),
         // new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
-        new WaitCommand(1),
-        new PrintCommand("wait 2")
+        Commands.waitSeconds(1),
+        new PrintCommand("wait 3")
         // new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1))
     ));
   }
