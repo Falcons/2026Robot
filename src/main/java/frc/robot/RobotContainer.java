@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
@@ -339,6 +340,7 @@ public class RobotContainer {
       System.out.print("Selected auto: " + currentAuto.getName());
       if(SmartDashboard.getBoolean("shoot preload", true)){
         System.out.print(" + shooting preload");
+        return new SequentialCommandGroup(preloadFire, currentAuto);
       }
       System.out.println();
       // return currentAuto;
