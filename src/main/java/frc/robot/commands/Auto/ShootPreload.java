@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Auto;
 
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.commands.Intake.PivotPid;
@@ -25,7 +26,7 @@ public class ShootPreload extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1).asProxy(),
-      new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10),
+      new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10).andThen(Commands.print("autoShoot end")),
       new IntakeShake(pivot, 1)
     );
   }
