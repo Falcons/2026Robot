@@ -7,7 +7,9 @@
     "1M",
     "Tests"
   ],
-  "autoFolders": [],
+  "autoFolders": [
+    "tests"
+  ],
   "defaultMaxVel": 6.7,
   "defaultMaxAccel": 4.0,
   "defaultMaxAngVel": 389.611,

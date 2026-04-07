@@ -11,19 +11,32 @@
           }
         },
         {
-          "type": "path",
+          "type": "deadline",
           "data": {
-            "pathName": "Center Hub back 1 M"
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "right trench left bump"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rollers"
+                }
+              }
+            ]
           }
         },
         {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto shoot"
+                  "name": "Shoot"
                 }
               },
               {
@@ -31,39 +44,21 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 5.0
+                        "name": "Delayed intake shake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake in"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake out"
+                        "name": "Delayed intake shake"
                       }
                     }
                   ]
                 }
               }
             ]
-          }
-        },
-        {
-          "type": "path",
-          "data": {
-            "pathName": "mid to depot"
           }
         }
       ]

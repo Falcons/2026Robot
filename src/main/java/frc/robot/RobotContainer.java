@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ControllerConstants;
@@ -27,9 +28,11 @@ import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
 import frc.robot.Constants.IntakeConstants.RollersConstants;
 import frc.robot.Constants.TurretConstants.ShooterConstants;
+import frc.robot.commands.Auto.IntakeShake;
 // import frc.robot.Util.AllianceFlipUtil;
 // import frc.robot.commands.AimAndShootSim;
 import frc.robot.commands.Auto.Setup;
+import frc.robot.commands.Auto.ShootPreload;
 // import frc.robot.commands.Auto.shootAndPathToPathSim;
 // import frc.robot.commands.Auto.shootAndPathToPoseSim;
 import frc.robot.commands.Drive.TeleopDrive;
@@ -41,7 +44,6 @@ import frc.robot.commands.Turret.AutoShoot;
 import frc.robot.commands.Turret.TurretPID;
 import frc.robot.commands.Turret.TurretSim.ShootSim;
 // import frc.robot.commands.Turret.TurretSim.ManualTurretSim; // just for sim
-import frc.robot.commands.Intake.PivotIntake;
 import frc.robot.commands.Intake.PivotPid;
 // import frc.robot.commands.Intake.IntakeSim.PivotManualSim; // just for sim
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
@@ -143,12 +145,14 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Intake/Rollers/rollers active", false);
 
     // Named Commands
-    NamedCommands.registerCommand("Auto shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
+    NamedCommands.registerCommand("Shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
     NamedCommands.registerCommand("Intake out", new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1));
     NamedCommands.registerCommand("Intake in", new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1));
-    NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
-    NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers).withTimeout(1));
-    NamedCommands.registerCommand("inverted gyro zero", Commands.runOnce(swerve::invertedZeroGyroWithFlip));
+    NamedCommands.registerCommand("Delayed intake shake", new IntakeShake(pivot, 1));
+    NamedCommands.registerCommand("Intake shake", new IntakeShake(pivot, 0));
+    NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers));
+    NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers).withTimeout(1));
+    // NamedCommands.registerCommand("inverted gyro zero", Commands.runOnce(swerve::invertedZeroGyroWithFlip));
     //autos
     DriverStation.waitForDsConnection(0);
 
@@ -158,6 +162,7 @@ public class RobotContainer {
     
     autoChooser.setDefaultOption("setup", new Setup(pivot, swerve));
 
+    SmartDashboard.putBoolean("shoot preload", true);
     SmartDashboard.putData("auto Chooser" ,autoChooser);
 
     transfer.setDefaultCommand(Commands.run(() -> transfer.set(
@@ -216,9 +221,7 @@ public class RobotContainer {
     operator.povDown().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
     // shake
     // operator.povLeft().onTrue(new PivotPid(pivot, PivotConstants.pivotIn));
-    operator.povLeft().onTrue(new ParallelDeadlineGroup(
-      new PivotPid(pivot, PivotConstants.pivotIn), 
-      Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), () -> rollers.set(0), rollers)));
+    operator.povLeft().onTrue(new PivotPid(pivot, PivotConstants.pivotIn)); 
 
     operator.povLeft().onFalse(new PivotPid(pivot, PivotConstants.pivotOut));
 
@@ -262,8 +265,8 @@ public class RobotContainer {
     NamedCommands.registerCommand("Outake", new PivotPidSim(pivotSim, PivotConstants.pivotIn));
 
     // pathplaner events
-    new EventTrigger("Intake").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotOut));
-    new EventTrigger("Outake").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotIn));
+    new EventTrigger("Intake out").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotOut));
+    new EventTrigger("Inatke in").onTrue(new PivotPidSim(pivotSim, PivotConstants.pivotIn));
 
     // auto aim
     // turretSim.setDefaultCommand(new AutoTurretSim(turretSim));
@@ -322,7 +325,21 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     try{
       Command currentAuto = autoChooser.getSelected();
-      System.out.println("Selected auto: " + currentAuto.getName());
+      System.out.print("Selected auto: " + currentAuto.getName());
+      if(SmartDashboard.getBoolean("shoot preload", true)){
+        System.out.print(" + shooting preload");
+        currentAuto = Commands.sequence(Commands.parallel(
+          new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1).asProxy(),
+          new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10),
+          Commands.sequence(
+            new WaitCommand(1),
+            new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
+            new WaitCommand(1).asProxy(),
+            new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1)
+          )
+        ), currentAuto);
+      }
+      System.out.println();
       return currentAuto;
     }catch (Exception err){
       System.err.println("error loading autonomous command | " + err);

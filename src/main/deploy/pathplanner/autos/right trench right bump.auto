@@ -48,7 +48,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto shoot"
+                  "name": "Shoot"
                 }
               }
             ]
@@ -61,7 +61,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "loop over bump"
+                  "pathName": "right trench mid bump"
                 }
               },
               {
@@ -80,7 +80,7 @@
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto shoot"
+                  "name": "Shoot"
                 }
               },
               {

@@ -11,37 +11,13 @@
           }
         },
         {
-          "type": "path",
-          "data": {
-            "pathName": "slow left bump back 1 M"
-          }
-        },
-        {
-          "type": "race",
+          "type": "deadline",
           "data": {
             "commands": [
-              {
-                "type": "named",
-                "data": {
-                  "name": "Auto shoot"
-                }
-              },
               {
                 "type": "sequential",
                 "data": {
                   "commands": [
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake in"
-                      }
-                    },
                     {
                       "type": "wait",
                       "data": {
@@ -51,10 +27,16 @@
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake out"
+                        "name": "Delayed intake shake"
                       }
                     }
                   ]
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
                 }
               }
             ]
@@ -67,7 +49,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "left to depot"
+                  "pathName": "short right trench left bump"
                 }
               },
               {
@@ -80,19 +62,13 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "Rollers 1 sec"
-          }
-        },
-        {
-          "type": "race",
+          "type": "parallel",
           "data": {
             "commands": [
               {
                 "type": "named",
                 "data": {
-                  "name": "Auto shoot"
+                  "name": "Shoot"
                 }
               },
               {
@@ -100,27 +76,15 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 2.0
+                        "name": "Delayed intake shake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake in"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 1.0
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Intake out"
+                        "name": "Delayed intake shake"
                       }
                     }
                   ]
@@ -132,7 +96,7 @@
       ]
     }
   },
-  "resetOdom": false,
+  "resetOdom": true,
   "folder": null,
   "choreoAuto": false
 }
