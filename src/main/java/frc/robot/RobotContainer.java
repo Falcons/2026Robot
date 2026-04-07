@@ -190,10 +190,8 @@ public class RobotContainer {
       rollers::stop, rollers));
     // shoot
     driver.leftTrigger().whileTrue(
-      new AutoShoot(turret, hood, transfer, shooter, rollers).unless(
-        () -> !SmartDashboard.getBoolean("Turret/Shooter/driver shoot active", false)
-      )
-    );
+      new AutoShoot(turret, hood, transfer, shooter, rollers).onlyWhile(
+        () -> SmartDashboard.getBoolean("Turret/Shooter/driver shoot active", false)));
 
     // OPERATOR
 
