@@ -6,6 +6,7 @@ package frc.robot.commands.Auto;
 
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
@@ -31,9 +32,11 @@ public class ShootPreload extends ParallelCommandGroup {
       new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10).andThen(Commands.print("autoShoot end")),
       new SequentialCommandGroup(
         new WaitCommand(1),
-        new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
-        new WaitCommand(1).asProxy(),
-        new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1))
-    );
+        new PrintCommand("wait 1"),
+        // new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
+        new WaitCommand(1),
+        new PrintCommand("wait 2")
+        // new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1))
+    ));
   }
 }
