@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import frc.robot.subsystems.Turret.Shooter.Shooter;
 
 public class FmsRumble extends SubsystemBase {
   private double timeOffset = 140.0;
@@ -21,11 +20,9 @@ public class FmsRumble extends SubsystemBase {
 
   private final Timer timer = new Timer();
 
-  private final Shooter shooter;
   /** Creates a new FMS. */
-  public FmsRumble(CommandXboxController controllers[], Shooter shooter) {
+  public FmsRumble(CommandXboxController controllers[]) {
     SmartDashboard.putBoolean("FmsRumble/enableRumble", true);
-    this.shooter = shooter;
     this.controllers = controllers;
   }
 
