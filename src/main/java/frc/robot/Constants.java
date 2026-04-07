@@ -26,7 +26,7 @@ public final class Constants {
         public static final double maxSpeedMPS = 6.7;
         public static final double maxRotationsRadPS = Math.toRadians(1080);
         public static final double slowModeMPS = 2;
-        public static final double slowModeRotationsRadPS = Math.toRadians(120);
+        public static final double slowModeRotationsRadPS = Math.toRadians(200);
         
         public static final double driveRatio = 6.75;
         public static final double driveSteeringRatio = 150/7;
