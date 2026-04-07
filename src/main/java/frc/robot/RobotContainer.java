@@ -140,6 +140,7 @@ public class RobotContainer {
 
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
+    SmartDashboard.putBoolean("Intake/Rollers/rollers active", false);
 
     // Named Commands
     NamedCommands.registerCommand("Auto shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
@@ -172,7 +173,13 @@ public class RobotContainer {
     driver.povDown().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(LaunchCalculator.getSpeedOffset() - 0.05)));
     driver.povLeft().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(0)));
 
-    driver.povRight().whileTrue(Commands.runEnd(() -> rollers.setRPM(() -> SmartDashboard.getNumber("Intake/Rollers/Set RPM", 3000)), rollers::stop, rollers));
+    driver.povRight().whileTrue(Commands.runEnd(() -> rollers.setRPS(() -> SmartDashboard.getNumber("Intake/Rollers/Set RPM", 3000)), rollers::stop, rollers));
+
+    // intake
+    driver.rightTrigger().whileTrue(Commands.runEnd(() -> rollers.setRPS(
+      SmartDashboard.getBoolean("Intake/Rollers/rollers active", false) ? RollersConstants.rollerSpeedRPS : 0), 
+      rollers::stop, rollers));
+
     // OPERATOR
 
     // spin shooter

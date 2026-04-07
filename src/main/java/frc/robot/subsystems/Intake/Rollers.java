@@ -65,7 +65,7 @@ public class Rollers extends SubsystemBase {
     SmartDashboard.putNumber("Intake/Rollers/PID/adjusted pid", pid);
     set(roller.get() + pid);
   }
-  public void setRPM(DoubleSupplier RPS){
+  public void setRPS(DoubleSupplier RPS){
     setRPS(RPS.getAsDouble());
   }
 
