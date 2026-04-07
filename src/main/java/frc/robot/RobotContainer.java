@@ -96,6 +96,7 @@ public class RobotContainer {
   public static SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   // variables
+  Command preloadFire;
 
   public RobotContainer() {
     if(Robot.isReal()){
@@ -143,6 +144,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
 
+    preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot);
     // Named Commands
     NamedCommands.registerCommand("Shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
     NamedCommands.registerCommand("Intake out", new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1));
@@ -321,16 +323,7 @@ public class RobotContainer {
       System.out.print("Selected auto: " + currentAuto.getName());
       if(SmartDashboard.getBoolean("shoot preload", true)){
         System.out.print(" + shooting preload");
-        currentAuto = Commands.sequence(Commands.parallel(
-          new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1).asProxy(),
-          new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10),
-          Commands.sequence(
-            new WaitCommand(1),
-            new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
-            new WaitCommand(1).asProxy(),
-            new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1)
-          )
-        ), currentAuto);
+        currentAuto = Commands.sequence(preloadFire, currentAuto);
       }
       System.out.println();
       return currentAuto;
