@@ -137,12 +137,13 @@ public class RobotContainer {
     this.rollers = new Rollers(lights);
     this.pivot = new Pivot(swerve);
     this.hood = new Hood(swerve, lights);
-    this.fmsRumble = new FmsRumble(new CommandXboxController[]{driver, operator}, shooter);
+    this.fmsRumble = new FmsRumble(new CommandXboxController[]{driver, operator});
     
 
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
     SmartDashboard.putBoolean("Intake/Rollers/rollers active", false);
+    SmartDashboard.putBoolean("Intake/Rollers/driver shoot active", false);
 
     // Named Commands
     NamedCommands.registerCommand("Shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
@@ -184,6 +185,9 @@ public class RobotContainer {
     driver.rightTrigger().whileTrue(Commands.runEnd(() -> rollers.setRPS(
       SmartDashboard.getBoolean("Intake/Rollers/rollers active", false) ? RollersConstants.rollerSpeedRPS : 0), 
       rollers::stop, rollers));
+    // shoot
+    driver.leftTrigger().whileTrue(new AutoShoot(turret, hood, transfer, shooter, rollers)).and(
+      () -> SmartDashboard.getBoolean("Intake/Rollers/driver shoot active", false));
 
     // OPERATOR
 
