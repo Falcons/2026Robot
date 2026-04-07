@@ -99,7 +99,6 @@ public class RobotContainer {
   public static SendableChooser<Command> autoChooser = new SendableChooser<Command>();
 
   // variables
-  Command preloadFire;
 
   public RobotContainer() {
     if(Robot.isReal()){
@@ -336,12 +335,22 @@ public class RobotContainer {
     try{
       Command currentAuto = autoChooser.getSelected();
       CommandScheduler.getInstance().removeComposedCommand(currentAuto);
-      preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot);
 
       System.out.print("Selected auto: " + currentAuto.getName());
       if(SmartDashboard.getBoolean("shoot preload", true)){
         System.out.print(" + shooting preload");
-        return new SequentialCommandGroup(new AutoShoot(turret, hood, transfer, shooter, rollers), currentAuto);
+        return new SequentialCommandGroup(
+          new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1),
+          new ParallelCommandGroup(
+            new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(5),
+            new SequentialCommandGroup(
+              new WaitCommand(1),
+              new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
+              new WaitCommand(1),
+              new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1)
+            )
+          ),
+          currentAuto);
       }
       System.out.println();
       // return currentAuto;
