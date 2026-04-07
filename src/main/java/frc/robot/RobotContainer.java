@@ -318,11 +318,21 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     try{
       Command currentAuto = autoChooser.getSelected();
-      System.out.println("Selected auto: " + currentAuto.getName());
+      System.out.print("Selected auto: " + currentAuto.getName());
       if(SmartDashboard.getBoolean("shoot preload", true)){
         System.out.print(" + shooting preload");
-        currentAuto.beforeStarting(new ShootPreload(turret, hood, transfer, shooter, rollers, pivot));
+        currentAuto = Commands.sequence(Commands.parallel(
+          new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1).asProxy(),
+          new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10),
+          Commands.sequence(
+            new WaitCommand(1),
+            new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
+            new WaitCommand(1).asProxy(),
+            new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1)
+          )
+        ), currentAuto);
       }
+      System.out.println();
       return currentAuto;
     }catch (Exception err){
       System.err.println("error loading autonomous command | " + err);
