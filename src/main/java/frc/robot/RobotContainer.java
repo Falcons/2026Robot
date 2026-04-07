@@ -144,7 +144,7 @@ public class RobotContainer {
     SmartDashboard.putNumber("Turret/Shooter/Fire speed Rps", 60);
     SmartDashboard.putNumber("Intake/Rollers/Set RPM", 3000);
     SmartDashboard.putBoolean("Intake/Rollers/rollers active", false);
-    SmartDashboard.putBoolean("Intake/Rollers/driver shoot active", false);
+    SmartDashboard.putBoolean("Turret/Shooter/driver shoot active", false);
 
     preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot);
     // Named Commands
@@ -188,8 +188,11 @@ public class RobotContainer {
       SmartDashboard.getBoolean("Intake/Rollers/rollers active", false) ? RollersConstants.rollerSpeedRPS : 0), 
       rollers::stop, rollers));
     // shoot
-    driver.leftTrigger().whileTrue(new AutoShoot(turret, hood, transfer, shooter, rollers)).and(
-      () -> SmartDashboard.getBoolean("Intake/Rollers/driver shoot active", false));
+    driver.leftTrigger().whileTrue(
+      new AutoShoot(turret, hood, transfer, shooter, rollers).unless(
+        () -> !SmartDashboard.getBoolean("Turret/Shooter/driver shoot active", false)
+      )
+    );
 
     // OPERATOR
 
