@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
@@ -146,7 +147,7 @@ public class RobotContainer {
     SmartDashboard.putBoolean("Intake/Rollers/rollers active", false);
     SmartDashboard.putBoolean("Turret/Shooter/driver shoot active", false);
 
-    preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot);
+    // preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot);
     // Named Commands
     NamedCommands.registerCommand("Shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
     NamedCommands.registerCommand("Intake out", new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1));
@@ -334,13 +335,15 @@ public class RobotContainer {
   public Command getAutonomousCommand() {
     try{
       Command currentAuto = autoChooser.getSelected();
+      preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot).unless(() -> !SmartDashboard.getBoolean("shoot preload", true));
+
       System.out.print("Selected auto: " + currentAuto.getName());
       if(SmartDashboard.getBoolean("shoot preload", true)){
         System.out.print(" + shooting preload");
-        currentAuto = Commands.sequence(preloadFire, currentAuto);
       }
       System.out.println();
-      return currentAuto;
+      // return currentAuto;
+      return currentAuto = Commands.sequence(preloadFire, currentAuto);
     }catch (Exception err){
       System.err.println("error loading autonomous command | " + err);
       return new taxi(swerve, 1);
