@@ -341,7 +341,7 @@ public class RobotContainer {
       System.out.print("Selected auto: " + currentAuto.getName());
       if(SmartDashboard.getBoolean("shoot preload", true)){
         System.out.print(" + shooting preload");
-        return new SequentialCommandGroup(preloadFire, currentAuto);
+        return new SequentialCommandGroup(new AutoShoot(turret, hood, transfer, shooter, rollers), currentAuto);
       }
       System.out.println();
       // return currentAuto;

@@ -28,16 +28,9 @@ public class ShootPreload extends ParallelCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1).asProxy(),
-      new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10),
-      new WaitCommand(1).andThen(new PrintCommand("wait 1")),
-      new SequentialCommandGroup(
-        Commands.waitSeconds(1),
-        new PrintCommand("wait 2"),
-        // new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
-        Commands.waitSeconds(1),
-        new PrintCommand("wait 3")
-        // new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1))
-    ));
+      new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1),
+      new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10)
+      // new WaitCommand(1).andThen(new PrintCommand("wait 1")),
+      );
   }
 }
