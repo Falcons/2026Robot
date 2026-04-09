@@ -72,7 +72,9 @@ public class Swerve extends SubsystemBase {
     addVisionMeasurement(LimelightConstants.turretLimelight, true);
     // addVisionMeasurement(LimelightConstants.stillLimelight, false);
     // addVisionMeasurement(LimelightConstants.turretLimelight, false);
-
+    LaunchCalculator.getInstance().clearLaunchingParameters();
+    swerveDrive.field.getObject("Target").setPose(
+      new Pose2d(LaunchCalculator.getInstance().getParameters(this, -1.0).target(), new Rotation2d()));
   }
 
   public SwerveDrive getSwerveDrive() {
