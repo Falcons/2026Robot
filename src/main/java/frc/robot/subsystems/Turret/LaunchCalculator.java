@@ -58,7 +58,8 @@ public class LaunchCalculator {
       double distance,
       double distanceNoLookahead,
       double timeOfFlight,
-      boolean passing) {}
+      boolean passing,
+      Translation2d target) {}
 
   // Cache parameters
   private LaunchingParameters latestParameters = null;
@@ -376,7 +377,8 @@ public class LaunchCalculator {
             lookaheadLauncherToTargetDistance,
             launcherToTargetDistance,
             timeOfFlight,
-            passing);
+            passing,
+            target);
 
     // Log calculated values
     // Logger.recordOutput("LaunchCalculator/TargetPose", new Pose2d(target, Rotation2d.kZero));
