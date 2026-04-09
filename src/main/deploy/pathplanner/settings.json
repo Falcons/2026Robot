@@ -3,11 +3,13 @@
   "robotLength": 0.9,
   "holonomicMode": true,
   "pathFolders": [
-    "Left to centre and back",
     "1M",
+    "Left to centre and back",
+    "Ivos Paths ",
     "Tests"
   ],
   "autoFolders": [
+    "Ivos Autos",
     "tests"
   ],
   "defaultMaxVel": 6.7,
