@@ -151,7 +151,7 @@ public class RobotContainer {
     // preloadFire = new ShootPreload(turret, hood, transfer, shooter, rollers, pivot);
     // Named Commands
     NamedCommands.registerCommand("Shoot", new AutoShoot(turret, hood, transfer, shooter, rollers).withTimeout(10));
-    NamedCommands.registerCommand("Intake out", new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1));
+    NamedCommands.registerCommand("Intake out", new PivotPid(pivot, PivotConstants.pivotOut));
     NamedCommands.registerCommand("Intake in", new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1));
     NamedCommands.registerCommand("Delayed intake shake", new IntakeShake(pivot, 1));
     NamedCommands.registerCommand("Intake shake", new IntakeShake(pivot, 0));

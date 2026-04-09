@@ -171,10 +171,10 @@ public final class Constants {
         public static final class PivotConstants {
             public static final int pivotCANID = 22;
 
-            public static final double pivotMin = Math.toRadians(203); // in is higher, out is lower
+            public static final double pivotMin = Math.toRadians(199); // in is higher, out is lower
             public static final double pivotMax = Math.toRadians(330); // in is higher, out is lower
 
-             public static final double pivotOut = Math.toRadians(203);
+             public static final double pivotOut = Math.toRadians(199);
             public static final double pivotIn = Math.toRadians(327);
         }
     }
