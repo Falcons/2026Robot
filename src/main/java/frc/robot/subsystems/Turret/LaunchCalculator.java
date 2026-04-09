@@ -116,11 +116,11 @@ public class LaunchCalculator {
 //       LoggedTunableNumber hoodAngleDeg, LoggedTunableNumber flywheelSpeed) {}
 
   // Passing targets
-  // private static final double xPassTarget = Units.inchesToMeters(37);
-  // private static final double yPassTarget = Units.inchesToMeters(65);
+  private static final double xPassTarget = Units.inchesToMeters(37);
+  private static final double yPassTarget = Units.inchesToMeters(65);
   // shenanigans
-  private static final double xPassTarget = Units.inchesToMeters(0);
-  private static final double yPassTarget = Units.inchesToMeters(0);
+  // private static final double xPassTarget = Units.inchesToMeters(0);
+  // private static final double yPassTarget = Units.inchesToMeters(0);
   // Boxes of bad
   // Under tower
   private static final Bounds towerBound =
@@ -187,13 +187,12 @@ public class LaunchCalculator {
     passingHoodAngleMap.put(7.80, 0.8);
     passingHoodAngleMap.put(17.16, 0.8);
 
-    passingFlywheelSpeedMap.put(5.46, 55.0);
-    passingFlywheelSpeedMap.put(8.0, 60.0);
-    passingFlywheelSpeedMap.put(11.0, 70.0);
-    passingFlywheelSpeedMap.put(17.16, 85.0);
+    passingFlywheelSpeedMap.put(5.46, 75.0);
+    passingFlywheelSpeedMap.put(8.0, 80.0);
+    passingFlywheelSpeedMap.put(11.0, 90.0);
+    passingFlywheelSpeedMap.put(16.0, 100.);
 
-    passingTimeOfFlightMap.put(5.46, 
-    1.27);
+    passingTimeOfFlightMap.put(5.46, 1.27);
     passingTimeOfFlightMap.put(6.62, 1.39);
     passingTimeOfFlightMap.put(7.8, 1.49);
     passingTimeOfFlightMap.put(11.0, 1.75);
