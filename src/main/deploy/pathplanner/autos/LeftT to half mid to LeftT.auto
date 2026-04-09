@@ -1,0 +1,82 @@
+{
+  "version": "2025.0",
+  "command": {
+    "type": "sequential",
+    "data": {
+      "commands": [
+        {
+          "type": "deadline",
+          "data": {
+            "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "LeftT to half mid to LeftT"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Rollers"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake out"
+                }
+              }
+            ]
+          }
+        },
+        {
+          "type": "parallel",
+          "data": {
+            "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Delayed intake shake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Delayed intake shake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Delayed intake shake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Delayed intake shake"
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "resetOdom": true,
+  "folder": "Ivos Autos",
+  "choreoAuto": false
+}
