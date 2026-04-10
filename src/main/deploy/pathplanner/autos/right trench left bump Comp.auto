@@ -5,12 +5,6 @@
     "data": {
       "commands": [
         {
-          "type": "named",
-          "data": {
-            "name": "Intake out"
-          }
-        },
-        {
           "type": "deadline",
           "data": {
             "commands": [
@@ -24,6 +18,12 @@
                 "type": "named",
                 "data": {
                   "name": "Rollers"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Intake out"
                 }
               }
             ]
@@ -65,6 +65,6 @@
     }
   },
   "resetOdom": true,
-  "folder": null,
+  "folder": "comp autos",
   "choreoAuto": false
 }

@@ -80,12 +80,12 @@
     },
     {
       "anchor": {
-        "x": 3.549299568965518,
-        "y": 7.43625
+        "x": 3.0,
+        "y": 7.4
       },
       "prevControl": {
-        "x": 3.7992265421661426,
-        "y": 7.430207809439106
+        "x": 3.249926973200625,
+        "y": 7.393957809439106
       },
       "nextControl": null,
       "isLocked": false,
@@ -157,7 +157,7 @@
     "rotation": -1.2453642667682692
   },
   "reversed": false,
-  "folder": "Ivos Paths ",
+  "folder": null,
   "idealStartingState": {
     "velocity": 0,
     "rotation": 0.0

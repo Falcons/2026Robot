@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj.GenericHID.RumbleType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.Constants;
 
 public class FmsRumble extends SubsystemBase {
   private double timeOffset = 140.0;
@@ -22,13 +23,13 @@ public class FmsRumble extends SubsystemBase {
 
   /** Creates a new FMS. */
   public FmsRumble(CommandXboxController controllers[]) {
-    SmartDashboard.putBoolean("FmsRumble/enableRumble", true);
+    SmartDashboard.putBoolean("FmsRumble/enableRumble", Constants.isCompetition);
     this.controllers = controllers;
   }
 
   @Override
   public void periodic() { 
-    if (DriverStation.isDisabled() || !SmartDashboard.getBoolean("FmsRumble/enableRumble", true)) {
+    if (DriverStation.isDisabled() || !SmartDashboard.getBoolean("FmsRumble/enableRumble", Constants.isCompetition)) {
       setRumble(controllers, 0);
       return;
     }

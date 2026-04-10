@@ -5,28 +5,15 @@
     "data": {
       "commands": [
         {
-          "type": "deadline",
+          "type": "named",
           "data": {
-            "commands": [
-              {
-                "type": "path",
-                "data": {
-                  "pathName": "RightB to close hub to LeftB"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Rollers"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Intake out"
-                }
-              }
-            ]
+            "name": "Intake out"
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "right bump back 1 M"
           }
         },
         {
@@ -44,21 +31,27 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "Delayed intake shake"
+                        "waitTime": 5.0
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Delayed intake shake"
+                        "name": "Intake in"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Delayed intake shake"
+                        "name": "Intake out"
                       }
                     }
                   ]
@@ -71,6 +64,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Ivos Autos",
+  "folder": "comp autos",
   "choreoAuto": false
 }
