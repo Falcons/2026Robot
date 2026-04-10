@@ -18,13 +18,10 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
-import edu.wpi.first.wpilibj2.command.ParallelDeadlineGroup;
 import edu.wpi.first.wpilibj2.command.PrintCommand;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ControllerConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.HoodConstants;
@@ -35,7 +32,6 @@ import frc.robot.commands.Auto.IntakeShake;
 // import frc.robot.Util.AllianceFlipUtil;
 // import frc.robot.commands.AimAndShootSim;
 import frc.robot.commands.Auto.Setup;
-import frc.robot.commands.Auto.ShootPreload;
 // import frc.robot.commands.Auto.shootAndPathToPathSim;
 // import frc.robot.commands.Auto.shootAndPathToPoseSim;
 import frc.robot.commands.Drive.TeleopDrive;
@@ -52,7 +48,6 @@ import frc.robot.commands.Intake.PivotPid;
 import frc.robot.commands.Intake.IntakeSim.PivotPidSim;
 import frc.robot.subsystems.FmsRumble;
 import frc.robot.subsystems.Lights;
-import frc.robot.subsystems.MiscUtils;
 import frc.robot.subsystems.Hood.Hood;
 import frc.robot.subsystems.Hood.HoodSim;
 import frc.robot.subsystems.Intake.Pivot;
@@ -89,7 +84,6 @@ public class RobotContainer {
   private Transfer transfer;
   @SuppressWarnings("unused")
   private FmsRumble fmsRumble; // its being mean so i shall suppress it
-  private MiscUtils miscUtils;
   
   private final CommandXboxController driver = new CommandXboxController(0);
   private final CommandXboxController operator = new CommandXboxController(1);
