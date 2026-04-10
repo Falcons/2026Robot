@@ -161,7 +161,7 @@ public class RobotContainer {
     
     autoChooser.setDefaultOption("setup", new Setup(pivot, swerve));
 
-    SmartDashboard.putBoolean("shoot preload", true);
+    SmartDashboard.putBoolean("shoot preload", false);
     SmartDashboard.putData("auto Chooser" ,autoChooser);
 
     transfer.setDefaultCommand(Commands.run(() -> transfer.set(
@@ -331,7 +331,7 @@ public class RobotContainer {
       CommandScheduler.getInstance().removeComposedCommand(currentAuto);
 
       System.out.print("Selected auto: " + currentAuto.getName());
-      if(SmartDashboard.getBoolean("shoot preload", true)){
+      if(SmartDashboard.getBoolean("shoot preload", false)){
         System.out.print(" + shooting preload");
         return new SequentialCommandGroup(
           new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1),
