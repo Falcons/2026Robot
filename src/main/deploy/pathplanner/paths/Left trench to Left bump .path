@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.5297521551724147,
+        "y": 7.426476293103449
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.1373725664851966,
+        "y": 7.499014871950923
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 2.8162715517241383,
+        "y": 5.364224137931035
+      },
+      "prevControl": {
+        "x": 2.8020357165786227,
+        "y": 5.114629785034761
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 0.37,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 389.611,
+    "maxAngularAcceleration": 229.183,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -45.00000000000003
+  },
+  "reversed": false,
+  "folder": "Full mid sweep passing shots",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -1.6365770416167649
+  },
+  "useDefaultConstraints": false
+}

@@ -1,0 +1,101 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.549299568965518,
+        "y": 0.6239762931034489
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 6.970096982758621,
+        "y": 0.799903017241379
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.673803879310345,
+        "y": 1.5036099137931034
+      },
+      "prevControl": {
+        "x": 7.757953310236988,
+        "y": 0.6670655710517744
+      },
+      "nextControl": {
+        "x": 7.5076508620689655,
+        "y": 3.1553663793103452
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 7.214439655172414,
+        "y": 6.009288793103448
+      },
+      "prevControl": {
+        "x": 7.240610851301925,
+        "y": 5.760662429873097
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [
+    {
+      "waypointRelativePos": 0.3632075471698113,
+      "rotationDegrees": -0.8394121751238522
+    },
+    {
+      "waypointRelativePos": 0.46698113207547165,
+      "rotationDegrees": -179.0
+    },
+    {
+      "waypointRelativePos": 0.8726415094339622,
+      "rotationDegrees": -90.0
+    },
+    {
+      "waypointRelativePos": 1.5440251572327188,
+      "rotationDegrees": -130.0
+    }
+  ],
+  "constraintZones": [
+    {
+      "name": "Constraints Zone",
+      "minWaypointRelativePos": 0.2782764811490125,
+      "maxWaypointRelativePos": 1.85,
+      "constraints": {
+        "maxVelocity": 1.0,
+        "maxAcceleration": 4.0,
+        "maxAngularVelocity": 389.611,
+        "maxAngularAcceleration": 229.183,
+        "nominalVoltage": 12.0,
+        "unlimited": false
+      }
+    }
+  ],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 6.7,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 389.611,
+    "maxAngularAcceleration": 229.183,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -102.5288077091515
+  },
+  "reversed": false,
+  "folder": "Full mid sweep passing shots",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "useDefaultConstraints": true
+}
