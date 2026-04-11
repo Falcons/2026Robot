@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "RightT to Middle To LeftT"
+                  "pathName": "RightT to half mid to RightT"
                 }
               },
               {
@@ -77,6 +77,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Ivos Autos",
+  "folder": "comp autos",
   "choreoAuto": false
 }

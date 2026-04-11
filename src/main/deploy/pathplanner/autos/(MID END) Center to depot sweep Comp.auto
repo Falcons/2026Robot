@@ -11,13 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "right trench mid bump"
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Rollers"
+                  "pathName": "Center to depot Sweep"
                 }
               },
               {
@@ -25,14 +19,39 @@
                 "data": {
                   "name": "Intake out"
                 }
+              },
+              {
+                "type": "sequential",
+                "data": {
+                  "commands": [
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 1.0
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Rollers"
+                      }
+                    }
+                  ]
+                }
               }
             ]
           }
         },
         {
-          "type": "parallel",
+          "type": "deadline",
           "data": {
             "commands": [
+              {
+                "type": "path",
+                "data": {
+                  "pathName": "depot to bump while shooting"
+                }
+              },
               {
                 "type": "named",
                 "data": {
@@ -44,33 +63,39 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 2.0
+                        "name": "Delayed intake shake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake in"
-                      }
-                    },
-                    {
-                      "type": "wait",
-                      "data": {
-                        "waitTime": 2.0
+                        "name": "Delayed intake shake"
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Intake out"
+                        "name": "Delayed intake shake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Delayed intake shake"
                       }
                     }
                   ]
                 }
               }
             ]
+          }
+        },
+        {
+          "type": "path",
+          "data": {
+            "pathName": "Left Bump to mid"
           }
         }
       ]

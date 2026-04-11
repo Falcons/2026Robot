@@ -4,12 +4,14 @@
   "holonomicMode": true,
   "pathFolders": [
     "1M",
-    "Left to centre and back",
     "Ivos Paths ",
+    "Left to centre and back",
+    "Rylees Paths",
     "Tests"
   ],
   "autoFolders": [
     "Ivos Autos",
+    "Rylees Autos",
     "comp autos",
     "tests"
   ],

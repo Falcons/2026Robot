@@ -1,0 +1,54 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.070387931034483,
+        "y": 2.6373599137931034
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 3.080161637931035,
+        "y": 1.5036099137931034
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 3.5199784482758627,
+        "y": 0.6728448275862069
+      },
+      "prevControl": {
+        "x": 3.288407388974464,
+        "y": 0.767051220649672
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [],
+  "globalConstraints": {
+    "maxVelocity": 0.5,
+    "maxAcceleration": 4.0,
+    "maxAngularVelocity": 389.611,
+    "maxAngularAcceleration": 229.183,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 0.0
+  },
+  "reversed": false,
+  "folder": "Rylees Paths",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 40.04972776570828
+  },
+  "useDefaultConstraints": false
+}

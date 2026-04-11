@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "LeftT to half mid to LeftT"
+                  "pathName": "right trench mid bump"
                 }
               },
               {
@@ -44,27 +44,27 @@
                 "data": {
                   "commands": [
                     {
-                      "type": "named",
+                      "type": "wait",
                       "data": {
-                        "name": "Delayed intake shake"
+                        "waitTime": 2.0
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Delayed intake shake"
+                        "name": "Intake in"
+                      }
+                    },
+                    {
+                      "type": "wait",
+                      "data": {
+                        "waitTime": 2.0
                       }
                     },
                     {
                       "type": "named",
                       "data": {
-                        "name": "Delayed intake shake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Delayed intake shake"
+                        "name": "Intake out"
                       }
                     }
                   ]
@@ -77,6 +77,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "Ivos Autos",
+  "folder": null,
   "choreoAuto": false
 }

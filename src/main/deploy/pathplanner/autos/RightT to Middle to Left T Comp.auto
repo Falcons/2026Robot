@@ -11,7 +11,7 @@
               {
                 "type": "path",
                 "data": {
-                  "pathName": "Center to depot"
+                  "pathName": "RightT to Middle To LeftT"
                 }
               },
               {
@@ -30,9 +30,15 @@
           }
         },
         {
-          "type": "deadline",
+          "type": "parallel",
           "data": {
             "commands": [
+              {
+                "type": "named",
+                "data": {
+                  "name": "Shoot"
+                }
+              },
               {
                 "type": "sequential",
                 "data": {
@@ -44,9 +50,15 @@
                       }
                     },
                     {
-                      "type": "wait",
+                      "type": "named",
                       "data": {
-                        "waitTime": 2.0
+                        "name": "Delayed intake shake"
+                      }
+                    },
+                    {
+                      "type": "named",
+                      "data": {
+                        "name": "Delayed intake shake"
                       }
                     },
                     {
@@ -56,12 +68,6 @@
                       }
                     }
                   ]
-                }
-              },
-              {
-                "type": "named",
-                "data": {
-                  "name": "Shoot"
                 }
               }
             ]

@@ -65,6 +65,6 @@
     }
   },
   "resetOdom": true,
-  "folder": "comp autos",
+  "folder": null,
   "choreoAuto": false
 }
