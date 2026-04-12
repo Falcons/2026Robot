@@ -114,7 +114,7 @@ public final class Constants {
         public static final int hoodAngleMax = 126;
 
         public static final double hoodMin = 0.1;
-        public static final double hoodMax = 0.8;
+        public static final double hoodMax = 0.7;
 
         public static final double hoodSpeedMultipier = 0.1;
     }
@@ -123,9 +123,9 @@ public final class Constants {
 
         public static final int turretCANID = 14;
             
-        public static final double turretMinRad = Math.toRadians(10); 
-        public static final double turretMidRad = Math.toRadians(90);
-        public static final double turretMaxRad = Math.toRadians(160);
+        public static final double turretMinRad = Math.toRadians(6); 
+        public static final double turretMidRad = Math.toRadians(91);
+        public static final double turretMaxRad = Math.toRadians(171);
 
         public static final double turretError = Math.toRadians(3);
 
@@ -175,7 +175,7 @@ public final class Constants {
             public static final double pivotMax = Math.toRadians(330); // in is higher, out is lower
 
              public static final double pivotOut = Math.toRadians(199);
-            public static final double pivotIn = Math.toRadians(327);
+            public static final double pivotIn = Math.toRadians(326);
         }
     }
     public static final class LightConstants {

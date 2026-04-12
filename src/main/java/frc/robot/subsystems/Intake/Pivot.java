@@ -29,7 +29,7 @@ public class Pivot extends SubsystemBase {
 
   private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
 
-  PIDController pivotPid = new PIDController(0.25, 0, 0);
+  PIDController pivotPid = new PIDController(0.2, 0, 0);
   
   private boolean atMin, atMax;
   /** Creates a new Pivot. */
