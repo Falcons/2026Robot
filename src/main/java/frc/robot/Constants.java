@@ -163,7 +163,7 @@ public final class Constants {
         public static final class RollersConstants {
             public static final int rollerCANID = 6;
             public static final double rollerSpeed = 1;
-            public static final double rollerSpeedRPS = 70;
+            public static final double rollerSpeedRPS = 105;
             public static final double slowRollerSpeed = 0.7;
             public static final double slowRollerSpeedRPS = 30;
         }

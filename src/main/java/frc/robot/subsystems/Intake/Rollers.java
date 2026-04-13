@@ -27,7 +27,7 @@ public class Rollers extends SubsystemBase {
   private TalonFXConfiguration rollerConfig = new TalonFXConfiguration();
   private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
 
-  private final PIDController speedControl = new PIDController(0.5, 0, 0.0015);
+  private final PIDController speedControl = new PIDController(0.9, 0.5, 0.0015);
 
   /** Creates a new Rollers. */
   public Rollers(Lights lights) {
