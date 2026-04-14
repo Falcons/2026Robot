@@ -58,9 +58,9 @@ public class Lights extends SubsystemBase {
     priorityToLight.put(4, "Red"); // hood up - red
     priorityToLight.put(5, "Blue"); // intake spin - blue
     priorityToLight.put(6, "Green"); // hood down - green
-    priorityToLight.put(7, "End To End Blend Color 1 to 2"); // default
+    // priorityToLight.put(7, "End To End Blend Color 1 to 2"); // default
 
-    lightPriorities.add(7); // add lowest prioity
+    lightPriorities.add(6); // add lowest prioity
   }
 
   @Override
@@ -122,7 +122,7 @@ public class Lights extends SubsystemBase {
    * @param priority the number of prioty to remove
    */
   public void removeQueue(int priority) {
-    if (priority == 7) return;
+    if (priority == 6) return;
     lightPriorities.remove(priority);
   }
 }
