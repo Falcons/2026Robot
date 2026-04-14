@@ -71,6 +71,7 @@ public class LaunchCalculator {
   private static final double phaseDelay;
   private static double hubOffset;
   private static double speedOffset;
+  private static double timeOffset;
 
   // Launching Maps
   private static final InterpolatingTreeMap<Double, Double> hoodAngleMap =
@@ -143,12 +144,13 @@ public class LaunchCalculator {
 
   static {
     minDistance = 1.3;
-    maxDistance = 3.3;
+    maxDistance = 6;
     passingMinDistance = 5.4;
     passingMaxDistance = 17.16;
     phaseDelay = 0.03;
     hubOffset = 0; //0.584
     speedOffset = 0;
+    timeOffset = 0; 
 
     hoodAngleMap.put(1.3 + hubOffset, 0.1);
     hoodAngleMap.put(1.6 + hubOffset, 0.1);
@@ -162,6 +164,10 @@ public class LaunchCalculator {
     hoodAngleMap.put(4.3 + hubOffset, 0.4);
     hoodAngleMap.put(4.6 + hubOffset, 0.5);
     hoodAngleMap.put(4.9 + hubOffset, 0.5);
+    hoodAngleMap.put(5.2 + hubOffset, 0.5);
+    hoodAngleMap.put(5.5 + hubOffset, 0.6);
+    hoodAngleMap.put(4.9 + hubOffset, 0.6);
+    hoodAngleMap.put(6 + hubOffset, 0.56);
     
     flywheelSpeedMap.put(1.3 + hubOffset, 45 + speedOffset);
     flywheelSpeedMap.put(1.6 + hubOffset, 48 + speedOffset);
@@ -173,21 +179,29 @@ public class LaunchCalculator {
     flywheelSpeedMap.put(3.4 + hubOffset, 59 + speedOffset);
     flywheelSpeedMap.put(3.7 + hubOffset, 59 + speedOffset);
     flywheelSpeedMap.put(4.0 + hubOffset, 61 + speedOffset);
-    flywheelSpeedMap.put(4.6 + hubOffset, 63 + speedOffset);
-    flywheelSpeedMap.put(4.9 + hubOffset, 66 + speedOffset);
+    flywheelSpeedMap.put(4.6 + hubOffset, 65 + speedOffset);
+    flywheelSpeedMap.put(4.9 + hubOffset, 67 + speedOffset);
+    flywheelSpeedMap.put(5.2 + hubOffset, 69 + speedOffset);
+    flywheelSpeedMap.put(5.5 + hubOffset, 72 + speedOffset);
+    flywheelSpeedMap.put(5.5 + hubOffset, 75 + speedOffset);
+    flywheelSpeedMap.put(6 + hubOffset, 75 + speedOffset);
 
-    timeOfFlightMap.put(1.3 + hubOffset, 1.0);
-    timeOfFlightMap.put(1.6 + hubOffset, 1.125);
-    timeOfFlightMap.put(2.2 + hubOffset, 1.125);
-    timeOfFlightMap.put(2.5 + hubOffset, 1.0);
-    timeOfFlightMap.put(2.8 + hubOffset, 0.875);
-    timeOfFlightMap.put(3.1 + hubOffset, 1.0);
-    timeOfFlightMap.put(3.4 + hubOffset, 1.25);
-    timeOfFlightMap.put(3.7 + hubOffset, 1.25);
-    timeOfFlightMap.put(4 + hubOffset, 1.2);
-    timeOfFlightMap.put(4.3 + hubOffset, 1.25);
-    timeOfFlightMap.put(4.6 + hubOffset, 1.25);
-    timeOfFlightMap.put(4.9 + hubOffset, 1.375);
+    timeOfFlightMap.put(1.3 + hubOffset, 1.0 + timeOffset);
+    timeOfFlightMap.put(1.6 + hubOffset, 1.125 + timeOffset);
+    timeOfFlightMap.put(2.2 + hubOffset, 1.125 + timeOffset);
+    timeOfFlightMap.put(2.5 + hubOffset, 1.0 + timeOffset);
+    timeOfFlightMap.put(2.8 + hubOffset, 0.875 + timeOffset);
+    timeOfFlightMap.put(3.1 + hubOffset, 1.0 + timeOffset);
+    timeOfFlightMap.put(3.4 + hubOffset, 1.25 + timeOffset);
+    timeOfFlightMap.put(3.7 + hubOffset, 1.25 + timeOffset);
+    timeOfFlightMap.put(4 + hubOffset, 1.2 + timeOffset);
+    timeOfFlightMap.put(4.3 + hubOffset, 1.2 + timeOffset);
+    timeOfFlightMap.put(4.6 + hubOffset, 1.125 + timeOffset);
+    timeOfFlightMap.put(4.9 + hubOffset, 1.25 + timeOffset);
+    timeOfFlightMap.put(5.2 + hubOffset, 1.375 + timeOffset);
+    timeOfFlightMap.put(5.5 + hubOffset, 1.25 + timeOffset);
+    timeOfFlightMap.put(5.5 + hubOffset, 1.25 + timeOffset);
+    timeOfFlightMap.put(6 + hubOffset, 1.375 + timeOffset);
 
     // TODO: passing
     passingHoodAngleMap.put(5.46, 0.8);
