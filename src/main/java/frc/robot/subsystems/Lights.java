@@ -9,47 +9,48 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj.PWM;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LightConstants;
 
 public class Lights extends SubsystemBase {
-  private final Spark blinkin = new Spark(LightConstants.lightPwm);
-  private final Map<String, Double> lightCodeMap = new HashMap<String, Double>();
+  private final PWM blinkin = new PWM(LightConstants.lightPwm);
+  private final Map<String, Integer> lightCodeMap = new HashMap<String, Integer>();
   private final Map<Integer, String> priorityToLight = new HashMap<Integer, String>();
   private PriorityQueue<Integer> lightPriorities = new PriorityQueue<>();
 
   /** Creates a new Lights. */
   public Lights() {
-    lightCodeMap.put("Hot Pink", 0.57);
-    lightCodeMap.put("Dark Red", 0.59);
-    lightCodeMap.put("Red", 0.61);
-    lightCodeMap.put("Red Orange", 0.63);
-    lightCodeMap.put("Orange", 0.65);
-    lightCodeMap.put("Gold", 0.67);
-    lightCodeMap.put("Yellow", 0.69);
-    lightCodeMap.put("Lawn Green", 0.71);
-    lightCodeMap.put("Lime", 0.73);
-    lightCodeMap.put("Dark Green", 0.75);
-    lightCodeMap.put("Green", 0.77);
-    lightCodeMap.put("Blue Green", 0.79);
-    lightCodeMap.put("Aqua", 0.81);
-    lightCodeMap.put("Sky Blue", 0.83);
-    lightCodeMap.put("Dark Blue", 0.85);
-    lightCodeMap.put("Blue", 0.87);
-    lightCodeMap.put("Blue Violet", 0.89);
-    lightCodeMap.put("Violet", 0.91);
-    lightCodeMap.put("White", 0.93);
-    lightCodeMap.put("Grey", 0.95);
-    lightCodeMap.put("Dark Grey", 0.97);
-    lightCodeMap.put("Black", 0.99);
-    lightCodeMap.put("Strobe Red", -0.11);
-    lightCodeMap.put("Strobe Blue", -0.15);
-    lightCodeMap.put("Strobe White", -0.05);
+    lightCodeMap.put("5V", 2125);
+    lightCodeMap.put("Hot Pink", 1785);
+    lightCodeMap.put("Dark Red", 1795);
+    lightCodeMap.put("Red", 1805);
+    lightCodeMap.put("Red Orange", 1815);
+    lightCodeMap.put("Orange", 1825);
+    lightCodeMap.put("Gold", 1835);
+    lightCodeMap.put("Yellow", 1845);
+    lightCodeMap.put("Lawn Green", 1855);
+    lightCodeMap.put("Lime", 1865);
+    lightCodeMap.put("Dark Green", 1875);
+    lightCodeMap.put("Green", 1885);
+    lightCodeMap.put("Blue Green", 1895);
+    lightCodeMap.put("Aqua", 1905);
+    lightCodeMap.put("Sky Blue", 1915);
+    lightCodeMap.put("Dark Blue", 1925);
+    lightCodeMap.put("Blue", 1935);
+    lightCodeMap.put("Blue Violet", 1945);
+    lightCodeMap.put("Violet", 1955);
+    lightCodeMap.put("White", 1965);
+    lightCodeMap.put("Grey", 1975);
+    lightCodeMap.put("Dark Grey", 1985);
+    lightCodeMap.put("Black", 1995);
+    lightCodeMap.put("Strobe Red", 1445);
+    lightCodeMap.put("Strobe Blue", 1455);
+    lightCodeMap.put("Strobe White", 1475);
 
-    lightCodeMap.put("End To End Blend Color 1 to 2", 0.45);
-    lightCodeMap.put("Heartbeat White", -0.21);
+    lightCodeMap.put("End To End Blend Color 1 to 2", 1725);
+    lightCodeMap.put("Heartbeat White", 1395);
 
     priorityToLight.put(0, "Strobe White"); // auto fire - flashing purple
     priorityToLight.put(1, "White"); // auto fire aiming - purple
@@ -61,6 +62,8 @@ public class Lights extends SubsystemBase {
     // priorityToLight.put(7, "End To End Blend Color 1 to 2"); // default
 
     lightPriorities.add(6); // add lowest prioity
+
+    reset();
   }
 
   @Override
@@ -73,11 +76,27 @@ public class Lights extends SubsystemBase {
   }
 
   /**
+   * resets blinkin to 5V mode
+   */
+  public void reset(){
+    try {
+      int currentColor = getAsInteger();
+      set("5V");
+      wait(5);
+      set("Black");
+      wait(5);
+      set(currentColor);
+    }catch(Exception err){
+      err.printStackTrace();
+    }
+  }
+
+  /**
    * sets the blinkin light from double
    * @param lightCode code based on spark speed(-1 to 1)
    */
-  public void set(double lightCode){
-    blinkin.set(lightCode);
+  public void set(int lightCode){
+    blinkin.setPulseTimeMicroseconds(lightCode);
   }
 
   /**
@@ -85,15 +104,15 @@ public class Lights extends SubsystemBase {
    * @param lightCode string key for light code
    */
   public void set(String lightCode){
-    blinkin.set(lightCodeMap.get(lightCode));
+    set(lightCodeMap.get(lightCode));
   }
 
   /**
    * get the current light code as a double
    * @return light code as double
    */
-  public double getAsDouble(){
-    return blinkin.get();
+  public int getAsInteger(){
+    return blinkin.getPulseTimeMicroseconds();
   }
 
   /**
@@ -101,8 +120,8 @@ public class Lights extends SubsystemBase {
    * @return light code as string or empty string if undifined code
   */
   public String getAString(){
-    for(Entry<String, Double> entry : lightCodeMap.entrySet()){
-      if(entry.getValue().equals(blinkin.get())) return entry.getKey();
+    for(Entry<String, Integer> entry : lightCodeMap.entrySet()){
+      if(entry.getValue().equals(getAsInteger())) return entry.getKey();
     }
     return "";
   }

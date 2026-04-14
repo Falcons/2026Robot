@@ -175,15 +175,17 @@ public class RobotContainer {
 
   private void configureRealBindings() {
     
-    driver.povUp().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(LaunchCalculator.getSpeedOffset() + 0.05)));
-    driver.povDown().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(LaunchCalculator.getSpeedOffset() - 0.05)));
+    driver.povUp().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(LaunchCalculator.getSpeedOffset() + 0.5)));
+    driver.povDown().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(LaunchCalculator.getSpeedOffset() - 0.5)));
     driver.povLeft().onTrue(new InstantCommand(() -> LaunchCalculator.setSpeedOffset(0)));
 
     driver.povRight().whileTrue(Commands.runEnd(() -> rollers.setRPS(() -> SmartDashboard.getNumber("Intake/Rollers/Set RPM", 3000)), rollers::stop, rollers));
 
+    driver.back().onTrue(new InstantCommand(lights::reset));
+
     // intake
-    driver.rightTrigger().whileTrue(Commands.runEnd(() -> rollers.setRPS(
-      SmartDashboard.getBoolean("Intake/Rollers/rollers active", !Constants.isCompetition) ? RollersConstants.rollerSpeedRPS : 0), 
+    driver.rightTrigger().whileTrue(Commands.runEnd(() -> rollers.set(
+      SmartDashboard.getBoolean("Intake/Rollers/rollers active", !Constants.isCompetition) ? RollersConstants.rollerSpeed : 0), 
       rollers::stop, rollers));
     // shoot
     driver.leftTrigger().whileTrue(
