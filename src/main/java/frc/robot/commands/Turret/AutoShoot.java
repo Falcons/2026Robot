@@ -28,7 +28,8 @@ public class AutoShoot extends ParallelCommandGroup {
       Commands.runEnd(hood::autoAim, () -> hood.set(0.0), hood),
       Commands.runEnd(shooter::autoShoot, shooter::stopShooter, shooter),
       Commands.runEnd(transfer::autoTransfer, transfer::stop, transfer),
-      Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers)
+      // Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers)
+      Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers)
     );
   }
 }

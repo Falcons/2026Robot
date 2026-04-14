@@ -21,8 +21,8 @@ public class IntakeShake extends SequentialCommandGroup {
     addCommands(
       new WaitCommand(delay),
       new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
-      new WaitCommand(1).asProxy(),
-      new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(1)
+      new WaitCommand(1),
+      new PivotPid(pivot, PivotConstants.pivotOut)
       );
   }
 }
