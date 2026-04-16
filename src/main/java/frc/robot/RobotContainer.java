@@ -159,7 +159,7 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
       (stream) -> Constants.isCompetition
         // ? stream.filter(auto -> !auto.getName().startsWith("Test")): stream);
-        ? stream.filter(auto -> !auto.getName().endsWith("Comp")): stream);
+        ? stream.filter(auto -> auto.getName().endsWith("Comp")): stream);
     
     autoChooser.setDefaultOption("setup", new Setup(pivot, swerve));
 
