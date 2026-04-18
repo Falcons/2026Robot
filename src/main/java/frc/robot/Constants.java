@@ -18,7 +18,7 @@ import edu.wpi.first.math.util.Units;
 public final class Constants {
     public static final double deltaTime = 0.02;
     public static final boolean disableHAL = false; // if tue alliance doesnt update in sim
-    public static final boolean isCompetition = false;
+    public static final boolean isCompetition = true;
     public static final boolean logDashboard = true;
 
     public static final class DriveConstants {  
@@ -101,6 +101,7 @@ public final class Constants {
     }
     public static final class ControllerConstants {
         public static final double deadBand = 0.05;
+        public static final double turretDeadband = 0.25;
         public static final double triggerDeadBand = 0.01;
     }
 

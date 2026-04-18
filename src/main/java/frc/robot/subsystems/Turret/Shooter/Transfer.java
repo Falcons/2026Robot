@@ -67,8 +67,19 @@ public class Transfer extends SubsystemBase {
     if(run.getAsBoolean()) set(speed);
     else stop();
   }
+
+  public void pulse(){
+    if(timer.hasElapsed(2))set(-ShooterConstants.maxTransferSpeed);
+    else set(ShooterConstants.maxTransferSpeed);
+
+    if(timer.hasElapsed(2.2)) timer.reset();
+  }
+  public void pulse(BooleanSupplier run){
+    if(run.getAsBoolean()) pulse();
+    else stop();
+  }
   /**
-   * stop the transfer motoe
+   * stop the transfer motor
    */
   public void stop() {
     transfer.stopMotor();
@@ -79,6 +90,11 @@ public class Transfer extends SubsystemBase {
     if (shooter.atTargetRps()) {
       set(ShooterConstants.maxTransferSpeed);
     }
+  }
+
+  public void autoPulseTransfer() {
+    if (!turret.inRange()) return;
+    pulse(() -> shooter.atTargetRps());
   }
 
   public void setShooter(Shooter shooter) {
