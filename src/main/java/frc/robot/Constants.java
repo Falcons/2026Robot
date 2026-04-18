@@ -101,6 +101,7 @@ public final class Constants {
     }
     public static final class ControllerConstants {
         public static final double deadBand = 0.05;
+        public static final double turretDeadband = 0.25;
         public static final double triggerDeadBand = 0.01;
     }
 

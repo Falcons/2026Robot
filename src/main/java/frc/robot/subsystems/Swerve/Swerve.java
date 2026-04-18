@@ -52,7 +52,7 @@ public class Swerve extends SubsystemBase {
       // try to create a new swerve drive
       DriverStation.waitForDsConnection(0);
       // Pose2d limelightPose = LimelightHelpers.getBotPoseEstimate_wpiBlue(LimelightConstants.stillLimelight).pose;
-      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.HIGH; //TODO: high will cause more lag
+      SwerveDriveTelemetry.verbosity = TelemetryVerbosity.POSE; //TODO: high will cause more lag
       swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS, AllianceFlipUtil.apply(DriveConstants.startingPose));
       // swerveDrive = new SwerveParser(swerveJsonDirectory).createSwerveDrive(DriveConstants.maxSpeedMPS);
     } catch (Exception e) {
@@ -82,6 +82,9 @@ public class Swerve extends SubsystemBase {
   }
   public void setPose(Pose2d pose){
     swerveDrive.resetOdometry(pose);
+  }
+  public void xPose(){
+    swerveDrive.lockPose();
   }
 
 

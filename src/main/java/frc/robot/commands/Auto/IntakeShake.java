@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Auto;
 
+import edu.wpi.first.wpilibj2.command.PrintCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Constants.IntakeConstants.PivotConstants;
@@ -19,10 +20,10 @@ public class IntakeShake extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      new PrintCommand("intake shake start: " + delay),
       new WaitCommand(delay),
-      new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1),
-      new WaitCommand(1),
-      new PivotPid(pivot, PivotConstants.pivotOut)
+      new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(0.5),
+      new PivotPid(pivot, PivotConstants.pivotOut).withTimeout(0.5)
       );
   }
 }

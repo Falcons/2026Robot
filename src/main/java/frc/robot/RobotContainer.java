@@ -149,9 +149,11 @@ public class RobotContainer {
     NamedCommands.registerCommand("Intake out", new PivotPid(pivot, PivotConstants.pivotOut));
     NamedCommands.registerCommand("Intake in", new PivotPid(pivot, PivotConstants.pivotIn).withTimeout(1));
     NamedCommands.registerCommand("Delayed intake shake", new IntakeShake(pivot, 1));
+    NamedCommands.registerCommand("0.5 intake shake", new IntakeShake(pivot, 0.5));
     NamedCommands.registerCommand("Intake shake", new IntakeShake(pivot, 0));
-    NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers));
-    NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.setRPS(RollersConstants.rollerSpeedRPS), rollers::stop, rollers).withTimeout(1));
+    NamedCommands.registerCommand("Infinite Intake Shake", new IntakeShake(pivot, 0).repeatedly());
+    NamedCommands.registerCommand("Rollers", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers));
+    NamedCommands.registerCommand("Rollers 1 sec", Commands.runEnd(() -> rollers.set(RollersConstants.rollerSpeed), rollers::stop, rollers).withTimeout(1));
     // NamedCommands.registerCommand("inverted gyro zero", Commands.runOnce(swerve::invertedZeroGyroWithFlip));
     //autos
     DriverStation.waitForDsConnection(0);
@@ -192,6 +194,8 @@ public class RobotContainer {
       new AutoShoot(turret, hood, transfer, shooter, rollers).onlyWhile(
         () -> SmartDashboard.getBoolean("Turret/Shooter/driver shoot active", !Constants.isCompetition)));
 
+    driver.a().whileTrue(Commands.run(swerve::xPose, swerve).repeatedly());
+
     // OPERATOR
 
     // spin shooter
@@ -202,7 +206,7 @@ public class RobotContainer {
     operator.leftBumper().whileTrue(Commands.runEnd(() -> shooter.setRps(85), shooter::stopShooter, shooter));
 
     // manual turret 50% speed
-    operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue( 
+    operator.axisMagnitudeGreaterThan(0, ControllerConstants.turretDeadband).whileTrue( 
       Commands.runEnd(() -> turret.set(() -> operator.getLeftX() * 0.5), () -> turret.set(0), turret));
     // manual pivot
     // operator.axisMagnitudeGreaterThan(0, ControllerConstants.deadBand).whileTrue(

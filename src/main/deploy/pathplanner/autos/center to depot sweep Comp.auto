@@ -53,22 +53,9 @@
                 }
               },
               {
-                "type": "sequential",
+                "type": "named",
                 "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Delayed intake shake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Delayed intake shake"
-                      }
-                    }
-                  ]
+                  "name": "Infinite Intake Shake"
                 }
               }
             ]

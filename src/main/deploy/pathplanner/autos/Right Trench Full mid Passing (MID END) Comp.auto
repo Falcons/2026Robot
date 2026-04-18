@@ -76,31 +76,6 @@
                 "data": {
                   "name": "Shoot"
                 }
-              },
-              {
-                "type": "sequential",
-                "data": {
-                  "commands": [
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Delayed intake shake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Delayed intake shake"
-                      }
-                    },
-                    {
-                      "type": "named",
-                      "data": {
-                        "name": "Delayed intake shake"
-                      }
-                    }
-                  ]
-                }
               }
             ]
           }
@@ -119,6 +94,12 @@
                 "type": "named",
                 "data": {
                   "name": "Rollers"
+                }
+              },
+              {
+                "type": "named",
+                "data": {
+                  "name": "Infinite Intake Shake"
                 }
               }
             ]
