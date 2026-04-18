@@ -148,6 +148,7 @@ public final class Constants {
             public static final double maxShooterRPS = 80;
             public static final double maxShooterSpeed = 1;
             public static final double maxTransferSpeed = 1;
+            public static final double maxTransferSpeedRPS = 120;
             public static final double maxKickerSpeed = 1;
 
             public static final double highShooterSpeed = 0.8;

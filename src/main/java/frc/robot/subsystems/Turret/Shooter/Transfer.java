@@ -7,10 +7,13 @@ package frc.robot.subsystems.Turret.Shooter;
 import java.util.function.BooleanSupplier;
 
 import com.ctre.phoenix6.configs.CurrentLimitsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,6 +32,8 @@ public class Transfer extends SubsystemBase {
   private final TalonFXConfiguration transferConfig = new TalonFXConfiguration();
   private final CurrentLimitsConfigs limitsConfigs = new CurrentLimitsConfigs();
 
+  private final PIDController speedControl = new PIDController(0.9, 0.5, 0.0015);
+
   private Timer timer = new Timer();
 
   /** Creates a new Transfer. */
@@ -37,8 +42,17 @@ public class Transfer extends SubsystemBase {
     this.lights = lights;
     timer.start();
     
+    // pid
+    var slot0Configs = new Slot0Configs(); // shouldnt need a
+    slot0Configs.kS = 0.083585; // Add 0.25 V output to overcome static friction 0.4
+    slot0Configs.kV = 0.11406; // A velocity target of 1 rps results in 0.12 V output 0.11
+    slot0Configs.kP = 2; // A position error of 2.5 rotations results in 12 V output
+    slot0Configs.kI = 0.0; // no output for integrated error
+    slot0Configs.kD = 0.5; // A velocity error of 1 rps results in 0.1 V output
+
     limitsConfigs.StatorCurrentLimit = 40;
 
+    transferConfig.withSlot0(slot0Configs);
     transferConfig.withCurrentLimits(limitsConfigs);
     transferConfig.MotorOutput.NeutralMode = NeutralModeValue.Coast;
     transfer.getConfigurator().apply(transferConfig);
@@ -48,7 +62,10 @@ public class Transfer extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Turret/Shooter/transferSpeed", transfer.get());
+    SmartDashboard.putNumber("Turret/Shooter/Transfer/volocity", transfer.getVelocity().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/Transfer/supplyCurrent", transfer.getSupplyCurrent().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/Transfer/supplyVoltage", transfer.getSupplyVoltage().getValueAsDouble());
+    SmartDashboard.putNumber("Turret/Shooter/Transfer/speed", transfer.get());
 
     if (transfer.get() == 0) {
       lights.removeQueue(LightConstants.manualTransferPriority);
@@ -66,6 +83,16 @@ public class Transfer extends SubsystemBase {
   public void set(BooleanSupplier run, double speed) {
     if(run.getAsBoolean()) set(speed);
     else stop();
+  }
+
+  /**
+   * set the speed of the motor in rps
+   * @param speed rps
+   */
+  public void setRps(double speed){
+    var request = new VelocityVoltage(0).withSlot(0);
+    transfer.setControl(request.withVelocity(speed));
+    SmartDashboard.putNumber("Turret/Shooter/Transfer/PID/cc error", transfer.getClosedLoopError().getValueAsDouble());
   }
 
   public void pulse(){
@@ -88,7 +115,7 @@ public class Transfer extends SubsystemBase {
   public void autoTransfer() {
     if (!turret.inRange()) return;
     if (shooter.atTargetRps()) {
-      set(ShooterConstants.maxTransferSpeed);
+      setRps(ShooterConstants.maxTransferSpeedRPS);
     }
   }
 
