@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 import java.util.PriorityQueue;
 
 import edu.wpi.first.wpilibj.PWM;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.LightConstants;
@@ -19,9 +20,11 @@ public class Lights extends SubsystemBase {
   private final Map<String, Integer> lightCodeMap = new HashMap<String, Integer>();
   private final Map<Integer, String> priorityToLight = new HashMap<Integer, String>();
   private PriorityQueue<Integer> lightPriorities = new PriorityQueue<>();
+  private Timer timer = new Timer();
 
   /** Creates a new Lights. */
   public Lights() {
+    timer.start();
     lightCodeMap.put("5V", 2125);
     lightCodeMap.put("Hot Pink", 1785);
     lightCodeMap.put("Dark Red", 1795);
@@ -73,6 +76,10 @@ public class Lights extends SubsystemBase {
       set(priorityToLight.get(lightPriorities.peek()));
     }
     SmartDashboard.putNumber("Lights/peak", lightPriorities.peek());
+
+    if(timer.advanceIfElapsed(LightConstants.resetInterval)){
+      reset();
+    };
   }
 
   /**

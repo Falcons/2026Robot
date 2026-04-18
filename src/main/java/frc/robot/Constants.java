@@ -180,6 +180,7 @@ public final class Constants {
     }
     public static final class LightConstants {
         public static final int lightPwm = 2;
+        public static final double resetInterval = 1;
 
         public static final double hoodUp = 0.61;
         public static final double hoodDown = 0.77;
