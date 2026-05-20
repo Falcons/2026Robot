@@ -46,6 +46,9 @@ public class Swerve extends SubsystemBase {
   File swerveJsonDirectory = new File(Filesystem.getDeployDirectory(),"swerve");
   SwerveDrive swerveDrive;
 
+  private double previousDashboardSpeedMPS = DriveConstants.maxSpeedMPS;
+  private double previousDashboardSpeedRadPS = DriveConstants.maxRotationsRadPS;
+
   public Swerve() {
     LimelightHelpers.SetIMUMode(LimelightConstants.stillLimelight, 0);
     try {
@@ -62,6 +65,10 @@ public class Swerve extends SubsystemBase {
 
     setupPathPlanner();
     RobotModeTriggers.autonomous().onTrue(Commands.runOnce(this::zeroGyroWithFlip));  
+
+    // slow mode on dashboard
+    SmartDashboard.putNumber("dashboardSpeedMPS", DriveConstants.maxSpeedMPS);
+    SmartDashboard.putNumber("dashboardRotationRadPS", DriveConstants.maxRotationsRadPS);
   }
 
   @Override
@@ -75,6 +82,19 @@ public class Swerve extends SubsystemBase {
     LaunchCalculator.getInstance().clearLaunchingParameters();
     swerveDrive.field.getObject("Target").setPose(
       new Pose2d(LaunchCalculator.getInstance().getParameters(this, -1.0).target(), new Rotation2d()));
+
+    // get numbers
+    double dashboardSpeed = SmartDashboard.getNumber("dashboardSpeedMPS", DriveConstants.maxSpeedMPS);
+    double dashboardTurningSpeed = SmartDashboard.getNumber("dashboardRotationRadPS", DriveConstants.maxRotationsRadPS);
+    // set numbers
+    if (dashboardSpeed != previousDashboardSpeedMPS) {
+      previousDashboardSpeedMPS = dashboardSpeed;
+      setMaxAllowableSpeed(dashboardSpeed, dashboardTurningSpeed);
+    }
+    if (dashboardTurningSpeed != previousDashboardSpeedRadPS) {
+      previousDashboardSpeedRadPS = dashboardTurningSpeed;
+      setMaxAllowableSpeed(dashboardSpeed, dashboardTurningSpeed);
+    }
   }
 
   public SwerveDrive getSwerveDrive() {
